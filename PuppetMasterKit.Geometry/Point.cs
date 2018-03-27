@@ -70,7 +70,7 @@ namespace PuppetMasterKit.Geometry
         /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="T:PuppetMasterKit.Geometry.Point"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
         /// <see cref="T:PuppetMasterKit.Geometry.Point"/>; otherwise, <c>false</c>.</returns>
-		public override bool Equals(object obj)
+        public override bool Equals(object obj)
 		{
             if (obj is Point)
             {

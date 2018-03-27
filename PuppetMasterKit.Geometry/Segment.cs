@@ -37,11 +37,18 @@ namespace PuppetMasterKit.Geometry
         /// <param name="points">Points.</param>
         public Segment(Point[] points)
         {
-            if (points.Length == 1)
-            {
-                //Segment(points[0], points[0]);
+            DecimalPlaces = Float.Decimals;
+
+            if (points.Length == 1) {
+                this.Start = points[0];
+                this.End = points[0];
+            } else {
+                this.Start = points[0];
+                this.End = points[1];
             }
 
+            this.Slope = CalcSlope();
+            this.Intercept = CalcIntercept();
         }
 
         /// <summary>
