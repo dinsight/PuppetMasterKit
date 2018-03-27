@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.Geometry;
-using PuppetMasterKit.Geometry.Util;
+using PuppetMasterKit.Utility;
 
 namespace PuppetMasterKit.Polygons
 {

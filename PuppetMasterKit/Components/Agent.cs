@@ -1,7 +1,7 @@
 ﻿using System;
 namespace PuppetMasterKit.Components
 {
-    public class Agent
+    public class Agent : Component
     {
         public Agent()
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PuppetMasterKit.Geometry.Util;
+using PuppetMasterKit.Utility;
 
 namespace PuppetMasterKit.Geometry
 {

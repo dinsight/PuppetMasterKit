@@ -5,6 +5,8 @@ namespace PuppetMasterKit.Components
     {
         public ComponentSystem System { get; set; }
 
+        public Entity Entity { get; private set; }
+
         /// <summary>
         /// Initializtion
         /// </summary>
@@ -17,9 +19,29 @@ namespace PuppetMasterKit.Components
         /// </summary>
         /// <returns>The update.</returns>
         /// <param name="deltaTime">The time interval between subsequent update calls</param>
-        public void update(double deltaTime)
+        public virtual void Update(double deltaTime)
         {
             
+        }
+
+        /// <summary>
+        /// Sets the entity.
+        /// </summary>
+        /// <returns>The entity.</returns>
+        /// <param name="entity">Entity.</param>
+        public Component SetEntity(Entity entity)
+        {
+            this.Entity = entity;
+            return this;
+        }
+
+        /// <summary>
+        /// Cleanup resources
+        /// </summary>
+        public virtual void Cleanup()
+        {
+            Entity = null;
+            System = null;
         }
     }
 }

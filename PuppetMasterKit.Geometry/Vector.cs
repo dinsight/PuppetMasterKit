@@ -1,5 +1,5 @@
 ﻿using System;
-using PuppetMasterKit.Geometry.Util;
+using PuppetMasterKit.Utility;
 
 namespace PuppetMasterKit.Geometry
 {

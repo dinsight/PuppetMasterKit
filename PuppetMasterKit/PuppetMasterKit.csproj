@@ -54,10 +54,31 @@
     <Compile Include="Goals\GoalToPursueAgent.cs" />
     <Compile Include="Goals\GoalToSeparateFrom.cs" />
     <Compile Include="Goals\GoalToWander.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="ISprite.cs" />
+    <Compile Include="ITextureAtlas.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />
     <Folder Include="Goals\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PuppetMasterKit.Geometry\PuppetMasterKit.Geometry.csproj">
+      <Project>{45B21CFE-ACDA-4934-8DF7-605195503007}</Project>
+      <Name>PuppetMasterKit.Geometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
+      <Project>{F3270C94-52FB-4C33-9640-93F991A67BB0}</Project>
+      <Name>PuppetMasterKit.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\netstandard1.1\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

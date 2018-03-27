@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using PuppetMasterKit.Utility;
 
 namespace PuppetMasterKit.Components
 {
@@ -29,11 +30,11 @@ namespace PuppetMasterKit.Components
         /// </summary>
         /// <returns>The update.</returns>
         /// <param name="deltaTime">The time interval between subsequent update calls</param>
-        public void update(double deltaTime) 
+        public void Update(double deltaTime) 
         {
             foreach (var component in components)
             {
-                component.update(deltaTime);
+                component.Update(deltaTime);
             }
         }
 
@@ -49,12 +50,40 @@ namespace PuppetMasterKit.Components
         }
 
         /// <summary>
+        /// Adds a list of components
+        /// </summary>
+        /// <param name="instances">Instances.</param>
+        public void AddRange(Component[] instances)
+        {
+            instances.ForEach(x => Add(x));
+        }
+
+        /// <summary>
         /// Remove a component.
         /// </summary>
         /// <typeparam name="T">The component type.</typeparam>
         public void Remove<T>()
         {
-            var toRemove = components.Where(x => x is T).ToList();
+            var toRemove = components
+                .Where(x => x is T).ToList();
+            
+            foreach (var item in toRemove)
+            {
+                item.System = null;
+                components.Remove(item);
+            }
+        }
+
+        /// <summary>
+        /// Remove the specified instance.
+        /// </summary>
+        /// <returns>The remove.</returns>
+        /// <param name="instance">Instance.</param>
+        public void Remove(Component instance)
+        {
+            var toRemove = components
+                .Where(x => Object.ReferenceEquals(x, instance)).ToList();
+            
             foreach (var item in toRemove)
             {
                 item.System = null;

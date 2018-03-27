@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Geometry.Util
+namespace PuppetMasterKit.Geometry
 {
     class CutPoint
     {
