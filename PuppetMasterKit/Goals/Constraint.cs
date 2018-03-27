@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.ComponentSystem.Goals
+namespace PuppetMasterKit.Goals
 {
     public class Constraint
     {

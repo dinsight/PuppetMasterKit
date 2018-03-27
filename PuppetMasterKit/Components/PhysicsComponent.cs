@@ -1,7 +1,7 @@
 ﻿using System;
-namespace PuppetMasterKit.ComponentSystem.Components
+namespace PuppetMasterKit.Components
 {
-    public class PhysicsComponent
+    public class PhysicsComponent : Component
     {
         public PhysicsComponent()
         {

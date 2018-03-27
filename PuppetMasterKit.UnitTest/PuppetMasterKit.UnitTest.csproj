@@ -99,11 +99,16 @@
     <Compile Include="VectorUnitTest.cs" />
     <Compile Include="PointUnitTest.cs" />
     <Compile Include="PolygonUnitTest.cs" />
+    <Compile Include="ComponentSystemTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Geometry\PuppetMasterKit.Geometry.csproj">
       <Project>{45B21CFE-ACDA-4934-8DF7-605195503007}</Project>
       <Name>PuppetMasterKit.Geometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit\PuppetMasterKit.csproj">
+      <Project>{5693F719-6696-4B36-A83C-5A54E1E5702C}</Project>
+      <Name>PuppetMasterKit</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

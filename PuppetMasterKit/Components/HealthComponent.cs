@@ -1,7 +1,7 @@
 ﻿using System;
-namespace PuppetMasterKit.ComponentSystem.Components
+namespace PuppetMasterKit.Components
 {
-    public class HealthComponent
+    public class HealthComponent : Component
     {
         public HealthComponent()
         {
