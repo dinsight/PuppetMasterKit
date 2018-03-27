@@ -211,10 +211,9 @@ namespace PuppetMasterKit.Geometry
         /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="T:PuppetMasterKit.Geometry.Vector"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
         /// <see cref="T:PuppetMasterKit.Geometry.Vector"/>; otherwise, <c>false</c>.</returns>
-		public override bool Equals(object obj)
-		{
-            if (obj is Vector)
-            {
+        public override bool Equals(object obj)
+        {
+            if (obj is Vector) {
                 return this == (Vector)obj;
             }
             return false;
@@ -225,9 +224,9 @@ namespace PuppetMasterKit.Geometry
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-		public override int GetHashCode()
-		{
+        public override int GetHashCode()
+        {
             return base.GetHashCode();
-		}
+        }
 	}
 }

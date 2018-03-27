@@ -71,9 +71,8 @@ namespace PuppetMasterKit.Geometry
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
         /// <see cref="T:PuppetMasterKit.Geometry.Point"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
-		{
-            if (obj is Point)
-            {
+        {
+            if (obj is Point) {
                 return this == (Point)obj;
             }
             return false;
@@ -84,8 +83,8 @@ namespace PuppetMasterKit.Geometry
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-		public override int GetHashCode()
-		{
+        public override int GetHashCode()
+        {
             checked
             {
                 var val = 31;
@@ -101,7 +100,7 @@ namespace PuppetMasterKit.Geometry
 		/// <param name="lhs">The <see cref="PuppetMasterKit.Geometry.Point"/> to subtract from (the minuend).</param>
 		/// <param name="rhs">The <see cref="PuppetMasterKit.Geometry.Point"/> to subtract (the subtrahend).</param>
 		/// <returns>The <see cref="T:PuppetMasterKit.Geometry.Vector"/> that is the <c>lhs</c> minus <c>rhs</c>.</returns>
-		public static Vector operator -(Point lhs, Point rhs)
+        public static Vector operator -(Point lhs, Point rhs)
         {
             return new Vector(lhs.X - rhs.X, lhs.Y - lhs.Y);
         }

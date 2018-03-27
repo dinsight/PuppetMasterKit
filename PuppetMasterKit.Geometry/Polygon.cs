@@ -40,7 +40,6 @@ namespace PuppetMasterKit.Polygons
         public Polygon(Point[] points)
         {
             this.Points = new List<Point>(points);
-
             CalcMinMax();
         }
 
@@ -51,8 +50,7 @@ namespace PuppetMasterKit.Polygons
         public Point this[int n]
         {
             get { 
-                if( n>=0 && n < Count ) 
-                {
+                if( n>=0 && n < Count ) {
                     return Points[n];
                 }
                 return null;
@@ -95,10 +93,9 @@ namespace PuppetMasterKit.Polygons
         /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="T:PuppetMasterKit.Polygons.Polygon"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
         /// <see cref="T:PuppetMasterKit.Polygons.Polygon"/>; otherwise, <c>false</c>.</returns>
-		public override bool Equals(object obj)
-		{
-            if (obj is Polygon)
-            {
+        public override bool Equals(object obj)
+        {
+            if (obj is Polygon) {
                 return this == (Polygon)obj;
             }
             return false;
@@ -109,8 +106,8 @@ namespace PuppetMasterKit.Polygons
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-		public override int GetHashCode()
-		{
+        public override int GetHashCode()
+        {
             checked
             {
                 var val = 31;
@@ -120,17 +117,16 @@ namespace PuppetMasterKit.Polygons
                 }
                 return val;
             }
-		}
+        }
 
 		/// <summary>
 		/// Append the specified point.
 		/// </summary>
 		/// <returns>The append.</returns>
 		/// <param name="point">Point.</param>
-		public void Append(Point point)
+        public void Append(Point point)
         {
             Points.Add(point);
-
             CalcMinMax();
         }
 
@@ -143,7 +139,6 @@ namespace PuppetMasterKit.Polygons
         public void Insert(Point point,int index)
         {
             Points.Insert(index, point);
-
             CalcMinMax();
         }
 
@@ -234,7 +229,6 @@ namespace PuppetMasterKit.Polygons
                             Math.Abs(p.X - q.X) < Float.EPSILON &&
                             Math.Abs(p.Y - q.Y) < Float.EPSILON ))
                     .ToArray();
-                      
             }
             return result.ToArray();
         }
@@ -277,7 +271,6 @@ namespace PuppetMasterKit.Polygons
                     return Direction.Clockwise;
                 }
             }
-
             return null;
         }
 
