@@ -1,6 +1,8 @@
 ﻿using System;
-using PuppetMasterKit.Components;
+using PuppetMasterKit.AI.Components;
 using NUnit.Framework;
+using PuppetMasterKit.AI;
+using PuppetMasterKit.Template.Test.Bindings;
 
 namespace PuppetMasterKit.UnitTest
 {
@@ -19,6 +21,19 @@ namespace PuppetMasterKit.UnitTest
             system.Remove<HealthComponent>();
 
             Assert.True(system.Count == 2);
+        }
+
+        [Test]
+        public void TestAgentUpdate()
+        {
+            Registration.RegisterBindings();
+            var agent = new Agent();
+            var entity = new Entity()
+                .Add(new SpriteComponent<string>("test", string.Empty))
+                .Add(new SpriteComponent<string>("none", string.Empty))
+                .Add(agent);
+
+            agent.Update(0);
         }
     }
 }

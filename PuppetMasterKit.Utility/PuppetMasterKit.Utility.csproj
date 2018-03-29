@@ -29,9 +29,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Array.Extension.cs" />
+    <Compile Include="Array.cs" />
     <Compile Include="Float.cs" />
-    <Compile Include="List.Extension.cs" />
+    <Compile Include="List.cs" />
+    <Compile Include="Orientation.cs" />
+    <Compile Include="Enumerable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

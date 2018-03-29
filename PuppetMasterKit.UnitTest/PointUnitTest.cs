@@ -1,7 +1,8 @@
 ﻿
 using System;
 using NUnit.Framework;
-using PuppetMasterKit.Geometry;
+using PuppetMasterKit.Graphics;
+using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.UnitTest
 {

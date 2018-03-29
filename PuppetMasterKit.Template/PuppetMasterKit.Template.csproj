@@ -1,0 +1,190 @@
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectGuid>{D5190088-D723-4DC5-AE96-2E50C9718550}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PuppetMasterKit.Template</RootNamespace>
+    <AssemblyName>PuppetMasterKit.Template</AssemblyName>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <IOSDebuggerPort>60098</IOSDebuggerPort>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <DeviceSpecificBuild>false</DeviceSpecificBuild>
+    <MtouchVerbosity></MtouchVerbosity>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchVerbosity></MtouchVerbosity>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchVerbosity></MtouchVerbosity>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>55940</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchVerbosity></MtouchVerbosity>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="LightInject">
+      <HintPath>..\packages\LightInject.5.1.2\lib\netstandard1.6\LightInject.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Ios.Bindings\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="GameScene.sks" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="GameViewController.cs" />
+    <Compile Include="GameViewController.designer.cs">
+      <DependentUpon>GameViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameScene.cs" />
+    <Compile Include="Ios.Bindings\Texture.cs" />
+    <Compile Include="Ios.Bindings\Registration.cs" />
+    <Compile Include="Ios.Bindings\SpriteFactory.cs" />
+    <Compile Include="Ios.Bindings\Sprite.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
+      <Project>{5693F719-6696-4B36-A83C-5A54E1E5702C}</Project>
+      <Name>PuppetMasterKit.AI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Graphics.Geometry\PuppetMasterKit.Graphics.csproj">
+      <Project>{45B21CFE-ACDA-4934-8DF7-605195503007}</Project>
+      <Name>PuppetMasterKit.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
+      <Project>{F3270C94-52FB-4C33-9640-93F991A67BB0}</Project>
+      <Name>PuppetMasterKit.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Media.xcassets\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\Sprite.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-e.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-e.imageset\ar-e.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-n.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-n.imageset\ar-n.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-ne.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-ne.imageset\ar-ne.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-nw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-nw.imageset\ar-nw.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-s.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-s.imageset\ar-s.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-se.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-se.imageset\ar-se.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-sw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-sw.imageset\ar-sw.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-w.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-w.imageset\ar-w.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-e.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-e.imageset\ab-e.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-n.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-n.imageset\ab-n.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-ne.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-ne.imageset\ab-ne.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-nw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-nw.imageset\ab-nw.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-s.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-s.imageset\ab-s.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-se.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-se.imageset\ab-se.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-sw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-sw.imageset\ab-sw.png" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-w.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-w.imageset\ab-w.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-e.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-e.imageset\ab-e.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-n.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-n.imageset\ab-n.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-ne.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-ne.imageset\ab-ne.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-nw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-nw.imageset\ab-nw.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-s.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-s.imageset\ab-s.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-se.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-se.imageset\ab-se.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-sw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-sw.imageset\ab-sw.png" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\ab-w.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+</Project>

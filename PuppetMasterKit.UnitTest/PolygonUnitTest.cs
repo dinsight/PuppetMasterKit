@@ -1,9 +1,9 @@
 ﻿
 using System.Linq;
-using PuppetMasterKit.Geometry;
 using NUnit.Framework;
-using PuppetMasterKit.Polygons;
 using System.Collections.Generic;
+using PuppetMasterKit.Graphics;
+using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.UnitTest
 {

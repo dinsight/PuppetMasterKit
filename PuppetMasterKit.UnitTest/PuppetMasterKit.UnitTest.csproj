@@ -85,6 +85,11 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
     <Reference Include="MonoTouch.NUnitLite" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="LightInject">
+      <HintPath>..\packages\LightInject.5.1.2\lib\netstandard1.6\LightInject.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -92,6 +97,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -100,16 +106,27 @@
     <Compile Include="PointUnitTest.cs" />
     <Compile Include="PolygonUnitTest.cs" />
     <Compile Include="ComponentSystemTest.cs" />
+    <Compile Include="Test.Bindings\Registration.cs" />
+    <Compile Include="Test.Bindings\Sprite.cs" />
+    <Compile Include="Test.Bindings\SpriteFactory.cs" />
+    <Compile Include="Test.Bindings\Texture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PuppetMasterKit.Geometry\PuppetMasterKit.Geometry.csproj">
+    <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
+      <Project>{F3270C94-52FB-4C33-9640-93F991A67BB0}</Project>
+      <Name>PuppetMasterKit.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Graphics.Geometry\PuppetMasterKit.Graphics.csproj">
       <Project>{45B21CFE-ACDA-4934-8DF7-605195503007}</Project>
-      <Name>PuppetMasterKit.Geometry</Name>
+      <Name>PuppetMasterKit.Graphics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PuppetMasterKit\PuppetMasterKit.csproj">
+    <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
       <Project>{5693F719-6696-4B36-A83C-5A54E1E5702C}</Project>
-      <Name>PuppetMasterKit</Name>
+      <Name>PuppetMasterKit.AI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test.Bindings\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
