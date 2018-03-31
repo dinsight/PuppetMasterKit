@@ -9,13 +9,22 @@ namespace PuppetMasterKit.AI.Components
 {
     public class Agent : Component
     {
-        Vector velocity = Vector.Zero;
+        public Point Position { get; private set; }
 
-        Point position = Point.Zero;
+        public Vector Velocity { get; private set; }
 
         List<Tuple<Goal, float>> goals = new List<Tuple<Goal, float>>();
 
         List<Constraint> constraints = new List<Constraint>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.Agent"/> class.
+        /// </summary>
+        public Agent()
+        {
+            Position = Point.Zero;
+            Velocity = Vector.Zero;
+        }
 
         /// <summary>
         /// Add the specified goal and weight.
@@ -23,7 +32,7 @@ namespace PuppetMasterKit.AI.Components
         /// <returns>The add.</returns>
         /// <param name="goal">Goal.</param>
         /// <param name="weight">Weight.</param>
-        public Agent Add(Goal goal, float weight = 1) 
+        public Agent Add(Goal goal, float weight = 1)
         {
             goals.Add(new Tuple<Goal, float>(goal, weight));
             return this;
@@ -45,7 +54,7 @@ namespace PuppetMasterKit.AI.Components
         /// </summary>
         /// <returns>The remove.</returns>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public Agent Remove<T>() where T : Goal 
+        public Agent Remove<T>() where T : Goal
         {
             goals.RemoveAll(x => x.Item1 is T);
             return this;
@@ -56,7 +65,7 @@ namespace PuppetMasterKit.AI.Components
         /// </summary>
         public void Stop()
         {
-            velocity = Vector.Zero;
+            Velocity = Vector.Zero;
         }
 
         /// <summary>
@@ -92,13 +101,14 @@ namespace PuppetMasterKit.AI.Components
         public override void Update(double deltaTime)
         {
             var delegates = Entity.GetComponents<IAgentDelegate>();
-                  
-            delegates.ForEach(x=> x.AgentWillUpdate(this));
 
-            if (position!=null){
-                velocity = Force();
-                position.X += velocity.Dx;
-                position.Y += velocity.Dy;
+            delegates.ForEach(x => x.AgentWillUpdate(this));
+
+            if (Position != null)
+            {
+                Velocity = Force();
+                Position.X += Velocity.Dx;
+                Position.Y += Velocity.Dy;
             }
 
             delegates.ForEach(x => x.AgentDidUpdate(this));
@@ -107,9 +117,9 @@ namespace PuppetMasterKit.AI.Components
         /// <summary>
         /// Cleanup this instance.
         /// </summary>
-		public override void Cleanup()
-		{
+        public override void Cleanup()
+        {
             base.Cleanup();
-		}
-	}
+        }
+    }
 }
