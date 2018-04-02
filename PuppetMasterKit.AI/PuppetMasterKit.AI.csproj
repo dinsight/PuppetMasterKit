@@ -56,6 +56,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Configuration\Container.cs" />
     <Compile Include="Components\IAgentDelegate.cs" />
+    <Compile Include="EntityBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />
@@ -84,4 +85,5 @@
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="..\packages\NETStandard.Library.2.0.1\build\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\NETStandard.Library.targets')" />
 </Project>

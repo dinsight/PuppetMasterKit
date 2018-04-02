@@ -65,46 +65,6 @@ namespace PuppetMasterKit.AI
         }
 
         /// <summary>
-        /// Register entity's components having a cetrain type with a component system
-        /// </summary>
-        /// <returns>The entity.</returns>
-        /// <param name="withSystem">With system.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public Entity Register<T>(ComponentSystem withSystem)
-        {
-            var toRegister = Components.Where(x => x is T);
-            withSystem.AddRange(toRegister.ToArray());
-            return this;
-        }
-
-        /// <summary>
-        /// Register all the entity's components with a component system
-        /// </summary>
-        /// <returns>The register.</returns>
-        /// <param name="withSystem">With system.</param>
-        public Entity Register(ComponentSystem withSystem)
-        {
-            withSystem.AddRange(Components.ToArray());
-            return this;
-        }
-
-        /// <summary>
-        /// Registers the entity with the system and also adds compoments to the entity
-        /// </summary>
-        /// <returns>The with.</returns>
-        /// <param name="withSystem">With system.</param>
-        /// <param name="components">Components.</param>
-        public Entity With(ComponentSystem withSystem, 
-                           params Component[] components)
-        {
-            components.ForEach(x=>{
-                this.Add(x);
-                withSystem.Add(x);
-            });
-            return this;
-        }
-
-        /// <summary>
         /// Cleanup this instance.
         /// </summary>
         public void Cleanup()

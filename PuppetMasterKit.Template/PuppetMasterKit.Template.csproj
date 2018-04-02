@@ -91,7 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="Ios.Bindings\" />
+    <Folder Include="Game\" />
+    <Folder Include="Game\Ios.Bindings\" />
+    <Folder Include="Game\Character\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
@@ -113,10 +115,12 @@
       <DependentUpon>GameViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="GameScene.cs" />
-    <Compile Include="Ios.Bindings\Texture.cs" />
-    <Compile Include="Ios.Bindings\Registration.cs" />
-    <Compile Include="Ios.Bindings\SpriteFactory.cs" />
-    <Compile Include="Ios.Bindings\Sprite.cs" />
+    <Compile Include="Game\Ios.Bindings\Registration.cs" />
+    <Compile Include="Game\Ios.Bindings\Sprite.cs" />
+    <Compile Include="Game\Ios.Bindings\SpriteFactory.cs" />
+    <Compile Include="Game\Ios.Bindings\Texture.cs" />
+    <Compile Include="Game\Character\RabbitBuilder.cs" />
+    <Compile Include="Game\FlightMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -187,4 +191,5 @@
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\ab-w.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
 </Project>

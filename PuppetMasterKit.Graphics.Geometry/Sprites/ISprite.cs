@@ -4,18 +4,24 @@ using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Graphics.Sprites
 {
-    public interface ISprite
-    {
-        float Alpha { get; set; }
+  public interface ISprite
+  {
+    float Alpha { get; set; }
 
-        Point Position { get; set; }
+    Point Position { get; set; }
 
-        Point AnchorPoint { get; set; }
+    Size Size { get; set; }
 
-        void RemoveFromParent();
+    Point AnchorPoint { get; set; }
 
-        void AddToScene();
+    void RemoveFromParent();
 
-        void AddChild(ISprite sprite);
-    }
+    void AddToScene();
+
+    void AddChild(ISprite sprite);
+
+    void AddProperty(String name, Object value);
+
+    Object GetProperty(String name);
+  }
 }

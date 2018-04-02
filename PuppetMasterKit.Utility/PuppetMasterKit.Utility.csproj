@@ -32,8 +32,8 @@
     <Compile Include="Array.cs" />
     <Compile Include="Float.cs" />
     <Compile Include="List.cs" />
-    <Compile Include="Orientation.cs" />
     <Compile Include="Enumerable.cs" />
+    <Compile Include="StringValueAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

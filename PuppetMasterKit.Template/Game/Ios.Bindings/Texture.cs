@@ -4,7 +4,7 @@ using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using SpriteKit;
 
-namespace PuppetMasterKit.Template.Ios.Bindings
+namespace PuppetMasterKit.Template.Game.Ios.Bindings
 {
     public class Texture : ITexture
     {

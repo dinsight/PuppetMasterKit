@@ -9,7 +9,7 @@ namespace PuppetMasterKit.AI.Components
 {
     public class Agent : Component
     {
-        public Point Position { get; private set; }
+        public Point Position { get; set; }
 
         public Vector Velocity { get; private set; }
 

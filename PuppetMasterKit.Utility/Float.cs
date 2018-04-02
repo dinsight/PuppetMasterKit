@@ -18,5 +18,26 @@ namespace PuppetMasterKit.Utility
         {
             return number >= a && number <= b;
         }
+
+        /// <summary>
+        /// Ises the zero.
+        /// </summary>
+        /// <returns><c>true</c>, if zero was ised, <c>false</c> otherwise.</returns>
+        /// <param name="number">Number.</param>
+        public static bool IsZero(this float number)
+        {
+            return Math.Abs(number) < Float.EPSILON;
+        }
+
+        /// <summary>
+        /// Equals the specified number and otherNumber.
+        /// </summary>
+        /// <returns>The equals.</returns>
+        /// <param name="number">Number.</param>
+        /// <param name="otherNumber">Other number.</param>
+        public static bool Equals(this float number, float otherNumber)
+        {
+            return Math.Abs(number - otherNumber) < Float.EPSILON;
+        }
     }
 }
