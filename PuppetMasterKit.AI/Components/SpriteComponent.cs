@@ -8,15 +8,17 @@ namespace PuppetMasterKit.AI.Components
 {
   public class SpriteComponent : Component, IAgentDelegate
   {
-    ISprite theSprite;
+    private ISprite theSprite;
 
-    ITexture textureAtlas;
+    private ITexture textureAtlas;
 
-    int orientationCounter = 0;
+    private int orientationCounter = 0;
 
-    int smoothOrientationThreshold = 3;
+    private int smoothOrientationThreshold = 3;
 
-    string currentOrientation = null;
+    private string currentOrientation = null;
+
+    public const string  ENTITY_ID_PPROPERTY = "id";
 
     /// <summary>
     /// Gets the sprite.
@@ -43,6 +45,15 @@ namespace PuppetMasterKit.AI.Components
           theSprite.Size = size;
         }
       }
+    }
+
+    /// <summary>
+    /// On set entity
+    /// </summary>
+    public override void OnSetEntity()
+    {
+      theSprite.AddProperty(ENTITY_ID_PPROPERTY, Entity.Id);
+      base.OnSetEntity();
     }
 
     /// <summary>
@@ -86,16 +97,26 @@ namespace PuppetMasterKit.AI.Components
         }
 
         if (orientationCounter > smoothOrientationThreshold) {
-          var state = Entity.GetComponent<StateComponent>()?.ToString();
+          var state = Entity.GetComponent<StateComponent>();
           if (state != null) {
-            var newTexture = GetSprite(textureAtlas, orientation, state);
+            var newTexture = GetSprite(textureAtlas, orientation, state.ToString());
             if (newTexture != null) {
               theSprite = newTexture;
             }
+            SetSelection(state);
           }
         }
       }
       theSprite.Position = agent.Position;
+    }
+
+    /// <summary>
+    /// Sets the selection.
+    /// </summary>
+    /// <param name="stateComponent">State component.</param>
+    private void SetSelection(StateComponent stateComponent)
+    {
+      theSprite.Alpha = stateComponent.IsSelected ? 0.3f : 1f;
     }
   }
 }

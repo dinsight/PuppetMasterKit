@@ -105,7 +105,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// </summary>
     /// <param name="name">Name.</param>
     /// <param name="value">Value.</param>
-    public void AddProperty(string name, object value)
+    public void AddProperty(string name, String value)
     {
       node.UserData.Add(new NSString(name), NSObject.FromObject(value));
     }
@@ -115,11 +115,11 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// </summary>
     /// <returns>The property.</returns>
     /// <param name="name">Name.</param>
-    public object GetProperty(string name)
+    public String GetProperty(string name)
     {
       NSObject val = null;
       node.UserData.TryGetValue(new NSString(name), out val);
-      return val;
+      return val.ToString();
     }
 
     /// <summary>

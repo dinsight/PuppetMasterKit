@@ -8,7 +8,8 @@ namespace PuppetMasterKit.AI.Components
 	/// Tag component. Use the generic class to specifiy a state enum
 	/// </summary>
 	public abstract class StateComponent : Component 
-    {
+  {
+    public bool IsSelected { get; set; }
 	}
 
 	/// <summary>
@@ -25,6 +26,7 @@ namespace PuppetMasterKit.AI.Components
 		public StateComponent(T initialState)
 		{
 			CurrentState = initialState;
+      IsSelected = false;
 		}
 
 		/// <summary>

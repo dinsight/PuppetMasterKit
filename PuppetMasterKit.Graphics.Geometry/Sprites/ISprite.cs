@@ -20,8 +20,8 @@ namespace PuppetMasterKit.Graphics.Sprites
 
     void AddChild(ISprite sprite);
 
-    void AddProperty(String name, Object value);
+    void AddProperty(String name, String value);
 
-    Object GetProperty(String name);
+    String GetProperty(String name);
   }
 }

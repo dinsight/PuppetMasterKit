@@ -8,12 +8,11 @@ namespace PuppetMasterKit.Template.Game.Character
 {
   public class RabbitBuilder
   {
-    enum RabbitStates
-    {
-      [StringValue("r")] idle,
-      [StringValue("x")] run
-    }
-
+    /// <summary>
+    /// Build the specified componentSystem.
+    /// </summary>
+    /// <returns>The build.</returns>
+    /// <param name="componentSystem">Component system.</param>
     public static Entity Build(ComponentSystem componentSystem)
     {
       var entity = EntityBuilder.Build()
@@ -22,7 +21,7 @@ namespace PuppetMasterKit.Template.Game.Character
           new SpriteComponent("rabbit", new Size(30, 30)),
           new Agent())
         .GetEntity();
-
+      
       return entity;
     }
   }

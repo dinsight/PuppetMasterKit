@@ -19,7 +19,7 @@ namespace PuppetMasterKit.Template.Test.Bindings
 
     }
 
-    public void AddProperty(string name, object value)
+    public void AddProperty(string name, String value)
     {
       
     }
@@ -29,7 +29,7 @@ namespace PuppetMasterKit.Template.Test.Bindings
 
     }
 
-    public object GetProperty(string name)
+    public String GetProperty(string name)
     {
       return null;
     }

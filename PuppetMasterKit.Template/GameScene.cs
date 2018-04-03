@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Foundation;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.Template.Game;
 using PuppetMasterKit.Template.Game.Character;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
 using SpriteKit;
@@ -11,11 +13,13 @@ namespace PuppetMasterKit.Template
 {
   public class GameScene : SKScene
   {
-    double prevTime = 0;
+    private double prevTime = 0;
 
-    ComponentSystem agentSystem = new ComponentSystem();
+    private FlightMap flightMap = new FlightMap(); 
 
-    ComponentSystem componentSystem = new ComponentSystem();
+    private ComponentSystem agentSystem = new ComponentSystem();
+
+    private ComponentSystem componentSystem = new ComponentSystem();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.GameScene"/> class.
@@ -36,6 +40,7 @@ namespace PuppetMasterKit.Template
       var rabbit = RabbitBuilder.Build(componentSystem);
       var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
       theSprite.Position = new Point(100, 100);
+      flightMap.Add(rabbit);
     }
 
     /// <summary>
@@ -45,6 +50,27 @@ namespace PuppetMasterKit.Template
     /// <param name="evt">Evt.</param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
+      foreach (UITouch touch in touches) {
+        var positionInScene = touch.LocationInNode(this);
+        var touchedNode = this.GetNodeAtPoint(positionInScene);
+        if (touchedNode.UserData != null) {
+          ToggleSelection(touchedNode);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Toggles the selection.
+    /// </summary>
+    /// <param name="touchedNode">Touched node.</param>
+    private void ToggleSelection(SKNode touchedNode)
+    {
+      var id = touchedNode.UserData[SpriteComponent.ENTITY_ID_PPROPERTY];
+      if (id != null) {
+        var entity = flightMap.GetEntityById(id.ToString());
+        var state = entity.GetComponent<StateComponent>();
+        state.IsSelected = !state.IsSelected;
+      }
     }
 
     /// <summary>
@@ -55,13 +81,9 @@ namespace PuppetMasterKit.Template
     public override void Update(double currentTime)
     {
       var delta = currentTime - prevTime;
-
       prevTime = currentTime;
-
       agentSystem.Update(delta);
-
       componentSystem.Update(delta);
-
       base.Update(currentTime);
     }
   }
