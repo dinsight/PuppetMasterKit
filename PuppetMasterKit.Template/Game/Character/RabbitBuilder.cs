@@ -19,10 +19,30 @@ namespace PuppetMasterKit.Template.Game.Character
         .With(componentSystem,
           new StateComponent<RabbitStates>(RabbitStates.idle),
           new SpriteComponent("rabbit", new Size(30, 30)),
+          new TouchComponent(OnTargetTouched, OnSceneTouched),
           new Agent())
+        .WithName("rabbit")
         .GetEntity();
       
       return entity;
+    }
+
+    /// <summary>
+    /// Ons the target touched.
+    /// </summary>
+    /// <param name="entity">Entity.</param>
+    private static void OnTargetTouched(Entity entity)
+    {
+      
+    }
+
+    /// <summary>
+    /// Ons the scene touched.
+    /// </summary>
+    /// <param name="location">Location.</param>
+    private static void OnSceneTouched(Point location)
+    {
+
     }
   }
 }

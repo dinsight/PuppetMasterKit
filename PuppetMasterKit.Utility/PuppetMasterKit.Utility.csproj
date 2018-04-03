@@ -34,6 +34,7 @@
     <Compile Include="List.cs" />
     <Compile Include="Enumerable.cs" />
     <Compile Include="StringValueAttribute.cs" />
+    <Compile Include="Collection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

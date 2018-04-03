@@ -73,5 +73,16 @@ namespace PuppetMasterKit.AI
 			});
 			return this;
 		}
+
+    /// <summary>
+    /// Withs the name.
+    /// </summary>
+    /// <returns>The name.</returns>
+    /// <param name="name">Name.</param>
+    public EntityBuilder WithName(String name)
+    {
+      this.entity.Name = name;
+      return this;
+    }
 	}
 }

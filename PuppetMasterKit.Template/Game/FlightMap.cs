@@ -50,13 +50,13 @@ namespace PuppetMasterKit.Template.Game
     }
 
     /// <summary>
-    /// Gets the rabbits.
+    /// Gets the entities.
     /// </summary>
-    /// <returns>The rabbits.</returns>
-    /// <param name="requester">Requester.</param>
-    public ICollection<Entity> GetRabbits(Entity requester)
+    /// <returns>The entities.</returns>
+    /// <param name="predicate">Predicate.</param>
+    public ICollection<Entity> GetEntities(Predicate<Entity> predicate)
     {
-      return new List<Entity>(Entities.Values);
+      return new List<Entity>(Entities.Values.Where(x=>predicate(x)));
     }
   }
 }
