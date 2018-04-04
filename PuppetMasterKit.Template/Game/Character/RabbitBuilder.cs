@@ -1,6 +1,7 @@
 ﻿using System;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
+using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Utility;
 
@@ -19,7 +20,8 @@ namespace PuppetMasterKit.Template.Game.Character
         .With(componentSystem,
           new StateComponent<RabbitStates>(RabbitStates.idle),
           new SpriteComponent("rabbit", new Size(30, 30)),
-          new TouchComponent(OnTargetTouched, OnSceneTouched),
+          new PhysicsComponent(35, 2, 1, 5),
+          new CommandComponent(OnTouched, OnMoveToPoint),
           new Agent())
         .WithName("rabbit")
         .GetEntity();
@@ -28,21 +30,35 @@ namespace PuppetMasterKit.Template.Game.Character
     }
 
     /// <summary>
-    /// Ons the target touched.
+    /// Ons the touched.
     /// </summary>
-    /// <param name="entity">Entity.</param>
-    private static void OnTargetTouched(Entity entity)
+    /// <param name="rabbit">Rabbit.</param>
+    private static void OnTouched(Entity rabbit)
     {
-      
+      var state = rabbit.GetComponent<StateComponent>();
+      if (state != null) {
+        state.IsSelected = !state.IsSelected;
+      }
     }
 
     /// <summary>
     /// Ons the scene touched.
     /// </summary>
     /// <param name="location">Location.</param>
-    private static void OnSceneTouched(Point location)
+    private static void OnMoveToPoint(Entity entity, Point location)
     {
-
+      var agent = entity.GetComponent<Agent>();
+      if (agent == null)
+        return;
+      
+      //remove existing follow path command
+      agent.Remove<GoalToFollowPath>();
+      //create new goal. Makes sure the goal is deleted upon arrival
+      var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
+        //.WhenArrived((x,p)=> x.Remove<GoalToFollowPath>())
+        ;
+      
+      agent.Add(goToPoint, 3);
     }
   }
 }

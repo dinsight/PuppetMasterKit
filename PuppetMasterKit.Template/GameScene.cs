@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using CoreGraphics;
 using Foundation;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
@@ -15,6 +16,8 @@ namespace PuppetMasterKit.Template
 {
   public class GameScene : SKScene
   {
+    private bool isMultiSelect = false; 
+
     private double prevTime = 0;
 
     private FlightMap flightMap = new FlightMap(); 
@@ -44,12 +47,12 @@ namespace PuppetMasterKit.Template
         theSprite.Position = new Point(100, 100);
         flightMap.Add(rabbit);
       }
-      {
-        var rabbit = RabbitBuilder.Build(componentSystem);
-        var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
-        theSprite.Position = new Point(100, 300);
-        flightMap.Add(rabbit);
-      }
+      //{
+      //  var rabbit = RabbitBuilder.Build(componentSystem);
+      //  var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
+      //  theSprite.Position = new Point(294, 209);
+      //  flightMap.Add(rabbit);
+      //}
     }
 
     /// <summary>
@@ -64,11 +67,54 @@ namespace PuppetMasterKit.Template
         var touchedNode = this.GetNodeAtPoint(positionInScene);
         var entity = GetEntityFromNode(touchedNode);
         if (entity != null) {
-          OnEntitySelected(entity);
+          OnEntityTouched(entity);
         } else {
-          OnNodeSelected(touchedNode);
+          OnSceneTouched(positionInScene);
         }
       }
+    }
+
+    /// <summary>
+    /// On selected entity.
+    /// </summary>
+    /// <param name="entity">Entity.</param>
+    private void OnEntityTouched(Entity entity)
+    {
+      if (entity == null)
+        return;
+
+      var touch = entity.GetComponent<CommandComponent>();
+      if(!isMultiSelect){
+        //if multisect is disabled, clear existing selections
+        flightMap.GetEntities(x => {
+          var state = x.GetComponent<StateComponent>();
+          return state != null && state.IsSelected;
+        }).ForEach(x => {
+          var state = x.GetComponent<StateComponent>();
+          state.IsSelected = false;
+        });
+      }
+      //send touched event to the entity's command component
+      if (touch!=null) {
+        touch.OnTouched(entity);
+      }
+    }
+
+    /// <summary>
+    /// On selected scene.
+    /// </summary>
+    /// <param name="location">Touched node.</param>
+    private void OnSceneTouched(CGPoint location)
+    {
+      Point point = new Point((float)location.X, (float)location.Y);
+
+      flightMap.GetEntities(x => {
+        var state = x.GetComponent<StateComponent>();
+        return state != null && state.IsSelected;
+      })
+      .ForEach(e=>e
+               .GetComponent<CommandComponent>()?
+               .OnMoveToPoint(e, point));
     }
 
     /// <summary>
@@ -80,48 +126,12 @@ namespace PuppetMasterKit.Template
     {
       if (node.UserData == null)
         return null;
-                 
+
       var id = node.UserData[SpriteComponent.ENTITY_ID_PPROPERTY];
-      if (id != null) { 
+      if (id != null) {
         return flightMap.GetEntityById(id.ToString());
       }
       return null;
-    }
-
-    /// <summary>
-    /// On selected entity.
-    /// </summary>
-    /// <param name="entity">Entity.</param>
-    private void OnEntitySelected(Entity entity)
-    {
-      if (entity == null)
-        return;
-
-      var state = entity.GetComponent<StateComponent>();
-      var touch = entity.GetComponent<TouchComponent>();
-
-      if (state!=null) {
-        state.IsSelected = !state.IsSelected;
-      }
-      if (touch!=null) {
-        touch.OnTargetTouched(entity);
-      }
-    }
-
-    /// <summary>
-    /// On selected scene.
-    /// </summary>
-    /// <param name="touchedNode">Touched node.</param>
-    private void OnNodeSelected(SKNode touchedNode)
-    {
-      Point point = new Point((float)touchedNode.Position.X, 
-                              (float)touchedNode.Position.Y);
-
-      flightMap.GetEntities(x => {
-        var state = x.GetComponent<StateComponent>();
-        return state != null && state.IsSelected;
-      })
-      .ForEach(e=>e.GetComponent<TouchComponent>()?.OnSceneTouched(point));
     }
 
     /// <summary>
@@ -133,7 +143,7 @@ namespace PuppetMasterKit.Template
     {
       var delta = currentTime - prevTime;
       prevTime = currentTime;
-      agentSystem.Update(delta);
+      //agentSystem.Update(delta);
       componentSystem.Update(delta);
       base.Update(currentTime);
     }

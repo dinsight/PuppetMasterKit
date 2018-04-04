@@ -124,7 +124,7 @@ namespace PuppetMasterKit.Graphics.Geometry
         /// <returns>The <see cref="T:PuppetMasterKit.Geometry.Vector"/> that is the sum of the values of <c>lhs</c> and <c>rhs</c>.</returns>
         public static Vector operator +(Vector lhs, Vector rhs)
         {
-            return new Vector(lhs.Dx + lhs.Dx, lhs.Dy + rhs.Dy);
+            return new Vector(lhs.Dx + rhs.Dx, lhs.Dy + rhs.Dy);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace PuppetMasterKit.Graphics.Geometry
         /// <returns>The <see cref="T:PuppetMasterKit.Geometry.Vector"/> that is the <c>lhs</c> minus <c>rhs</c>.</returns>
         public static Vector operator -(Vector lhs, Vector rhs)
         {
-            return new Vector(lhs.Dx - lhs.Dx, lhs.Dy - rhs.Dy);
+            return new Vector(lhs.Dx - rhs.Dx, lhs.Dy - rhs.Dy);
         }
 
         /// <summary>

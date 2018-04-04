@@ -20,7 +20,7 @@ namespace PuppetMasterKit.AI.Goals
         /// </summary>
         /// <param name="path">Path.</param>
         /// <param name="pathNodeRadius">Path node radius.</param>
-        public GoalToFollowPath(Point[] path, float pathNodeRadius = 20)
+        public GoalToFollowPath(Point[] path, float pathNodeRadius = 10)
         {
             this.path = path;
             this.pathNodeRadius = pathNodeRadius;

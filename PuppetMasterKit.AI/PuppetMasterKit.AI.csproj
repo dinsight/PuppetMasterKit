@@ -38,7 +38,7 @@
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\SpriteComponent.cs" />
     <Compile Include="Components\StateComponent.cs" />
-    <Compile Include="Components\TouchComponent.cs" />
+    <Compile Include="Components\CommandComponent.cs" />
     <Compile Include="Goals\Constraint.cs" />
     <Compile Include="Goals\ConstraintToStayWithin.cs" />
     <Compile Include="Goals\Goal.cs" />
