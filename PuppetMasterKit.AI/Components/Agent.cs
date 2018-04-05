@@ -76,8 +76,8 @@ namespace PuppetMasterKit.AI.Components
     {
       var resultant = Vector.Zero;
 
-      foreach (var goal in goals) {
-        resultant += goal.Item1.Force(this) * goal.Item2;
+      foreach (var goal in goals.ToArray()) {
+        resultant = resultant + goal.Item1.Force(this) * goal.Item2;
       }
 
       var maxSpeed = Entity.GetComponent<PhysicsComponent>()?.MaxSpeed ?? 1;

@@ -117,7 +117,7 @@
     <Compile Include="GameScene.cs" />
     <Compile Include="Game\Ios.Bindings\Registration.cs" />
     <Compile Include="Game\Ios.Bindings\Sprite.cs" />
-    <Compile Include="Game\Ios.Bindings\SpriteFactory.cs" />
+    <Compile Include="Game\Ios.Bindings\TextureFactory.cs" />
     <Compile Include="Game\Ios.Bindings\Texture.cs" />
     <Compile Include="Game\Character\RabbitBuilder.cs" />
     <Compile Include="Game\FlightMap.cs" />

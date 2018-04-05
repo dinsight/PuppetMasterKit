@@ -36,7 +36,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="atlasName">Atlas name.</param>
     public SpriteComponent(string atlasName, Size size = null)
     {
-      var factory = Container.GetContainer().GetInstance<ISpriteFactory>();
+      var factory = Container.GetContainer().GetInstance<ITextureFactory>();
       textureAtlas = factory.CreateTexture(atlasName);
       theSprite = GetSprite(textureAtlas, Orientation.E, null);
       if (theSprite != null) {

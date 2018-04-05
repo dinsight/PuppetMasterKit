@@ -44,7 +44,7 @@ namespace PuppetMasterKit.Graphics.Geometry
         /// <returns>The <see cref="T:PuppetMasterKit.Geometry.Point"/> that is the sum of the values of <c>lhs</c> and <c>rhs</c>.</returns>
         public static Point operator +(Point lhs, Point rhs)
         {
-            return new Point(lhs.X + rhs.X, lhs.Y + lhs.Y);
+            return new Point(lhs.X + rhs.X, lhs.Y + rhs.Y);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace PuppetMasterKit.Graphics.Geometry
 		/// <returns>The <see cref="T:PuppetMasterKit.Geometry.Vector"/> that is the <c>lhs</c> minus <c>rhs</c>.</returns>
         public static Vector operator -(Point lhs, Point rhs)
         {
-            return new Vector(lhs.X - rhs.X, lhs.Y - lhs.Y);
+            return new Vector(lhs.X - rhs.X, lhs.Y - rhs.Y);
         }
 
         /// <summary>

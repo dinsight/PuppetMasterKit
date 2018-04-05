@@ -45,6 +45,7 @@ namespace PuppetMasterKit.Template
         var rabbit = RabbitBuilder.Build(componentSystem);
         var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
         theSprite.Position = new Point(100, 100);
+        //rabbit.GetComponent<Agent>().Position = theSprite.Position;
         flightMap.Add(rabbit);
       }
       //{
@@ -141,9 +142,9 @@ namespace PuppetMasterKit.Template
     /// <param name="currentTime">Current time.</param>
     public override void Update(double currentTime)
     {
-      var delta = currentTime - prevTime;
+      var delta = (float)(currentTime - prevTime);
       prevTime = currentTime;
-      //agentSystem.Update(delta);
+      agentSystem.Update(delta);
       componentSystem.Update(delta);
       base.Update(currentTime);
     }

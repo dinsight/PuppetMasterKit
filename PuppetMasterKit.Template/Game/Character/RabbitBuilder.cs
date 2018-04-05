@@ -25,7 +25,7 @@ namespace PuppetMasterKit.Template.Game.Character
           new Agent())
         .WithName("rabbit")
         .GetEntity();
-      
+
       return entity;
     }
 
@@ -50,15 +50,13 @@ namespace PuppetMasterKit.Template.Game.Character
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
         return;
-      
+
       //remove existing follow path command
       agent.Remove<GoalToFollowPath>();
       //create new goal. Makes sure the goal is deleted upon arrival
       var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
-        //.WhenArrived((x,p)=> x.Remove<GoalToFollowPath>())
-        ;
-      
-      agent.Add(goToPoint, 3);
+        .WhenArrived((x, p) => { });
+      agent.Add(goToPoint, 1);
     }
   }
 }

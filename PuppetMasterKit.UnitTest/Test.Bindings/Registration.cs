@@ -9,7 +9,7 @@ namespace PuppetMasterKit.Template.Test.Bindings
     {
         public static void RegisterBindings()
         {
-            Container.GetContainer().Register<ISpriteFactory>(factory => new SpriteFactory());
+            Container.GetContainer().Register<ITextureFactory>(factory => new TextureFactory());
         }
     }
 }

@@ -108,7 +108,7 @@
     <Compile Include="ComponentSystemTest.cs" />
     <Compile Include="Test.Bindings\Registration.cs" />
     <Compile Include="Test.Bindings\Sprite.cs" />
-    <Compile Include="Test.Bindings\SpriteFactory.cs" />
+    <Compile Include="Test.Bindings\TextureFactory.cs" />
     <Compile Include="Test.Bindings\Texture.cs" />
   </ItemGroup>
   <ItemGroup>

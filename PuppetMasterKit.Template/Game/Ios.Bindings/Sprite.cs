@@ -48,7 +48,10 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
       }
 
       set {
-        node.Position = new CoreGraphics.CGPoint(value.X, value.Y);
+        if (!node.Position.X.Equals(value.X) || 
+            !node.Position.Y.Equals(value.Y)) {
+          node.Position = new CoreGraphics.CGPoint(value.X, value.Y);
+        }
       }
     }
 

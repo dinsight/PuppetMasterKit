@@ -4,11 +4,8 @@ using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Graphics.Sprites
 {
-    public interface ISpriteFactory
+    public interface ITextureFactory
     {
         ITexture CreateTexture(string name);
-
-        ISprite CreateSprite(float red, float green, float blue, float alpha,
-                             double width, double height);
     }
 }
