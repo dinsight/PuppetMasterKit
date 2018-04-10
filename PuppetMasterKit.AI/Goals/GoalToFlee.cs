@@ -9,7 +9,7 @@ namespace PuppetMasterKit.AI.Goals
 {
   public class GoalToFlee : Goal
   {
-    private Func<Entity, ICollection<Entity>> entitiesProvider;
+    private Func<Entity, IEnumerable<Entity>> entitiesProvider;
 
     private float minRadius;
 
@@ -18,7 +18,7 @@ namespace PuppetMasterKit.AI.Goals
     /// </summary>
     /// <param name="entitiesProvider">Entities.</param>
     /// <param name="minRadius">Minimum radius.</param>
-    public GoalToFlee(Func<Entity, ICollection<Entity>> entitiesProvider, float minRadius = 100)
+    public GoalToFlee(Func<Entity, IEnumerable<Entity>> entitiesProvider, float minRadius = 100)
     {
       this.entitiesProvider = entitiesProvider;
       this.minRadius = minRadius;

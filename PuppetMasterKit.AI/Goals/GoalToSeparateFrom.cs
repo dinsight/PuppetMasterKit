@@ -9,7 +9,7 @@ namespace PuppetMasterKit.AI.Goals
 {
   public class GoalToSeparateFrom : Goal
   {
-    private Func<Entity, ICollection<Entity>> entitiesProvider;
+    private Func<Entity, IEnumerable<Entity>> entitiesProvider;
 
     private float keepDistance;
 
@@ -18,7 +18,7 @@ namespace PuppetMasterKit.AI.Goals
     /// </summary>
     /// <param name="entitiesProvider">Entities.</param>
     /// <param name="keepDistance">Keep distance.</param>
-    public GoalToSeparateFrom(Func<Entity, ICollection<Entity>> entitiesProvider,
+    public GoalToSeparateFrom(Func<Entity, IEnumerable<Entity>> entitiesProvider,
                                   float keepDistance = 10)
     {
       this.entitiesProvider = entitiesProvider;

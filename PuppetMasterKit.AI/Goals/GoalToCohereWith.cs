@@ -9,7 +9,7 @@ namespace PuppetMasterKit.AI.Goals
 {
   public class GoalToCohereWith : Goal
   {
-    private Func<Entity, ICollection<Entity>> entitiesProvider;
+    private Func<Entity, IEnumerable<Entity>> entitiesProvider;
 
     private float maxDistance;
 
@@ -18,7 +18,7 @@ namespace PuppetMasterKit.AI.Goals
     /// </summary>
     /// <param name="entitiesProvider">Entities.</param>
     /// <param name="maxDistance">Max distance.</param>
-    public GoalToCohereWith(Func<Entity, ICollection<Entity>> entitiesProvider, float maxDistance = 10)
+    public GoalToCohereWith(Func<Entity, IEnumerable<Entity>> entitiesProvider, float maxDistance = 10)
     {
       this.entitiesProvider = entitiesProvider;
       this.maxDistance = maxDistance;

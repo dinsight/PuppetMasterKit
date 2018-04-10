@@ -40,11 +40,11 @@ namespace PuppetMasterKit.Template
     /// <param name="view">View.</param>
     public override void DidMoveToView(SKView view)
     {
-      flightMap = new GameFlightMap((float)view.Frame.Width, (float)view.Frame.Height);
+      flightMap = new FlightMap((float)view.Frame.Width, (float)view.Frame.Height, 4, 6);
 
       Registration.RegisterBindings(this);
       {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 35 ; i++) {
           var rabbit = RabbitBuilder.Build(componentSystem, flightMap);
           var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
           var random = new Random(Guid.NewGuid().GetHashCode());

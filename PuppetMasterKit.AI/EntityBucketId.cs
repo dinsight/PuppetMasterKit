@@ -3,8 +3,8 @@ namespace PuppetMasterKit.AI
 {
   public class EntityBucketId
   {
-    public int Key1 { get; private set; }
-    public int Key2 { get; private set; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.EntityBucketId"/> class.
@@ -13,8 +13,8 @@ namespace PuppetMasterKit.AI
     /// <param name="j">J.</param>
     public EntityBucketId(int i, int j)
     {
-      this.Key1 = i;
-      this.Key2 = j;
+      this.X = i;
+      this.Y = j;
     }
 
   }

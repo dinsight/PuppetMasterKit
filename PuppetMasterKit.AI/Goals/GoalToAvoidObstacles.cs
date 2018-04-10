@@ -8,7 +8,7 @@ namespace PuppetMasterKit.AI.Goals
 {
   public class GoalToAvoidObstacles : Goal
   {
-    private Func<Entity, ICollection<Polygon>> obstaclesProvider;
+    private Func<Entity, IEnumerable<Polygon>> obstaclesProvider;
 
     private float maxSeeAhead;
 
@@ -17,7 +17,7 @@ namespace PuppetMasterKit.AI.Goals
     /// </summary>
     /// <param name="obstaclesProvider">Obstacles.</param>
     /// <param name="maxSeeAhead">Max see ahead.</param>
-    public GoalToAvoidObstacles(Func<Entity, ICollection<Polygon>> obstaclesProvider, 
+    public GoalToAvoidObstacles(Func<Entity, IEnumerable<Polygon>> obstaclesProvider, 
                                 float maxSeeAhead = 20)
     {
       this.obstaclesProvider = obstaclesProvider;
@@ -31,7 +31,7 @@ namespace PuppetMasterKit.AI.Goals
     /// <param name="agent">Agent.</param>
     public override Vector Force(Agent agent)
     {
-      var obstacles = obstaclesProvider(agent.Entity);
+      var obstacles = obstaclesProvider(agent.Entity).ToList();
       if (obstacles.Count == 0 || agent.Position == null)
         return Vector.Zero;
 

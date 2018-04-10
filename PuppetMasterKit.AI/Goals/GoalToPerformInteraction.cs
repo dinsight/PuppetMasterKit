@@ -8,7 +8,7 @@ namespace PuppetMasterKit.AI.Goals
 {
   public class GoalToPerformInteraction : Goal
   {
-    private Func<Entity, ICollection<Entity>> entitiesProvider;
+    private Func<Entity, IEnumerable<Entity>> entitiesProvider;
 
     private Func<Entity, Entity, bool> handler;
 
@@ -42,7 +42,7 @@ namespace PuppetMasterKit.AI.Goals
     /// <param name="entitiesProvider">Entities to interrace with.</param>
     /// <param name="interactionRadius">interactionEntities: entities for 
     /// which activities will be performed</param>
-    public GoalToPerformInteraction(Func<Entity, ICollection<Entity>> entitiesProvider,
+    public GoalToPerformInteraction(Func<Entity, IEnumerable<Entity>> entitiesProvider,
                                         float interactionRadius = 10)
     {
       this.entitiesProvider = entitiesProvider;
@@ -70,7 +70,7 @@ namespace PuppetMasterKit.AI.Goals
     public override Vector Force(Agent agent)
     {
       var entities = entitiesProvider(agent.Entity).ToList();
-      if (entitiesProvider(agent.Entity).Count == 0 || agent.Position == null)
+      if (entities.Count == 0 || agent.Position == null)
         return Vector.Zero;
 
       if (CheckOngoingActivity())

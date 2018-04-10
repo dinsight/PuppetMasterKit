@@ -4,11 +4,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.AI.Components;
+using System.Threading;
 
 namespace PuppetMasterKit.AI
 {
   public class FlightMap : IAgentDelegate
   {
+
+    private ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
+
     public EntityBucket[,] Buckets { get; private set; }
 
     private Dictionary<string, Entity> Entities { get; set; }
@@ -53,6 +57,46 @@ namespace PuppetMasterKit.AI
         }
       }
     }
+    /// <summary>
+    /// Releases unmanaged resources and performs other cleanup operations before the
+    /// <see cref="T:PuppetMasterKit.AI.FlightMap"/> is reclaimed by garbage collection.
+    /// </summary>
+    ~FlightMap(){
+     if (rwLock != null) {
+        rwLock.Dispose();
+      }
+    }
+
+    /// <summary>
+    /// Wraps the read lock.
+    /// </summary>
+    /// <returns>The read lock.</returns>
+    /// <param name="func">Func.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    private T ReadLock<T>(Func<T> func)
+    {
+      rwLock.EnterReadLock();
+      try{
+        return func();
+      } finally {
+        rwLock.ExitReadLock();
+      }
+    }
+
+    /// <summary>
+    /// Wraps the write lock.
+    /// </summary>
+    /// <param name="func">Func.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    private void WriteLock(Action func)
+    {
+      rwLock.EnterWriteLock();
+      try {
+        func();
+      } finally {
+        rwLock.ExitWriteLock();
+      }
+    }
 
     /// <summary>
     /// Gets the entity by identifier.
@@ -61,9 +105,11 @@ namespace PuppetMasterKit.AI
     /// <param name="id">Identifier.</param>
     public Entity GetEntityById(String id)
     {
-      Entity temp;
-      Entities.TryGetValue(id, out temp);
-      return temp;
+      return ReadLock(()=>{
+        Entity temp;
+        Entities.TryGetValue(id, out temp);
+        return temp;
+      });
     }
 
     /// <summary>
@@ -77,10 +123,11 @@ namespace PuppetMasterKit.AI
       var quadrant = GetPartition(position);
       var bucket = Buckets[quadrant.Item1, quadrant.Item2];
       entity.BucketId = bucket.BucketId;
-      lock (this) {
+
+      WriteLock(() => {
         Entities.Add(entity.Id, entity);
         bucket.Entitites.Add(entity.Id, entity);
-      }
+      });
     }
 
     /// <summary>
@@ -90,17 +137,15 @@ namespace PuppetMasterKit.AI
     /// <param name="entity">Entity.</param>
     public void Remove(Entity entity)
     {
-      if(entity.BucketId != null){
-        var bucket = GetBucket(entity.BucketId);
-        lock(this){
+      WriteLock(() => { 
+        if (entity.BucketId != null) {
+          var bucket = GetBucket(entity.BucketId);
           bucket.Entitites.Remove(entity.Id);
           Entities.Remove(entity.Id);
-        }
-      } else {
-        lock(this){
+        } else {
           Entities.Remove(entity.Id);
-        }
-      }
+        } 
+      });
     }
 
     /// <summary>
@@ -108,9 +153,38 @@ namespace PuppetMasterKit.AI
     /// </summary>
     /// <returns>The entities.</returns>
     /// <param name="predicate">Predicate.</param>
-    public ICollection<Entity> GetEntities(Predicate<Entity> predicate)
+    public IEnumerable<Entity> GetEntities(Predicate<Entity> predicate)
     {
-      return new List<Entity>(Entities.Values.Where(x => predicate(x)));
+      return ReadLock(()=>{
+        return new List<Entity>(Entities.Values.Where(x => predicate(x)));
+      });
+    }
+
+    /// <summary>
+    /// Gets the adjacent entities.
+    /// </summary>
+    /// <returns>The adjacent entities.</returns>
+    /// <param name="entity">Entity.</param>
+    /// <param name="predicate">Predicate.</param>
+    /// <param name="depth">Depth.</param>
+    public IEnumerable<Entity> GetAdjacentEntities(Entity entity, 
+                                                   Predicate<Entity> predicate, 
+                                                   int depth=1)
+    {
+      var startX = Math.Max(0, entity.BucketId.X - depth);
+      var endX   = Math.Min(partitionsCountX-1 , entity.BucketId.X + depth);
+      var startY = Math.Max(0, entity.BucketId.Y - depth);
+      var endY   = Math.Min(partitionsCountY-1, entity.BucketId.Y + depth);
+
+      return ReadLock(()=>{
+        var adjacent = new List<Entity>();
+        for (int i = startX; i <= endX; i++) {
+          for (int j = startY; j <= endY; j++) {
+            adjacent.AddRange(Buckets[i, j].Entitites.Values);
+          }
+        }
+        return adjacent.Where(x=>predicate(x) && !Object.ReferenceEquals(x, entity));
+      });
     }
 
     /// <summary>
@@ -129,7 +203,6 @@ namespace PuppetMasterKit.AI
       return new Tuple<int, int>(i, j);
     }
 
-
     /// <summary>
     /// Gets the bucket.
     /// </summary>
@@ -137,12 +210,12 @@ namespace PuppetMasterKit.AI
     /// <param name="id">Id.</param>
     public EntityBucket GetBucket(EntityBucketId id)
     {
-      if (id.Key1 <0 || id.Key2 < 0 
-          || id.Key1 >= partitionsCountX 
-          || id.Key2 >= partitionsCountY ) {
+      if (id.X <0 || id.Y < 0 
+          || id.X >= partitionsCountX 
+          || id.Y >= partitionsCountY ) {
         return null;
       }
-      var bucket = this.Buckets[id.Key1, id.Key2];
+      var bucket = this.Buckets[id.X, id.Y];
 
       return bucket;
     }
@@ -161,18 +234,18 @@ namespace PuppetMasterKit.AI
       var quadrant = GetPartition(position);
 
       //Same quadrant. No need to change the bucket
-      if (entity.BucketId.Key1 == quadrant.Item1 && 
-          entity.BucketId.Key2 == quadrant.Item2)
+      if (entity.BucketId.X == quadrant.Item1 && 
+          entity.BucketId.Y == quadrant.Item2)
         return;
 
       var newBucket = Buckets[quadrant.Item1, quadrant.Item2];
       var oldBucket = GetBucket(entity.BucketId);
       entity.BucketId = newBucket.BucketId;
 
-      lock(this){
+      WriteLock(()=>{
         oldBucket.Entitites.Remove(entity.Id);
-        newBucket.Entitites.Add(entity.Id, entity);
-      }
+        newBucket.Entitites.Add(entity.Id, entity);  
+      });
     }
 
     /// <summary>
