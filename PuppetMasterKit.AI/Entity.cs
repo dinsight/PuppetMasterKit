@@ -12,6 +12,8 @@ namespace PuppetMasterKit.AI
 
     public String Id { get; private set; }
 
+    public EntityBucketId BucketId { get; set; }
+
     public String Name { get; set; }
 
     /// <summary>

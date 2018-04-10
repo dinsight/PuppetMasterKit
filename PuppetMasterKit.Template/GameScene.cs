@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq;
+using System.Security.Cryptography;
 using CoreGraphics;
 using Foundation;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game;
-using PuppetMasterKit.Template.Game.Character;
+using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
 using PuppetMasterKit.Utility;
 using SpriteKit;
@@ -20,7 +20,7 @@ namespace PuppetMasterKit.Template
 
     private double prevTime = 0;
 
-    private FlightMap flightMap = new FlightMap(); 
+    private FlightMap flightMap; 
 
     private ComponentSystem agentSystem = new ComponentSystem();
 
@@ -40,13 +40,18 @@ namespace PuppetMasterKit.Template
     /// <param name="view">View.</param>
     public override void DidMoveToView(SKView view)
     {
+      flightMap = new GameFlightMap((float)view.Frame.Width, (float)view.Frame.Height);
+
       Registration.RegisterBindings(this);
       {
-        var rabbit = RabbitBuilder.Build(componentSystem);
-        var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
-        theSprite.Position = new Point(100, 100);
-        //rabbit.GetComponent<Agent>().Position = theSprite.Position;
-        flightMap.Add(rabbit);
+        for (int i = 0; i < 3; i++) {
+          var rabbit = RabbitBuilder.Build(componentSystem, flightMap);
+          var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
+          var random = new Random(Guid.NewGuid().GetHashCode());
+          var x = random.Next(10,300);
+          var y = random.Next(100,600);
+          theSprite.Position = new Point(x, y);
+        }
       }
       //{
       //  var rabbit = RabbitBuilder.Build(componentSystem);
@@ -113,8 +118,7 @@ namespace PuppetMasterKit.Template
         var state = x.GetComponent<StateComponent>();
         return state != null && state.IsSelected;
       })
-      .ForEach(e=>e
-               .GetComponent<CommandComponent>()?
+      .ForEach(e=>e.GetComponent<CommandComponent>()?
                .OnMoveToPoint(e, point));
     }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using PuppetMasterKit.Utility;
 
-namespace PuppetMasterKit.Template.Game.Character
+namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
   public enum RabbitStates
   {

@@ -94,6 +94,7 @@
     <Folder Include="Game\" />
     <Folder Include="Game\Ios.Bindings\" />
     <Folder Include="Game\Character\" />
+    <Folder Include="Game\Character\Rabbit\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
@@ -119,9 +120,10 @@
     <Compile Include="Game\Ios.Bindings\Sprite.cs" />
     <Compile Include="Game\Ios.Bindings\TextureFactory.cs" />
     <Compile Include="Game\Ios.Bindings\Texture.cs" />
-    <Compile Include="Game\Character\RabbitBuilder.cs" />
-    <Compile Include="Game\FlightMap.cs" />
-    <Compile Include="Game\Character\RabbitStates.cs" />
+    <Compile Include="Game\GameFlightMap.cs" />
+    <Compile Include="Game\Character\Rabbit\RabbitBuilder.cs" />
+    <Compile Include="Game\Character\Rabbit\RabbitHandlers.cs" />
+    <Compile Include="Game\Character\Rabbit\RabbitStates.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

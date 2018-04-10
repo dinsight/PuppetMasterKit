@@ -57,6 +57,9 @@
     <Compile Include="Configuration\Container.cs" />
     <Compile Include="Components\IAgentDelegate.cs" />
     <Compile Include="EntityBuilder.cs" />
+    <Compile Include="EntityBucket.cs" />
+    <Compile Include="FlightMap.cs" />
+    <Compile Include="EntityBucketId.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

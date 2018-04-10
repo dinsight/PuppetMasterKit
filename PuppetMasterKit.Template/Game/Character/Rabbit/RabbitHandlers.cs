@@ -3,37 +3,16 @@ using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Utility;
 
-namespace PuppetMasterKit.Template.Game.Character
+namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
-  public class RabbitBuilder
+  public class RabbitHandlers
   {
-    /// <summary>
-    /// Build the specified componentSystem.
-    /// </summary>
-    /// <returns>The build.</returns>
-    /// <param name="componentSystem">Component system.</param>
-    public static Entity Build(ComponentSystem componentSystem)
-    {
-      var entity = EntityBuilder.Build()
-        .With(componentSystem,
-          new StateComponent<RabbitStates>(RabbitStates.idle),
-          new SpriteComponent("rabbit", new Size(30, 30)),
-          new PhysicsComponent(35, 2, 1, 5),
-          new CommandComponent(OnTouched, OnMoveToPoint),
-          new Agent())
-        .WithName("rabbit")
-        .GetEntity();
-
-      return entity;
-    }
-
     /// <summary>
     /// Ons the touched.
     /// </summary>
     /// <param name="rabbit">Rabbit.</param>
-    private static void OnTouched(Entity rabbit)
+    public static void OnTouched(Entity rabbit)
     {
       var state = rabbit.GetComponent<StateComponent>();
       if (state != null) {
@@ -45,7 +24,7 @@ namespace PuppetMasterKit.Template.Game.Character
     /// Ons the scene touched.
     /// </summary>
     /// <param name="location">Location.</param>
-    private static void OnMoveToPoint(Entity entity, Point location)
+    public static void OnMoveToPoint(Entity entity, Point location)
     {
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
@@ -56,7 +35,7 @@ namespace PuppetMasterKit.Template.Game.Character
       //create new goal. Makes sure the goal is deleted upon arrival
       var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
         .WhenArrived((x, p) => { });
-      agent.Add(goToPoint, 1);
+      agent.Add(goToPoint, 5);
     }
   }
 }
