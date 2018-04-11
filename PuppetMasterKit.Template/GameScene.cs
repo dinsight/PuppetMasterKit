@@ -4,6 +4,7 @@ using CoreGraphics;
 using Foundation;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
+using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
@@ -16,11 +17,11 @@ namespace PuppetMasterKit.Template
 {
   public class GameScene : SKScene
   {
-    private bool isMultiSelect = false; 
+    private bool isMultiSelect = false;
 
     private double prevTime = 0;
 
-    private FlightMap flightMap; 
+    private FlightMap flightMap;
 
     private ComponentSystem agentSystem = new ComponentSystem();
 
@@ -41,24 +42,18 @@ namespace PuppetMasterKit.Template
     public override void DidMoveToView(SKView view)
     {
       flightMap = new FlightMap((float)view.Frame.Width, (float)view.Frame.Height, 4, 6);
-
       Registration.RegisterBindings(this);
-      {
-        for (int i = 0; i < 35 ; i++) {
-          var rabbit = RabbitBuilder.Build(componentSystem, flightMap);
-          var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
-          var random = new Random(Guid.NewGuid().GetHashCode());
-          var x = random.Next(10,300);
-          var y = random.Next(100,600);
-          theSprite.Position = new Point(x, y);
-        }
+      Registration.Register(flightMap);
+
+      for (int i = 0; i < 35; i++) {
+        var rabbit = RabbitBuilder.Build(componentSystem);
+        var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
+        var random = new Random(Guid.NewGuid().GetHashCode());
+        var x = random.Next(10, 300);
+        var y = random.Next(100, 600);
+        theSprite.Position = new Point(x, y);
+        flightMap.Add(rabbit);
       }
-      //{
-      //  var rabbit = RabbitBuilder.Build(componentSystem);
-      //  var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
-      //  theSprite.Position = new Point(294, 209);
-      //  flightMap.Add(rabbit);
-      //}
     }
 
     /// <summary>
@@ -90,7 +85,7 @@ namespace PuppetMasterKit.Template
         return;
 
       var touch = entity.GetComponent<CommandComponent>();
-      if(!isMultiSelect){
+      if (!isMultiSelect) {
         //if multisect is disabled, clear existing selections
         flightMap.GetEntities(x => {
           var state = x.GetComponent<StateComponent>();
@@ -101,7 +96,7 @@ namespace PuppetMasterKit.Template
         });
       }
       //send touched event to the entity's command component
-      if (touch!=null) {
+      if (touch != null) {
         touch.OnTouched(entity);
       }
     }
@@ -118,7 +113,7 @@ namespace PuppetMasterKit.Template
         var state = x.GetComponent<StateComponent>();
         return state != null && state.IsSelected;
       })
-      .ForEach(e=>e.GetComponent<CommandComponent>()?
+      .ForEach(e => e.GetComponent<CommandComponent>()?
                .OnMoveToPoint(e, point));
     }
 

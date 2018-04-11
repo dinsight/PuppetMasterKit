@@ -120,7 +120,6 @@
     <Compile Include="Game\Ios.Bindings\Sprite.cs" />
     <Compile Include="Game\Ios.Bindings\TextureFactory.cs" />
     <Compile Include="Game\Ios.Bindings\Texture.cs" />
-    <Compile Include="Game\FlightMapComponent.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitBuilder.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitHandlers.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitStates.cs" />

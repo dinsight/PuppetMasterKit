@@ -102,15 +102,16 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="UnitTestAppDelegate.cs" />
-    <Compile Include="VectorUnitTest.cs" />
-    <Compile Include="PointUnitTest.cs" />
-    <Compile Include="PolygonUnitTest.cs" />
-    <Compile Include="ComponentSystemTest.cs" />
     <Compile Include="Test.Bindings\Registration.cs" />
     <Compile Include="Test.Bindings\Sprite.cs" />
     <Compile Include="Test.Bindings\TextureFactory.cs" />
     <Compile Include="Test.Bindings\Texture.cs" />
-    <Compile Include="FlightMapUnitTest.cs" />
+    <Compile Include="UnitTests\ComponentSystemTest.cs" />
+    <Compile Include="UnitTests\FactUnitTest.cs" />
+    <Compile Include="UnitTests\FlightMapUnitTest.cs" />
+    <Compile Include="UnitTests\PointUnitTest.cs" />
+    <Compile Include="UnitTests\PolygonUnitTest.cs" />
+    <Compile Include="UnitTests\VectorUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
@@ -128,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Test.Bindings\" />
+    <Folder Include="UnitTests\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using LightInject;
 using System.Collections.Generic;
 using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Utility;
 using System;
+using PuppetMasterKit.AI.Configuration;
 
 namespace PuppetMasterKit.AI.Components
 {
@@ -75,12 +77,11 @@ namespace PuppetMasterKit.AI.Components
     public Vector Force()
     {
       var resultant = Vector.Zero;
+      var maxSpeed = Entity.GetComponent<PhysicsComponent>()?.MaxSpeed ?? 1;
 
       foreach (var goal in goals.ToArray()) {
         resultant = resultant + goal.Item1.Force(this) * goal.Item2;
       }
-
-      var maxSpeed = Entity.GetComponent<PhysicsComponent>()?.MaxSpeed ?? 1;
 
       resultant = resultant.Truncate(maxSpeed);
 
@@ -98,8 +99,10 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime">Delta time.</param>
     public override void Update(double deltaTime)
     {
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var delegates = Entity.GetComponents<IAgentDelegate>();
 
+      flightMap.AgentWillUpdate(this);
       delegates.ForEach(x => x.AgentWillUpdate(this));
 
       if (Position != null) {
@@ -109,6 +112,7 @@ namespace PuppetMasterKit.AI.Components
       }
 
       delegates.ForEach(x => x.AgentDidUpdate(this));
+      flightMap.AgentDidUpdate(this);
     }
 
     /// <summary>

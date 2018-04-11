@@ -60,11 +60,16 @@
     <Compile Include="EntityBucket.cs" />
     <Compile Include="FlightMap.cs" />
     <Compile Include="EntityBucketId.cs" />
+    <Compile Include="Rules\Rule.cs" />
+    <Compile Include="Rules\Fact.cs" />
+    <Compile Include="Rules\RuleSystem.cs" />
+    <Compile Include="Rules\FactSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />
     <Folder Include="Goals\" />
     <Folder Include="Configuration\" />
+    <Folder Include="Rules\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
