@@ -46,10 +46,13 @@ namespace PuppetMasterKit.AI.Rules
     /// <returns><c>true</c> if <c>lhs</c> and <c>rhs</c> are equal; otherwise, <c>false</c>.</returns>
     public static bool operator ==(Fact lhs, Fact rhs)
     {
-      if (Object.ReferenceEquals(lhs, rhs))
+      if (lhs is null && rhs is null)
         return true;
       
-      return lhs.GetHashCode() == rhs.GetHashCode();
+      if(!(lhs is null) && !(rhs is null)) { 
+        return lhs.GetHashCode() == rhs.GetHashCode();
+      }
+      return false;
     }
 
     /// <summary>

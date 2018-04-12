@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.AI.Goals;
+using PuppetMasterKit.AI.Rules;
 using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.Template.Game.Facts;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
-  public class RabbitHandlers
+  public class RabbitHandlers : FactHandler
   {
     /// <summary>
     /// Ons the touched.
@@ -36,6 +39,16 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
         .WhenArrived((x, p) => { });
       agent.Add(goToPoint, 5);
+    }
+
+    /// <summary>
+    /// Handle the specified fact.
+    /// </summary>
+    /// <returns>The handle.</returns>
+    /// <param name="fact">Fact.</param>
+    public void Handle(Hungry fact)
+    {
+      Debug.WriteLine("Me Hungry...");
     }
   }
 }

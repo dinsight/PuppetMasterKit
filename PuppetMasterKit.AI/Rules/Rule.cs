@@ -5,7 +5,7 @@ namespace PuppetMasterKit.AI.Rules
   {
     private Predicate<T> predicate;
 
-    private Action<T> action;
+    private Action<T,FactSet> action;
 
     internal bool IsExecuted { get; set;}
 
@@ -14,7 +14,7 @@ namespace PuppetMasterKit.AI.Rules
     /// </summary>
     /// <param name="predicate">Predicate.</param>
     /// <param name="action">Action.</param>
-    public Rule(Predicate<T> predicate, Action<T> action)
+    public Rule(Predicate<T> predicate, Action<T,FactSet> action)
     {
       this.predicate = predicate;
       this.action = action;
@@ -22,15 +22,15 @@ namespace PuppetMasterKit.AI.Rules
     }
 
     /// <summary>
-    /// Evaluate the specified state and withRuleSystem.
+    /// Evaluate the specified state and factSet.
     /// </summary>
     /// <returns>The evaluate.</returns>
     /// <param name="state">State.</param>
-    /// <param name="withRuleSystem">With rule system.</param>
-    public void Evaluate(T state, RuleSystem<T> withRuleSystem)
+    /// <param name="factSet">Fact set.</param>
+    public void Evaluate(T state, FactSet factSet)
     {
       if (!IsExecuted && predicate(state)) {
-        action(state);
+        action(state, factSet);
         IsExecuted = true;
       }
     }

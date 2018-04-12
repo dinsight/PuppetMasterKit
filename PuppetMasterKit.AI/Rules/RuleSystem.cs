@@ -10,7 +10,7 @@ namespace PuppetMasterKit.AI.Rules
 
     private List<Rule<T>> rules = new List<Rule<T>>();
 
-    private FactSet factSet = new FactSet();
+    private FactSet Facts { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Inference.RuleSystem`1"/> class.
@@ -18,6 +18,7 @@ namespace PuppetMasterKit.AI.Rules
     /// <param name="state">State.</param>
     public RuleSystem(T state)
     {
+      Facts = new FactSet();
       this.state = state;
     }
 
@@ -44,19 +45,20 @@ namespace PuppetMasterKit.AI.Rules
     /// </summary>
     public void Reset()
     {
-      factSet.Clear();
+      Facts.Clear();
       rules.ForEach(x => x.IsExecuted = false);
     }
 
     /// <summary>
     /// Evaluate this instance.
     /// </summary>
-    public void Evaluate()
+    public Fact Evaluate()
     {
       do {
-        factSet.IsDirty = false;
-        rules.ForEach(x=>x.Evaluate(state, this));
-      } while (factSet.IsDirty);
+        Facts.IsDirty = false;
+        rules.ForEach(x=>x.Evaluate(state, Facts));
+      } while (Facts.IsDirty);
+      return Facts.Max();
     }
   }
 }

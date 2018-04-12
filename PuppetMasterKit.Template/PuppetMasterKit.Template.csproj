@@ -95,6 +95,7 @@
     <Folder Include="Game\Ios.Bindings\" />
     <Folder Include="Game\Character\" />
     <Folder Include="Game\Character\Rabbit\" />
+    <Folder Include="Game\Facts\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
@@ -123,6 +124,8 @@
     <Compile Include="Game\Character\Rabbit\RabbitBuilder.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitHandlers.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitStates.cs" />
+    <Compile Include="Game\Character\Rabbit\RabbitRulesBuilder.cs" />
+    <Compile Include="Game\Facts\Hungry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

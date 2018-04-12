@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PuppetMasterKit.AI.Rules
 {
-  internal class FactSet
+  public class FactSet
   {
     private Dictionary<int, Fact> facts = new Dictionary<int, Fact>();
 
@@ -67,6 +67,24 @@ namespace PuppetMasterKit.AI.Rules
     public void Clear()
     {
       facts.Clear();
+    }
+
+    /// <summary>
+    /// Zadeh AND operator
+    /// </summary>
+    /// <returns>The minimum.</returns>
+    public Fact Min()
+    {
+      return facts.Values.OrderBy(x => x.Grade).FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Zadeh OR operator
+    /// </summary>
+    /// <returns>The max.</returns>
+    public Fact Max()
+    {
+      return facts.Values.OrderByDescending(x => x.Grade).FirstOrDefault();
     }
   }
 }
