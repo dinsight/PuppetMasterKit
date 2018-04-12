@@ -7,17 +7,17 @@ using PuppetMasterKit.AI.Rules;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Facts;
 
-namespace PuppetMasterKit.Template.Game.Character.Rabbit
+namespace PuppetMasterKit.Template.Game.Character.Wolf
 {
-  public class RabbitHandlers : FactHandler
+  public class WolfHandlers : FactHandler
   {
     /// <summary>
-    /// Ons the touched.
+    /// /
     /// </summary>
-    /// <param name="rabbit">Rabbit.</param>
-    public static void OnTouched(Entity rabbit)
+    /// <param name="wolf">Wolf.</param>
+    public static void OnTouched(Entity wolf)
     {
-      var state = rabbit.GetComponent<StateComponent>();
+      var state = wolf.GetComponent<StateComponent>();
       if (state != null) {
         state.IsSelected = !state.IsSelected;
       }
@@ -42,14 +42,20 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     }
 
     /// <summary>
-    /// Handle the specified target and fact.
+    /// Handle the specified fact.
     /// </summary>
     /// <returns>The handle.</returns>
-    /// <param name="target">Target.</param>
     /// <param name="fact">Fact.</param>
-    public void Handle(Entity target, Hungry fact)
+    public void Handle(Entity target, Hunt fact)
     {
-      Debug.WriteLine("Me Hungry...");
+      var agent = target.GetComponent<Agent>();
+      var state = target.GetComponent<StateComponent<WolfStates>>();
+      if (state.CurrentState != WolfStates.attack) {
+        agent.Remove<GoalToFollowAgent>();
+        agent.Add(new GoalToPursueAgent(() => fact.GetTarget()?.GetComponent<Agent>()));
+        state.CurrentState = WolfStates.attack;
+        Debug.WriteLine("Me Hunting...");
+      }
     }
   }
 }

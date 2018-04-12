@@ -8,6 +8,7 @@ using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
+using PuppetMasterKit.Template.Game.Character.Wolf;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
 using PuppetMasterKit.Utility;
 using SpriteKit;
@@ -53,6 +54,16 @@ namespace PuppetMasterKit.Template
         var y = random.Next(100, 600);
         theSprite.Position = new Point(x, y);
         flightMap.Add(rabbit);
+      }
+
+      for (int i = 0; i < 1; i++) {
+        var wolf = WolfBuilder.Build(componentSystem);
+        var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
+        var random = new Random(Guid.NewGuid().GetHashCode());
+        var x = random.Next(10, 300);
+        var y = random.Next(100, 600);
+        theSprite.Position = new Point(x, y);
+        flightMap.Add(wolf);
       }
     }
 

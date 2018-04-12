@@ -96,6 +96,7 @@
     <Folder Include="Game\Character\" />
     <Folder Include="Game\Character\Rabbit\" />
     <Folder Include="Game\Facts\" />
+    <Folder Include="Game\Character\Wolf\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
@@ -126,6 +127,11 @@
     <Compile Include="Game\Character\Rabbit\RabbitStates.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitRulesBuilder.cs" />
     <Compile Include="Game\Facts\Hungry.cs" />
+    <Compile Include="Game\Character\Wolf\WolfBuilder.cs" />
+    <Compile Include="Game\Character\Wolf\WolfRulesBuilder.cs" />
+    <Compile Include="Game\Character\Wolf\WolfStates.cs" />
+    <Compile Include="Game\Character\Wolf\WolfHandlers.cs" />
+    <Compile Include="Game\Facts\Hunt.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

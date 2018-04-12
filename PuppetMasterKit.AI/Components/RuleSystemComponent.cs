@@ -51,7 +51,7 @@ namespace PuppetMasterKit.AI.Components
       Fact fact = ruleSystem.Evaluate();
       if (!(fact is null)) {
         dynamic handler = factHandler;
-        handler.Handle(fact as dynamic);
+        handler.Handle(this.Entity, fact as dynamic);
       }
       canEvaluate = true;
       return canEvaluate;
