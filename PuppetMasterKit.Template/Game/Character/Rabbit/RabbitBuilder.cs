@@ -16,7 +16,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// </summary>
     /// <returns>The build.</returns>
     /// <param name="componentSystem">Component system.</param>
-    public static Entity Build(ComponentSystem componentSystem)
+    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries)
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
 
@@ -26,17 +26,18 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
                 RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<RabbitStates>(RabbitStates.idle),
               new SpriteComponent(CharacterName, new Size(30, 30)),
-              new PhysicsComponent(10, 5, 1, 5),
+              new PhysicsComponent(5, 2, 1, 5),
               new CommandComponent(RabbitHandlers.OnTouched, RabbitHandlers.OnMoveToPoint),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
       
       entity.GetComponent<Agent>()
-            .Add(new GoalToCohereWith(
-              x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
-            .Add(new GoalToSeparateFrom(
-              x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.06f);
+            .Add(new GoalToCohereWith(x => flightMap
+                .GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
+            .Add(new GoalToSeparateFrom( x => flightMap
+                .GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.005f)
+            .Add(new ConstraintToStayWithin(boundaries));
       
       return entity;
     }

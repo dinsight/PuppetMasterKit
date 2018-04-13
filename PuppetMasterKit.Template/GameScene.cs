@@ -46,8 +46,14 @@ namespace PuppetMasterKit.Template
       Registration.RegisterBindings(this);
       Registration.Register(flightMap);
 
-      for (int i = 0; i < 1 ; i++) {
-        var rabbit = RabbitBuilder.Build(componentSystem);
+      var frame = new Polygon(
+        new Point(0, 0),
+        new Point(0, (float)Frame.Height),
+        new Point((float)Frame.Width, (float)Frame.Height),
+        new Point((float)Frame.Width, 0)
+      );
+      for (int i = 0; i < 15 ; i++) {
+        var rabbit = RabbitBuilder.Build(componentSystem, frame);
         var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);
@@ -56,8 +62,8 @@ namespace PuppetMasterKit.Template
         flightMap.Add(rabbit);
       }
 
-      for (int i = 0; i < 1; i++) {
-        var wolf = WolfBuilder.Build(componentSystem);
+      for (int i = 0; i < 3; i++) {
+        var wolf = WolfBuilder.Build(componentSystem, frame);
         var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);

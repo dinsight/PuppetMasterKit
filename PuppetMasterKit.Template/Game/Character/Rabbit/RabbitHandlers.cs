@@ -38,7 +38,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       //create new goal. Makes sure the goal is deleted upon arrival
       var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
         .WhenArrived((x, p) => { });
-      agent.Add(goToPoint, 5);
+      agent.Add(goToPoint, 3);
     }
 
     /// <summary>

@@ -16,7 +16,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
     /// </summary>
     /// <returns>The build.</returns>
     /// <param name="componentSystem">Component system.</param>
-    public static Entity Build(ComponentSystem componentSystem)
+    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries)
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
 
@@ -26,17 +26,18 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
                 WolfRulesBuilder.Build(flightMap), new WolfHandlers()),
               new StateComponent<WolfStates>(WolfStates.idle),
               new SpriteComponent(CharacterName, new Size(30, 30)),
-              new PhysicsComponent(15, 2, 2, 5),
+              new PhysicsComponent(75, 1, 1, 5),
               new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
       
       entity.GetComponent<Agent>()
-            .Add(new GoalToCohereWith(
-              x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
-            .Add(new GoalToSeparateFrom(
-              x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.06f);
+        .Add(new GoalToCohereWith(x => flightMap
+            .GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
+        .Add(new GoalToSeparateFrom(x => flightMap
+            .GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.01f)
+        .Add(new ConstraintToStayWithin(boundaries));
       
       return entity;
     }
