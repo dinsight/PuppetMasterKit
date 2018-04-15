@@ -26,7 +26,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
                 RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<RabbitStates>(RabbitStates.idle),
               new SpriteComponent(CharacterName, new Size(30, 30)),
-              new PhysicsComponent(5, 2, 1, 5),
+              new HealthComponent(100, 20, 3),
+              new PhysicsComponent(5, 5, 1, 5),
               new CommandComponent(RabbitHandlers.OnTouched, RabbitHandlers.OnMoveToPoint),
               new Agent())
         .WithName(CharacterName)

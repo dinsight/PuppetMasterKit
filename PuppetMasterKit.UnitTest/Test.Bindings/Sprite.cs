@@ -38,5 +38,9 @@ namespace PuppetMasterKit.Template.Test.Bindings
     {
 
     }
+
+    public object GetNativeSprite() {
+      return null;
+    }
   }
 }

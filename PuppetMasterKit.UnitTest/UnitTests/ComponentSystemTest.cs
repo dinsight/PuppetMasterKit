@@ -14,8 +14,8 @@ namespace PuppetMasterKit.UnitTest
         public void TestRemove()
         {
             var system = new ComponentSystem();
-            system.Add(new HealthComponent());
-            system.Add(new HealthComponent());
+            system.Add(new HealthComponent(1));
+            system.Add(new HealthComponent(1));
             system.Add(new FoodComponent());
             system.Add(new PhysicsComponent());
 

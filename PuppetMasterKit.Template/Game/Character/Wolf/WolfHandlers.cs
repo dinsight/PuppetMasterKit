@@ -57,5 +57,15 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
         Debug.WriteLine("Me Hunting...");
       }
     }
+
+    /// <summary>
+    /// Wolfs meets the prey.
+    /// </summary>
+    /// <param name="wolf">Wolf.</param>
+    /// <param name="prey">Prey.</param>
+    public static void WolfMeetsPrey(Entity wolf, Entity prey)
+    {
+      
+    }
   }
 }

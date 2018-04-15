@@ -26,17 +26,19 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
                 WolfRulesBuilder.Build(flightMap), new WolfHandlers()),
               new StateComponent<WolfStates>(WolfStates.idle),
               new SpriteComponent(CharacterName, new Size(30, 30)),
-              new PhysicsComponent(75, 1, 1, 5),
+              new HealthComponent(100, 20, 3),
+              new PhysicsComponent(75, 4, 1, 5),
               new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
+
+      entity.Add(new CollisionComponent(() => flightMap.GetAdjacentEntities(entity, p => p.Name == "rabbit"), 
+                 WolfHandlers.WolfMeetsPrey));
       
       entity.GetComponent<Agent>()
-        .Add(new GoalToCohereWith(x => flightMap
-            .GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
-        .Add(new GoalToSeparateFrom(x => flightMap
-            .GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.01f)
+        .Add(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
+        .Add(new GoalToSeparateFrom(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.01f)
         .Add(new ConstraintToStayWithin(boundaries));
       
       return entity;

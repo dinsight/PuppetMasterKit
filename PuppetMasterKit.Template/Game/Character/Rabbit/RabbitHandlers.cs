@@ -21,6 +21,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       if (state != null) {
         state.IsSelected = !state.IsSelected;
       }
+      rabbit.GetComponent<HealthComponent>().Damage += 10;
     }
 
     /// <summary>

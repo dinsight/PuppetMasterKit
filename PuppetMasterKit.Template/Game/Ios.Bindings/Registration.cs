@@ -11,6 +11,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     public static void RegisterBindings(SKScene scene)
     {
       Container.GetContainer().Register<ITextureFactory>(factory => new TextureFactory(scene));
+      Container.GetContainer().Register<ISpriteFactory>(factory => new SpriteFactory(scene));
     }
 
     public static void Register<T>(T instance)

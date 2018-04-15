@@ -132,5 +132,14 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     {
       node.RemoveFromParent();
     }
+
+    /// <summary>
+    /// Gets the native sprite.
+    /// </summary>
+    /// <returns>The native sprite.</returns>
+    public object GetNativeSprite()
+    {
+      return node;
+    }
   }
 }

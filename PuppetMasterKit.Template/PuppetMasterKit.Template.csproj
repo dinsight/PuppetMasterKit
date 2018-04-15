@@ -65,18 +65,18 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: office.digital.insight@gmail.com (378HH7W98X)</CodesignKey>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchFloat32>true</MtouchFloat32>
-    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <IOSDebuggerPort>55940</IOSDebuggerPort>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>ARM64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchVerbosity></MtouchVerbosity>
+    <CodesignProvision>iOS Team Provisioning Profile: Digital-Insight--LLC.PuppetMasterKit-Template</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -132,6 +132,7 @@
     <Compile Include="Game\Character\Wolf\WolfStates.cs" />
     <Compile Include="Game\Character\Wolf\WolfHandlers.cs" />
     <Compile Include="Game\Facts\Hunt.cs" />
+    <Compile Include="Game\Ios.Bindings\SpriteFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -200,6 +201,8 @@
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-sw.imageset\ab-sw.png" />
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\ab-w.png" />
+    <ImageAsset Include="Resources\Media.xcassets\dirt.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\dirt.imageset\dirt1_brown_qubodup_Lamoot_ccby3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />

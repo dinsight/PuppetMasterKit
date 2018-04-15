@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using CoreGraphics;
 using Foundation;
@@ -18,6 +19,8 @@ namespace PuppetMasterKit.Template
 {
   public class GameScene : SKScene
   {
+    private SKCameraNode cameraNode;
+
     private bool isMultiSelect = false;
 
     private double prevTime = 0;
@@ -52,7 +55,7 @@ namespace PuppetMasterKit.Template
         new Point((float)Frame.Width, (float)Frame.Height),
         new Point((float)Frame.Width, 0)
       );
-      for (int i = 0; i < 15 ; i++) {
+      for (int i = 0; i < 1 ; i++) {
         var rabbit = RabbitBuilder.Build(componentSystem, frame);
         var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -62,7 +65,7 @@ namespace PuppetMasterKit.Template
         flightMap.Add(rabbit);
       }
 
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0; i < 1 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame);
         var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -71,6 +74,18 @@ namespace PuppetMasterKit.Template
         theSprite.Position = new Point(x, y);
         flightMap.Add(wolf);
       }
+
+      cameraNode = new SKCameraNode();
+      cameraNode.XScale = 0.7f;
+      cameraNode.YScale = 0.7f;
+
+      var player = flightMap.GetEntities(p => p.Name == "rabbit")
+                            .Select(a=>a.GetComponent<SpriteComponent>())
+                            .Select(s=>s.Sprite.GetNativeSprite() as SKNode).First();
+
+      player.AddChild(cameraNode);
+
+      Camera = cameraNode;
     }
 
     /// <summary>

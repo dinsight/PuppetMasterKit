@@ -23,5 +23,7 @@ namespace PuppetMasterKit.Graphics.Sprites
     void AddProperty(String name, String value);
 
     String GetProperty(String name);
+
+    object GetNativeSprite();
   }
 }

@@ -39,6 +39,7 @@
     <Compile Include="Sprites\ISprite.cs" />
     <Compile Include="Geometry\Orientation.cs" />
     <Compile Include="Geometry\Size.cs" />
+    <Compile Include="Sprites\ISpriteFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation">
