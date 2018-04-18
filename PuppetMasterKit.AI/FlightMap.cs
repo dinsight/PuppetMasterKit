@@ -117,7 +117,7 @@ namespace PuppetMasterKit.AI
     /// </summary>
     /// <returns>The add.</returns>
     /// <param name="entity">Entity.</param>
-    public void Add(Entity entity)
+    public virtual void Add(Entity entity)
     {
       var position = entity.GetComponent<Agent>().Position ?? Point.Zero;
       var quadrant = GetPartition(position);
@@ -135,7 +135,7 @@ namespace PuppetMasterKit.AI
     /// </summary>
     /// <returns>The remove.</returns>
     /// <param name="entity">Entity.</param>
-    public void Remove(Entity entity)
+    public virtual void Remove(Entity entity)
     {
       WriteLock(() => { 
         if (entity.BucketId != null) {

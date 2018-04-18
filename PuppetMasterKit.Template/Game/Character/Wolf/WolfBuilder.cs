@@ -22,19 +22,16 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
 
       var entity = EntityBuilder.Build()
         .With(componentSystem,
-              new RuleSystemComponent<FlightMap, WolfHandlers>(
-                WolfRulesBuilder.Build(flightMap), new WolfHandlers()),
+              new RuleSystemComponent<FlightMap, WolfHandlers>(WolfRulesBuilder.Build(flightMap), new WolfHandlers()),
               new StateComponent<WolfStates>(WolfStates.idle),
               new SpriteComponent(CharacterName, new Size(30, 30)),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(75, 4, 1, 5),
+              new PhysicsComponent(15, 4, 1, 5),
               new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint),
+              new CollisionComponent((e) => flightMap.GetAdjacentEntities(e, p => p.Name == "rabbit"), WolfHandlers.WolfMeetsPrey),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
-
-      entity.Add(new CollisionComponent(() => flightMap.GetAdjacentEntities(entity, p => p.Name == "rabbit"), 
-                 WolfHandlers.WolfMeetsPrey));
       
       entity.GetComponent<Agent>()
         .Add(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)

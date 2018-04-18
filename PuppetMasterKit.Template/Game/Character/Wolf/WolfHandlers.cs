@@ -63,9 +63,17 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
     /// </summary>
     /// <param name="wolf">Wolf.</param>
     /// <param name="prey">Prey.</param>
-    public static void WolfMeetsPrey(Entity wolf, Entity prey)
+    public static void WolfMeetsPrey(Entity wolf, 
+                                     Entity prey, 
+                                     CollisionState state)
     {
-      
+      if (state.StopWatchValue > 1) {
+        var health = prey.GetComponent<HealthComponent>();
+        health.Damage += 10;
+        Debug.WriteLine($"Rabbit took a hit. Damage: {health.Damage}");
+        state.ResetStopWatch();
+
+      }
     }
   }
 }

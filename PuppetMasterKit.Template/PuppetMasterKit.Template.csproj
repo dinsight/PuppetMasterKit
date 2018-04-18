@@ -97,9 +97,22 @@
     <Folder Include="Game\Character\Rabbit\" />
     <Folder Include="Game\Facts\" />
     <Folder Include="Game\Character\Wolf\" />
+    <Folder Include="Game\Character\Store\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-e.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-n.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-ne.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-nw.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-s.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-se.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-sw.imageset\" />
+    <Folder Include="Media.xcassets\store.spriteatlas\store-full-w.imageset\" />
+    <Folder Include="Media.xcassets\other.spriteatlas\" />
+    <Folder Include="Media.xcassets\other.spriteatlas\dirt.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
+    <BundleResource Include="Hud.sks" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -117,7 +130,6 @@
     <Compile Include="GameViewController.designer.cs">
       <DependentUpon>GameViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameScene.cs" />
     <Compile Include="Game\Ios.Bindings\Registration.cs" />
     <Compile Include="Game\Ios.Bindings\Sprite.cs" />
     <Compile Include="Game\Ios.Bindings\TextureFactory.cs" />
@@ -133,6 +145,14 @@
     <Compile Include="Game\Character\Wolf\WolfHandlers.cs" />
     <Compile Include="Game\Facts\Hunt.cs" />
     <Compile Include="Game\Ios.Bindings\SpriteFactory.cs" />
+    <Compile Include="Game\Character\Store\StoreBuilder.cs" />
+    <Compile Include="Game\Character\Store\StoreHandlers.cs" />
+    <Compile Include="Game\Character\Store\StoreRulesBuilder.cs" />
+    <Compile Include="Game\Character\Store\StoreStates.cs" />
+    <Compile Include="Game\GameScene.cs" />
+    <Compile Include="Game\LevelBuilder.cs" />
+    <Compile Include="Game\GameFlightMap.cs" />
+    <Compile Include="Game\SKScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -151,7 +171,6 @@
   <ItemGroup>
     <ImageAsset Include="Media.xcassets\Contents.json" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\Contents.json" />
-    <ImageAsset Include="Media.xcassets\wolf.spriteatlas\Sprite.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-e.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-e.imageset\ar-e.png" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-n.imageset\Contents.json" />
@@ -203,6 +222,28 @@
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\ab-w.png" />
     <ImageAsset Include="Resources\Media.xcassets\dirt.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\dirt.imageset\dirt1_brown_qubodup_Lamoot_ccby3.png" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-e.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-e.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-n.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-n.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-ne.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-ne.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-nw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-s.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-se.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-sw.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-w.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-nw.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-s.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-se.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-sw.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\store.spriteatlas\store-full-w.imageset\woodshed.jpg" />
+    <ImageAsset Include="Media.xcassets\other.spriteatlas\Contents.json" />
+    <ImageAsset Include="Media.xcassets\other.spriteatlas\grass1.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\other.spriteatlas\dirt.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\other.spriteatlas\dirt.imageset\Burnt Coal Ashes Tiling.jpg" />
+    <ImageAsset Include="Media.xcassets\other.spriteatlas\grass1.imageset\grass14.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />

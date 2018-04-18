@@ -21,7 +21,6 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       if (state != null) {
         state.IsSelected = !state.IsSelected;
       }
-      rabbit.GetComponent<HealthComponent>().Damage += 10;
     }
 
     /// <summary>
@@ -51,6 +50,25 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     public void Handle(Entity target, Hungry fact)
     {
       Debug.WriteLine("Me Hungry...");
+    }
+
+    /// <summary>
+    /// Gathers the food.
+    /// </summary>
+    /// <param name="rabbit">Rabbit.</param>
+    /// <param name="store">Store.</param>
+    /// <param name="state">State.</param>
+    public static void GatherFood(Entity rabbit,
+                                  Entity store,
+                                  CollisionState state)
+    {
+      if (state.StopWatchValue > 1) {
+        var health = store.GetComponent<HealthComponent>();
+        health.Damage += 5;
+        Debug.WriteLine($"Food Gathered: {health.Damage}");
+        state.ResetStopWatch();
+
+      }
     }
   }
 }

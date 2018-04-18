@@ -116,7 +116,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="stateComponent">State component.</param>
     private void SetSelection(StateComponent stateComponent)
     {
-      theSprite.Alpha = stateComponent.IsSelected ? 0.3f : 1f;
+      theSprite.Alpha = stateComponent.IsSelected ? 0.7f : 1f;
     }
   }
 }

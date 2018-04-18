@@ -8,9 +8,9 @@ using PuppetMasterKit.AI.Rules;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
-  public static class RabbitBuilder
+  public static class StoreBuilder
   {
-    private static string CharacterName = "rabbit";
+    private static string CharacterName = "store";
     /// <summary>
     /// Build the specified componentSystem and flightMap.
     /// </summary>
@@ -22,24 +22,14 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       var entity = EntityBuilder.Build()
         .With(componentSystem,
-              new RuleSystemComponent<FlightMap, RabbitHandlers>(
-                RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
-              new StateComponent<RabbitStates>(RabbitStates.idle),
+              new StateComponent<StoreStates>(StoreStates.full),
               new SpriteComponent(CharacterName, new Size(30, 30)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 5),
-              new CommandComponent(RabbitHandlers.OnTouched, RabbitHandlers.OnMoveToPoint),
-              new CollisionComponent((e) => flightMap.GetAdjacentEntities(e, p => p.Name == "store"), RabbitHandlers.GatherFood, 35),
+              new CommandComponent(StoreHandlers.OnTouched, StoreHandlers.OnMoveToPoint),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
-      
-      entity.GetComponent<Agent>()
-            .Add(new GoalToCohereWith(x => flightMap
-                .GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
-            .Add(new GoalToSeparateFrom( x => flightMap
-                .GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.005f)
-            .Add(new ConstraintToStayWithin(boundaries));
       
       return entity;
     }

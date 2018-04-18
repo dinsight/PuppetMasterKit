@@ -66,6 +66,9 @@
     <Compile Include="Rules\FactSet.cs" />
     <Compile Include="Components\RuleSystemComponent.cs" />
     <Compile Include="Rules\FactHandler.cs" />
+    <Compile Include="CollisionStatus.cs" />
+    <Compile Include="CollisionState.cs" />
+    <Compile Include="Collision.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

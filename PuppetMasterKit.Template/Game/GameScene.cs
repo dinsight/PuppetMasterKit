@@ -1,33 +1,22 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
 using CoreGraphics;
 using Foundation;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
-using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Template.Game;
-using PuppetMasterKit.Template.Game.Character.Rabbit;
-using PuppetMasterKit.Template.Game.Character.Wolf;
-using PuppetMasterKit.Template.Game.Ios.Bindings;
 using PuppetMasterKit.Utility;
 using SpriteKit;
 using UIKit;
 
-namespace PuppetMasterKit.Template
+namespace PuppetMasterKit.Template.Game
 {
   public class GameScene : SKScene
   {
-    private SKCameraNode cameraNode;
-
     private bool isMultiSelect = false;
 
     private double prevTime = 0;
 
     private FlightMap flightMap;
-
-    private ComponentSystem agentSystem = new ComponentSystem();
 
     private ComponentSystem componentSystem = new ComponentSystem();
 
@@ -45,47 +34,7 @@ namespace PuppetMasterKit.Template
     /// <param name="view">View.</param>
     public override void DidMoveToView(SKView view)
     {
-      flightMap = new FlightMap((float)view.Frame.Width, (float)view.Frame.Height, 7, 7);
-      Registration.RegisterBindings(this);
-      Registration.Register(flightMap);
-
-      var frame = new Polygon(
-        new Point(0, 0),
-        new Point(0, (float)Frame.Height),
-        new Point((float)Frame.Width, (float)Frame.Height),
-        new Point((float)Frame.Width, 0)
-      );
-      for (int i = 0; i < 1 ; i++) {
-        var rabbit = RabbitBuilder.Build(componentSystem, frame);
-        var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
-        var random = new Random(Guid.NewGuid().GetHashCode());
-        var x = random.Next(10, 300);
-        var y = random.Next(100, 600);
-        theSprite.Position = new Point(x, y);
-        flightMap.Add(rabbit);
-      }
-
-      for (int i = 0; i < 1 ; i++) {
-        var wolf = WolfBuilder.Build(componentSystem, frame);
-        var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
-        var random = new Random(Guid.NewGuid().GetHashCode());
-        var x = random.Next(10, 300);
-        var y = random.Next(100, 600);
-        theSprite.Position = new Point(x, y);
-        flightMap.Add(wolf);
-      }
-
-      cameraNode = new SKCameraNode();
-      cameraNode.XScale = 0.7f;
-      cameraNode.YScale = 0.7f;
-
-      var player = flightMap.GetEntities(p => p.Name == "rabbit")
-                            .Select(a=>a.GetComponent<SpriteComponent>())
-                            .Select(s=>s.Sprite.GetNativeSprite() as SKNode).First();
-
-      player.AddChild(cameraNode);
-
-      Camera = cameraNode;
+      flightMap = new LevelBuilder(this, componentSystem).Build();
     }
 
     /// <summary>
@@ -175,7 +124,6 @@ namespace PuppetMasterKit.Template
     {
       var delta = (float)(currentTime - prevTime);
       prevTime = currentTime;
-      agentSystem.Update(delta);
       componentSystem.Update(delta);
       base.Update(currentTime);
     }

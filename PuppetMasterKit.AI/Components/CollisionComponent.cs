@@ -6,15 +6,16 @@ using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.AI.Components
 {
-  public class CollisionComponent : Component
+  public partial class CollisionComponent : Component
   {
-
     private float collisionRange;
 
-    private Func<IEnumerable<Entity>> entitiesProvider;
+    private Func<Entity, IEnumerable<Entity>> entitiesProvider;
 
-    private Action<Entity, Entity> handler;
-    private IEnumerable<Entity> enumerable;
+    private Action<Entity, Entity, CollisionState> handler;
+
+    private Dictionary<string, Collision> notifiedEntities;
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.CollisionComponent"/> class.
@@ -22,27 +23,59 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="entitiesProvider">Entities provider.</param>
     /// <param name="handler">Handler.</param>
     /// <param name="collisionRange">Collision range.</param>
-    public CollisionComponent(Func<IEnumerable<Entity>> entitiesProvider, 
-                              Action<Entity, Entity> handler,
+    public CollisionComponent(Func<Entity, IEnumerable<Entity>> entitiesProvider, 
+                              Action<Entity, Entity, CollisionState> handler,
                               float collisionRange = 10)
     {
       this.entitiesProvider = entitiesProvider;
       this.collisionRange = collisionRange;
       this.handler = handler;
+      this.notifiedEntities = new Dictionary<string, Collision>();
     }
 
     /// <summary>
     /// Detect this instance.
     /// </summary>
-    private void Detect()
+    private void Detect(double deltaTime)
     {
-      var inRange = entitiesProvider().Where(x => {
+      var inRange = entitiesProvider(Entity).Where(x => {
         var thisAgent = Entity.GetComponent<Agent>();
         var agent = x.GetComponent<Agent>();
         return Point.Distance(thisAgent.Position, agent.Position) <= collisionRange;
       });
 
-      inRange.ForEach(x => handler(Entity, x));
+      var ids = inRange.Select(x => x.Id);
+      var newCollisions = inRange.Where(x => !notifiedEntities.ContainsKey(x.Id));
+
+      var doneCollisions = notifiedEntities
+        .Where(x=>!ids.Contains(x.Key))
+        .Select(a=>a.Value)
+        .ToArray();
+      var inProgress = notifiedEntities
+        .Where(x => ids.Contains(x.Key))
+        .Select(a => a.Value)
+        .ToArray();
+
+      newCollisions.ForEach(x => {
+        var entry = new Collision(x);
+        notifiedEntities.Add(x.Id, entry);
+        handler(Entity, x, entry.State); 
+      });
+     
+      doneCollisions.ForEach(x => {
+        Entity temp;
+        if (x.WithEntity.TryGetTarget(out temp)) {
+          handler(Entity, temp, x.State);
+          notifiedEntities.Remove(temp.Id);
+        }});
+
+      inProgress.ForEach(x => {
+        Entity temp;
+        if (x.WithEntity.TryGetTarget(out temp)) {
+          x.State.ElapsedTime += deltaTime;
+          x.State.StopWatchValue += deltaTime;
+          handler(Entity, temp, x.State);
+        }});
     }
 
     /// <summary>
@@ -52,7 +85,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime">Delta time.</param>
     public override void Update(double deltaTime)
     {
-      Detect();
+      Detect(deltaTime);
       base.Update(deltaTime);
     }
   }
