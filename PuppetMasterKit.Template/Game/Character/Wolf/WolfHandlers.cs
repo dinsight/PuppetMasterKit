@@ -52,6 +52,8 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
       var state = target.GetComponent<StateComponent<WolfStates>>();
       if (state.CurrentState != WolfStates.attack) {
         agent.Remove<GoalToFollowAgent>();
+        agent.Remove<GoalToWander>();
+        agent.Remove<GoalToCohereWith>();
         agent.Add(new GoalToPursueAgent(() => fact.GetTarget()?.GetComponent<Agent>()));
         state.CurrentState = WolfStates.attack;
         Debug.WriteLine("Me Hunting...");

@@ -47,7 +47,7 @@ namespace PuppetMasterKit.Template.Game
         new Point((float)frameRect.Width, (float)frameRect.Height),
         new Point((float)frameRect.Width, 0)
       );
-      for (int i = 0; i < 1; i++) {
+      for (int i = 0; i < 1 ; i++) {
         var rabbit = RabbitBuilder.Build(componentSystem, frame);
         var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -57,13 +57,13 @@ namespace PuppetMasterKit.Template.Game
         flightMap.AddHero(rabbit);
       }
 
-      for (int i = 0; i < 0; i++) {
+      for (int i = 0; i < 2; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame);
         var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);
         var y = random.Next(100, 600);
-        theSprite.Position = new Point(x, y);
+        theSprite.Position = new Point(100, 100+i*100);
         flightMap.Add(wolf);
       }
 
@@ -109,7 +109,6 @@ namespace PuppetMasterKit.Template.Game
       menu.RemoveFromParent();
       cameraNode.AddChild(menu);
 
-
       var sz = new CGPoint(scene.View.Bounds.Width, scene.View.Bounds.Height);
       var s = scene.ConvertPointFromView(sz);
       var t = cameraNode.ConvertPointFromNode(s, scene);
@@ -123,7 +122,8 @@ namespace PuppetMasterKit.Template.Game
     public FlightMap Build()
     {
       AddEntities();
-      AddHud(AddCamera());
+      var camera = AddCamera();
+      AddHud(camera);
       return flightMap;
     }
   }

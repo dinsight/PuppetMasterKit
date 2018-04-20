@@ -29,10 +29,14 @@ namespace PuppetMasterKit.AI.Goals
       if (agent.Position == null || agentToFollow() == null)
         return Vector.Zero;
 
+      var physiscs = agentToFollow().Entity.GetComponent<PhysicsComponent>();
       var dist = Point.Distance(agent.Position, agentToFollow().Position);
-      var maxVelocity = agentToFollow().Entity
-          .GetComponent<PhysicsComponent>()?.MaxSpeed ?? 1;
+      var maxVelocity = physiscs?.MaxSpeed ?? 1;
       var lookAheadTicks = dist / maxVelocity;
+
+      // no force necessary if we are close to the pursued agent
+      if (dist <= physiscs.Radius)
+        return Vector.Zero;
 
       //calculate a point ahead the agent to follow
       var ahead = agentToFollow().Position
