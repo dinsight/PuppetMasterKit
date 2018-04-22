@@ -1,7 +1,10 @@
 ﻿using System;
+using LightInject;
+using System.Linq;
 using System.Diagnostics;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
+using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.AI.Rules;
 using PuppetMasterKit.Graphics.Geometry;
@@ -63,11 +66,18 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
                                   CollisionState state)
     {
       if (state.StopWatchValue > 1) {
+        var foodUnits = 5;
         var health = store.GetComponent<HealthComponent>();
-        health.Damage += 5;
-        Debug.WriteLine($"Food Gathered: {health.Damage}");
-        state.ResetStopWatch();
+        var hud = Container.GetContainer().GetInstance<Hud>();
+        var flightMap = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
 
+        if(health.Damage < health.MaxHealth){
+          health.Damage += foodUnits;
+          flightMap.AddToScore(rabbit.Id, foodUnits);
+          hud.UpdateScore(flightMap.GetScore(rabbit.Id));
+          state.ResetStopWatch();
+          Debug.WriteLine($"Food Gathered: {health.Damage}");  
+        }
       }
     }
   }

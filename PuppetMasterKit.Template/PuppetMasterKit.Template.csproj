@@ -110,10 +110,19 @@
     <Folder Include="Media.xcassets\tiles.spriteatlas\" />
     <Folder Include="Media.xcassets\tiles.spriteatlas\trees1.imageset\" />
     <Folder Include="Media.xcassets\tiles.spriteatlas\farm.imageset\" />
+    <Folder Include="Media.xcassets\tiles.spriteatlas\water.imageset\" />
+    <Folder Include="Media.xcassets\tiles.spriteatlas\dirt2.imageset\" />
+    <Folder Include="Media.xcassets\tiles.spriteatlas\rock1.imageset\" />
+    <Folder Include="Media.xcassets\tiles.spriteatlas\rock2.imageset\" />
+    <Folder Include="Media.xcassets\tiles.spriteatlas\carrot.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
     <BundleResource Include="Hud.sks" />
+    <BundleResource Include="Wind.fsh" />
+    <BundleResource Include="FireParticleEffect.sks" />
+    <BundleResource Include="spark.png" />
+    <BundleResource Include="Water.fsh" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -154,6 +163,7 @@
     <Compile Include="Game\LevelBuilder.cs" />
     <Compile Include="Game\GameFlightMap.cs" />
     <Compile Include="Game\SKScene.cs" />
+    <Compile Include="Game\Hud.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -249,6 +259,16 @@
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-se.imageset\rabbit-se.png" />
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-sw.imageset\rabbit-sw.png" />
     <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\rabbit-w.png" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\water.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\water.imageset\water4.png" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\dirt2.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\dirt2.imageset\dirt2.png" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\rock1.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\rock1.imageset\rock1.png" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\rock2.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\rock2.imageset\rock2.png" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\carrot.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\tiles.spriteatlas\carrot.imageset\carrot.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />

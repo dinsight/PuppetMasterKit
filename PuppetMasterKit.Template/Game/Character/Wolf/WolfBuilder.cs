@@ -34,7 +34,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
         .GetEntity();
       
       entity.GetComponent<Agent>()
-        //.Add(new GoalToWander())
+        .Add(new GoalToWander())
         .Add(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.0005f)
         .Add(new GoalToSeparateFrom(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 25), 0.1f)
         .Add(new ConstraintToStayWithin(boundaries));

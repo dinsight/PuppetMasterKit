@@ -3,10 +3,13 @@ using System.Linq;
 using CoreGraphics;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
+using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
+using PuppetMasterKit.Utility;
+using SceneKit;
 using SpriteKit;
 using UIKit;
 
@@ -15,6 +18,8 @@ namespace PuppetMasterKit.Template.Game
   public class LevelBuilder
   {
     private SKScene scene;
+
+    private Hud hudDisplay;
 
     private GameFlightMap flightMap;
 
@@ -63,7 +68,7 @@ namespace PuppetMasterKit.Template.Game
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);
         var y = random.Next(100, 600);
-        theSprite.Position = new Point(100, 100+i*100);
+        theSprite.Position = new Point(x, y);
         flightMap.Add(wolf);
       }
 
@@ -94,8 +99,19 @@ namespace PuppetMasterKit.Template.Game
 
       player.AddChild(cameraNode);
       scene.Camera = cameraNode;
-
       return cameraNode;
+    }
+
+    /// <summary>
+    /// Adds the wind.
+    /// </summary>
+    private void AddWind()
+    {
+      var wind = SKShader.FromFile("Wind.fsh");
+      scene.Children.Where(x => x.Name == "tree")
+           .Select(a=>a as SKSpriteNode).ForEach(x=>{
+             x.Shader = wind;
+      });
     }
 
     /// <summary>
@@ -104,15 +120,15 @@ namespace PuppetMasterKit.Template.Game
     private void AddHud(SKCameraNode cameraNode)
     {
       var frameRect = scene.GetViewFrame();
-      var scn = SKNode.FromFile<SKScene>("Hud");
-      var menu = scn.Children.FirstOrDefault(x => x.Name == "control") as SKSpriteNode;
-      menu.RemoveFromParent();
-      cameraNode.AddChild(menu);
+      hudDisplay = Hud.Create("Hud", "control");
+      cameraNode.AddChild(hudDisplay.Menu);
 
       var sz = new CGPoint(scene.View.Bounds.Width, scene.View.Bounds.Height);
       var s = scene.ConvertPointFromView(sz);
       var t = cameraNode.ConvertPointFromNode(s, scene);
-      menu.Position = new CGPoint(-Math.Abs(t.X),-Math.Abs(t.Y) );
+      hudDisplay.Menu.Position = new CGPoint(-Math.Abs(t.X),-Math.Abs(t.Y) );
+
+      Container.GetContainer().RegisterInstance<Hud>(hudDisplay);
     }
 
     /// <summary>
@@ -124,6 +140,9 @@ namespace PuppetMasterKit.Template.Game
       AddEntities();
       var camera = AddCamera();
       AddHud(camera);
+      //AddWind();
+
+
       return flightMap;
     }
   }

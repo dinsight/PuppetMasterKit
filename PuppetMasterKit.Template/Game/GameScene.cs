@@ -16,7 +16,7 @@ namespace PuppetMasterKit.Template.Game
 
     private double prevTime = 0;
 
-    private FlightMap flightMap;
+    private GameFlightMap flightMap;
 
     private ComponentSystem componentSystem = new ComponentSystem();
 
@@ -34,7 +34,7 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="view">View.</param>
     public override void DidMoveToView(SKView view)
     {
-      flightMap = new LevelBuilder(this, componentSystem).Build();
+      flightMap = new LevelBuilder(this, componentSystem).Build() as GameFlightMap;
     }
 
     /// <summary>
@@ -80,6 +80,10 @@ namespace PuppetMasterKit.Template.Game
       if (touch != null) {
         touch.OnTouched(entity);
       }
+
+      flightMap.GetHeroes()
+        .ForEach(e => e.GetComponent<CommandComponent>()?
+                 .OnMoveToPoint(e, entity.GetComponent<Agent>().Position));
     }
 
     /// <summary>
@@ -90,11 +94,8 @@ namespace PuppetMasterKit.Template.Game
     {
       Point point = new Point((float)location.X, (float)location.Y);
 
-      flightMap.GetEntities(x => {
-        var state = x.GetComponent<StateComponent>();
-        return state != null && state.IsSelected;
-      })
-      .ForEach(e => e.GetComponent<CommandComponent>()?
+      flightMap.GetHeroes()
+        .ForEach(e => e.GetComponent<CommandComponent>()?
                .OnMoveToPoint(e, point));
     }
 

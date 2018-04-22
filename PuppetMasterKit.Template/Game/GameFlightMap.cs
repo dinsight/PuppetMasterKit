@@ -10,6 +10,8 @@ namespace PuppetMasterKit.Template.Game
   {
     private List<Entity> heroes = new List<Entity>();
 
+    private Dictionary<String, int> heroPoints = new Dictionary<string, int>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.GameFlightMap"/> class.
     /// </summary>
@@ -43,6 +45,47 @@ namespace PuppetMasterKit.Template.Game
     public Entity[] GetHeroes()
     {
       return heroes.ToArray();
+    }
+
+    /// <summary>
+    /// Gets the score.
+    /// </summary>
+    /// <returns>The score.</returns>
+    /// <param name="id">Identifier.</param>
+    public int GetScore(string id)
+    {
+      if (heroPoints.ContainsKey(id)) {
+        return heroPoints[id];
+      }
+      return 0;
+    }
+
+    /// <summary>
+    /// Sets the score.
+    /// </summary>
+    /// <param name="id">Identifier.</param>
+    /// <param name="value">Value.</param>
+    public void SetScore(string id, int value)
+    {
+      if(heroPoints.ContainsKey(id)){
+        heroPoints[id] = value;
+      } else {
+        heroPoints.Add(id, value);
+      }
+    }
+
+    /// <summary>
+    /// Adds to score.
+    /// </summary>
+    /// <param name="id">Identifier.</param>
+    /// <param name="value">Value.</param>
+    public void AddToScore(string id, int value)
+    {
+      if (heroPoints.ContainsKey(id)) {
+        heroPoints[id] += value;
+      } else {
+        heroPoints.Add(id, value);
+      }
     }
 
     /// <summary>
