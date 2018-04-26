@@ -15,8 +15,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     public static RuleSystem<T> Build<T>(T flightMap) where T:  FlightMap
     {
       var ruleSystem = new RuleSystem<T>(flightMap);
-      ruleSystem.Add(new Rule<T>(x => true, (p,s) => {
-        s.Assert(new Hungry());
+      ruleSystem.Add(new Rule<T>((e,x,f) => true, (e,s,f) => {
+        f.Assert(new Hungry());
       }));
       return ruleSystem;
     }

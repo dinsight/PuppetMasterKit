@@ -164,6 +164,7 @@
     <Compile Include="Game\GameFlightMap.cs" />
     <Compile Include="Game\SKScene.cs" />
     <Compile Include="Game\Hud.cs" />
+    <Compile Include="Game\Facts\Idle.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

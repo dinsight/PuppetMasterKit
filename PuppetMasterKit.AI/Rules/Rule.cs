@@ -1,11 +1,11 @@
 ﻿using System;
 namespace PuppetMasterKit.AI.Rules
 {
-  public class Rule<T>
+  public class Rule<S>
   {
-    private Predicate<T> predicate;
+    private Func<Entity, S, FactSet, bool> predicate;
 
-    private Action<T,FactSet> action;
+    private Action<Entity, S, FactSet> action;
 
     internal bool IsExecuted { get; set;}
 
@@ -14,7 +14,7 @@ namespace PuppetMasterKit.AI.Rules
     /// </summary>
     /// <param name="predicate">Predicate.</param>
     /// <param name="action">Action.</param>
-    public Rule(Predicate<T> predicate, Action<T,FactSet> action)
+    public Rule(Func<Entity, S, FactSet, bool> predicate, Action<Entity, S, FactSet> action)
     {
       this.predicate = predicate;
       this.action = action;
@@ -27,10 +27,10 @@ namespace PuppetMasterKit.AI.Rules
     /// <returns>The evaluate.</returns>
     /// <param name="state">State.</param>
     /// <param name="factSet">Fact set.</param>
-    public void Evaluate(T state, FactSet factSet)
+    public void Evaluate(Entity entity,S state, FactSet factSet)
     {
-      if (!IsExecuted && predicate(state)) {
-        action(state, factSet);
+      if (predicate(entity, state, factSet)) {
+        action(entity, state, factSet);
         IsExecuted = true;
       }
     }

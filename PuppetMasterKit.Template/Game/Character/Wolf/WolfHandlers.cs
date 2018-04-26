@@ -55,10 +55,26 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
       if (state.CurrentState != WolfStates.attack) {
         agent.Remove<GoalToFollowAgent>();
         agent.Remove<GoalToWander>();
-        agent.Remove<GoalToCohereWith>();
         agent.Add(new GoalToPursueAgent(() => fact.GetTarget()?.GetComponent<Agent>()));
         state.CurrentState = WolfStates.attack;
-        Debug.WriteLine("Me Hunting...");
+      }
+    }
+
+    /// <summary>
+    /// Handle the specified target and fact.
+    /// </summary>
+    /// <returns>The handle.</returns>
+    /// <param name="target">Target.</param>
+    /// <param name="fact">Fact.</param>
+    public void Handle(Entity target, Idle fact)
+    {
+      var agent = target.GetComponent<Agent>();
+      var state = target.GetComponent<StateComponent<WolfStates>>();
+      if (state.CurrentState == WolfStates.attack) {
+        agent.Remove<GoalToFollowAgent>();
+        agent.Remove<GoalToPursueAgent>();
+        agent.Add(new GoalToWander());
+        state.CurrentState = WolfStates.idle;
       }
     }
 
@@ -73,10 +89,14 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
     {
       if (state.StopWatchValue > 1) {
         var health = prey.GetComponent<HealthComponent>();
-        health.Damage += 10;
-        Debug.WriteLine($"Rabbit took a hit. Damage: {health.Damage}");
-        state.ResetStopWatch();
 
+        if(health.Damage < health.MaxHealth){
+          health.Damage += 10;
+          var hud = Container.GetContainer().GetInstance<Hud>();
+          hud.UpdateHealth((int)health.MaxHealth, (int)health.Damage);
+          hud.SetMessage($"Ooops! Your rabbit is in trouble !");
+          state.ResetStopWatch();
+        }
       }
     }
   }

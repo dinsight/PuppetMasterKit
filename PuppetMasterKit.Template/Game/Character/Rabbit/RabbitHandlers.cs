@@ -76,7 +76,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           flightMap.AddToScore(rabbit.Id, foodUnits);
           hud.UpdateScore(flightMap.GetScore(rabbit.Id));
           state.ResetStopWatch();
-          Debug.WriteLine($"Food Gathered: {health.Damage}");  
+          hud.SetMessage($"A fine day for picking carrots !");
         }
       }
     }

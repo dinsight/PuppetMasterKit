@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using PuppetMasterKit.Utility;
 
 namespace PuppetMasterKit.AI.Rules
@@ -45,19 +46,20 @@ namespace PuppetMasterKit.AI.Rules
     /// </summary>
     public void Reset()
     {
-      Facts.Clear();
       rules.ForEach(x => x.IsExecuted = false);
     }
 
     /// <summary>
     /// Evaluate this instance.
     /// </summary>
-    public Fact Evaluate()
+    public Fact Evaluate(Entity entity)
     {
+      Reset();
       do {
         Facts.IsDirty = false;
-        rules.ForEach(x=>x.Evaluate(state, Facts));
+        rules.ForEach(x=>x.Evaluate(entity, state, Facts));
       } while (Facts.IsDirty);
+      Debug.WriteLine($"Decided {Facts.Max()} out of {Facts.Count}...");
       return Facts.Max();
     }
   }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using CoreGraphics;
 using SpriteKit;
 
 namespace PuppetMasterKit.Template.Game
@@ -33,6 +34,28 @@ namespace PuppetMasterKit.Template.Game
     {
       var scoreControl = Menu.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
       scoreControl.Text = $"{score}";
+    }
+
+    /// <summary>
+    /// Sets the message.
+    /// </summary>
+    /// <param name="message">Message.</param>
+    public void SetMessage(string message)
+    {
+      var messageControl = Menu.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
+      messageControl.Text = message;
+    }
+
+    /// <summary>
+    /// Updates the health.
+    /// </summary>
+    /// <param name="maxHealth">Max health.</param>
+    /// <param name="damage">Damage.</param>
+    public void UpdateHealth(int maxHealth, int damage)
+    {
+      var healthBar = Menu.Children.FirstOrDefault(x => x.Name == "health") as SKSpriteNode;
+      var damageBar = Menu.Children.FirstOrDefault(x => x.Name == "damage") as SKSpriteNode;
+      damageBar.Size = new CGSize( damage * healthBar.Size.Width / maxHealth, damageBar.Size.Height);
     }
   }
 }

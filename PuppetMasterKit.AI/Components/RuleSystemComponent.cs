@@ -23,7 +23,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="factHandler">Fact handler.</param>
     public RuleSystemComponent(RuleSystem<T> ruleSystem, 
                                F factHandler): 
-        this(ruleSystem, factHandler, TimeSpan.FromSeconds(15))
+        this(ruleSystem, factHandler, TimeSpan.FromSeconds(5))
     {
       
     }
@@ -48,12 +48,17 @@ namespace PuppetMasterKit.AI.Components
     private async Task<bool> Evaluate()
     {
       await Task.Delay(delayEvaluation);
-      Fact fact = ruleSystem.Evaluate();
-      if (!(fact is null)) {
-        dynamic handler = factHandler;
-        handler.Handle(this.Entity, fact as dynamic);
+      try {
+        Fact fact = ruleSystem.Evaluate(this.Entity);
+        if (!(fact is null)) {
+          dynamic handler = factHandler;
+          handler.Handle(this.Entity, fact as dynamic);
+        }
+      } catch(Exception ex){
+        Debug.WriteLine($"RuleSystemComponent::Evaluate - Exception {ex.Message} {ex.StackTrace}");
+      } finally {
+        canEvaluate = true;
       }
-      canEvaluate = true;
       return canEvaluate;
     }
 

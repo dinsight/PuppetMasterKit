@@ -62,7 +62,7 @@ namespace PuppetMasterKit.Template.Game
         flightMap.AddHero(rabbit);
       }
 
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < 1; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame);
         var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -93,25 +93,14 @@ namespace PuppetMasterKit.Template.Game
 
       cameraNode.XScale = 0.9f;
       cameraNode.YScale = 0.9f;
-      var player = flightMap.GetHeroes()
-                            .Select(a => a.GetComponent<SpriteComponent>())
-                            .Select(s => s.Sprite.GetNativeSprite() as SKNode).First();
+      var player = flightMap
+        .GetHeroes()
+        .Select(a => a.GetComponent<SpriteComponent>())
+        .Select(s => s.Sprite.GetNativeSprite() as SKNode).First();
 
       player.AddChild(cameraNode);
       scene.Camera = cameraNode;
       return cameraNode;
-    }
-
-    /// <summary>
-    /// Adds the wind.
-    /// </summary>
-    private void AddWind()
-    {
-      var wind = SKShader.FromFile("Wind.fsh");
-      scene.Children.Where(x => x.Name == "tree")
-           .Select(a=>a as SKSpriteNode).ForEach(x=>{
-             x.Shader = wind;
-      });
     }
 
     /// <summary>
@@ -140,9 +129,6 @@ namespace PuppetMasterKit.Template.Game
       AddEntities();
       var camera = AddCamera();
       AddHud(camera);
-      //AddWind();
-
-
       return flightMap;
     }
   }

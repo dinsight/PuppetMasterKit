@@ -11,32 +11,46 @@ namespace PuppetMasterKit.AI.Rules
     internal bool IsDirty { get; set; }
 
     /// <summary>
+    /// Gets the count.
+    /// </summary>
+    /// <value>The count.</value>
+    public int Count { get {
+        return facts.Count;
+      }
+    }
+
+    /// <summary>
     /// Assert the specified fact.
     /// </summary>
     /// <returns>The assert.</returns>
     /// <param name="fact">Fact.</param>
     public Fact Assert(Fact fact)
     {
-      facts.Add(fact.GetHashCode(), fact);
+      if (facts.ContainsKey(fact.GetHashCode())) {
+        facts[fact.GetHashCode()].Grade = fact.Grade;
+      } else {
+        facts.Add(fact.GetHashCode(), fact);
+      }
       IsDirty = true;
       return fact;
     }
 
     /// <summary>
-    /// Retract the specified fact and grade.
+    /// Retract the specified grade.
     /// </summary>
     /// <returns>The retract.</returns>
-    /// <param name="fact">Fact.</param>
     /// <param name="grade">Grade.</param>
-    public void Retract(Fact fact, float grade = 1)
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    public void Retract<T>(float grade =1) where T : Fact
     {
-      if(facts.ContainsKey(fact.GetHashCode())){
-        var existing = facts[fact.GetHashCode()];
-        if(existing.Grade - grade <= 0){
-          facts.Remove(fact.GetHashCode());
-        } else {
-          existing.Grade -= grade;
-        }
+      var fact = GetFact<T>();
+      if (fact == null)
+        return;
+      
+      if(fact.Grade - grade <=0 ){
+        facts.Remove(fact.GetHashCode());
+      } else {
+        fact.Grade -= grade;
       }
     }
 

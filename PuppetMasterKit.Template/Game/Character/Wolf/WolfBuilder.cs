@@ -26,7 +26,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
               new StateComponent<WolfStates>(WolfStates.idle),
               new SpriteComponent(CharacterName, new Size(50, 50)),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(7, 4, 1, 15),
+              new PhysicsComponent(7, 3, 1, 15),
               new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint),
               new CollisionComponent((e) => flightMap.GetAdjacentEntities(e, p => p.Name == "rabbit"), WolfHandlers.WolfMeetsPrey, 30),
               new Agent())
