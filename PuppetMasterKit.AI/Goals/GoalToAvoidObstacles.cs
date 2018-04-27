@@ -42,7 +42,7 @@ namespace PuppetMasterKit.AI.Goals
       var obstacleHit = obstacles
           .FirstOrDefault(x => x.IsPointInside(probe));
 
-      if (obstacleHit != null) {
+      if (!Object.ReferenceEquals(obstacleHit,null)) {
         avoidance = (probe - obstacleHit.Centroid()).Unit()
                     * agent.Velocity.Magnitude();
       }

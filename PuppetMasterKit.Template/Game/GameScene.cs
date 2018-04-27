@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using CoreGraphics;
 using Foundation;
 using PuppetMasterKit.AI;
@@ -46,6 +47,7 @@ namespace PuppetMasterKit.Template.Game
     {
       foreach (UITouch touch in touches) {
         var positionInScene = touch.LocationInNode(this);
+        Debug.WriteLine($"{{\"X\":{positionInScene.X},\"Y\":{positionInScene.Y}}}");
         var touchedNode = this.GetNodeAtPoint(positionInScene);
         var entity = GetEntityFromNode(touchedNode);
         if (entity != null) {

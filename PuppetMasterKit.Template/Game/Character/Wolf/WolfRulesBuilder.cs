@@ -12,6 +12,8 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
   public class WolfRulesBuilder
   {
     private static int maxAttackRange = 200;
+    private static int escapeRange = 20;
+
     /// <summary>
     /// Build the specified flightMap.
     /// </summary>
@@ -81,7 +83,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
       if(hunt != null){
         var target = hunt.GetTarget().GetComponent<Agent>();
         var dist = Point.Distance(target.Position, thisAgent.Position);
-        return dist > maxAttackRange + 20;
+        return dist > maxAttackRange + escapeRange;
       }
       return false;
     }

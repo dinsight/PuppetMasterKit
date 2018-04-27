@@ -129,6 +129,12 @@ namespace PuppetMasterKit.Template.Game
       AddEntities();
       var camera = AddCamera();
       AddHud(camera);
+
+      var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
+      scene.DrawObstacles(data);
+
+      flightMap.Obstacles.AddRange(data.Obstacles);
+
       return flightMap;
     }
   }

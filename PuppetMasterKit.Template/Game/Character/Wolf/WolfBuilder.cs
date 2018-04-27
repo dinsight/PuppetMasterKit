@@ -37,7 +37,8 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
         .Add(new GoalToWander())
         .Add(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.0005f)
         .Add(new GoalToSeparateFrom(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 25), 0.1f)
-        .Add(new ConstraintToStayWithin(boundaries));
+        .Add(new ConstraintToStayWithin(boundaries))
+        .Add(new GoalToAvoidObstacles(x=> ((GameFlightMap)flightMap).GetObstacles(entity)));
       
       return entity;
     }

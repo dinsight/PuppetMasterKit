@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility;
+using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Template.Game
 {
@@ -11,6 +12,8 @@ namespace PuppetMasterKit.Template.Game
     private List<Entity> heroes = new List<Entity>();
 
     private Dictionary<String, int> heroPoints = new Dictionary<string, int>();
+
+    public List<Polygon> Obstacles { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.GameFlightMap"/> class.
@@ -25,7 +28,7 @@ namespace PuppetMasterKit.Template.Game
                          int partitionsCountY = 10) 
       : base(mapWidth, mapHeight, partitionsCountX, partitionsCountY)
     {
-      
+      Obstacles = new List<Polygon>();
     }
 
     /// <summary>
@@ -100,6 +103,16 @@ namespace PuppetMasterKit.Template.Game
       toRemove.ForEach(x=>{
         heroes.Remove(x);
       });
+    }
+
+    /// <summary>
+    /// Gets the obstacles.
+    /// </summary>
+    /// <returns>The obstacles.</returns>
+    /// <param name="entity">Entity.</param>
+    public IEnumerable<Polygon> GetObstacles(Entity entity)
+    {
+      return Obstacles;
     }
   }
 }
