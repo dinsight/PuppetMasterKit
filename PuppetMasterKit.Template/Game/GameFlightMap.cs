@@ -13,7 +13,7 @@ namespace PuppetMasterKit.Template.Game
 
     private Dictionary<String, int> heroPoints = new Dictionary<string, int>();
 
-    public List<Polygon> Obstacles { get; set; }
+    public List<Obstacle> Obstacles { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.GameFlightMap"/> class.
@@ -28,7 +28,7 @@ namespace PuppetMasterKit.Template.Game
                          int partitionsCountY = 10) 
       : base(mapWidth, mapHeight, partitionsCountX, partitionsCountY)
     {
-      Obstacles = new List<Polygon>();
+      Obstacles = new List<Obstacle>();
     }
 
     /// <summary>
@@ -110,7 +110,7 @@ namespace PuppetMasterKit.Template.Game
     /// </summary>
     /// <returns>The obstacles.</returns>
     /// <param name="entity">Entity.</param>
-    public IEnumerable<Polygon> GetObstacles(Entity entity)
+    public IEnumerable<Obstacle> GetObstacles(Entity entity)
     {
       return Obstacles;
     }

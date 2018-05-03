@@ -15,6 +15,15 @@ namespace PuppetMasterKit.Graphics.Geometry
     public float Y { get; set; }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Graphics.Geometry.Point"/> class.
+    /// </summary>
+    public Point()
+    {
+      this.X = 0;
+      this.Y = 0; 
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Geometry.Point"/> class.
     /// </summary>
     /// <param name="x">The x coordinate.</param>
@@ -23,6 +32,15 @@ namespace PuppetMasterKit.Graphics.Geometry
     {
       this.X = x;
       this.Y = y;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Graphics.Geometry.Point"/> class.
+    /// </summary>
+    /// <param name="point">Point.</param>
+    public Point(Point point){
+      this.X = point.X;
+      this.Y = point.Y;
     }
 
     /// <summary>

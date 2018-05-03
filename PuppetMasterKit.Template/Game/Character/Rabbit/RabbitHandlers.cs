@@ -30,6 +30,21 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// Ons the scene touched.
     /// </summary>
     /// <param name="location">Location.</param>
+    public static void OnMoveToPoint_test(Entity entity, Point location)
+    {
+      var agent = entity.GetComponent<Agent>();
+      if (agent == null)
+        return;
+
+      location = new Point(150, 320);
+      //remove existing follow path command
+      agent.Remove<GoalToFollowPath>();
+      //create new goal. Makes sure the goal is deleted upon arrival
+      var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
+        .WhenArrived((x, p) => { });
+      agent.Add(goToPoint, 3);
+    }
+
     public static void OnMoveToPoint(Entity entity, Point location)
     {
       var agent = entity.GetComponent<Agent>();

@@ -55,13 +55,18 @@ namespace PuppetMasterKit.AI.Goals
 
       var target = path[currentPointIndex];
       var velocity = agent.Velocity + Steering(agent, target);
-      //When we get close enough to this point, vector in on the next one
       var dist = (velocity + agent.Position) - target;
 
+      if (currentPointIndex == path.Length - 1) {
+        //slow down as we approach the last node
+        var lastDist = Point.Distance(target, path[currentPointIndex - 1]);
+        velocity *= dist.Magnitude() / lastDist;
+      }
+
+      //When we get close enough to this point, vector in on the next one
       if (dist.Magnitude() < pathNodeRadius) {
         currentPointIndex += 1;
       }
-
       return velocity;
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
 using PuppetMasterKit.AI;
@@ -56,13 +57,15 @@ namespace PuppetMasterKit.Template.Game
         var rabbit = RabbitBuilder.Build(componentSystem, frame);
         var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
-        var x = random.Next(10, 300);
-        var y = random.Next(100, 600);
+        //var x = random.Next(10, 300);
+        //var y = random.Next(100, 600);
+        var x = 150;
+        var y = 195;
         theSprite.Position = new Point(x, y);
         flightMap.AddHero(rabbit);
       }
 
-      for (int i = 0; i < 1; i++) {
+      for (int i = 0; i < 0 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame);
         var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -121,6 +124,27 @@ namespace PuppetMasterKit.Template.Game
     }
 
     /// <summary>
+    /// Loads the scene data.
+    /// </summary>
+    private LevelData LoadSceneData()
+    {
+      var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
+      flightMap.Obstacles.AddRange(data.Obstacles);
+      return data;
+    }
+
+    /// <summary>
+    /// Debug the specified data.
+    /// </summary>
+    /// <returns>The debug.</returns>
+    /// <param name="data">Data.</param>
+    private void Debug(LevelData data)
+    {
+      scene.DrawObstacles(data);
+      scene.DrawEnclosure();
+    }
+
+    /// <summary>
     /// Build this instance.
     /// </summary>
     /// <returns>The build.</returns>
@@ -128,13 +152,9 @@ namespace PuppetMasterKit.Template.Game
     {
       AddEntities();
       var camera = AddCamera();
+      var data = LoadSceneData();
+      Debug(data);
       AddHud(camera);
-
-      var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
-      scene.DrawObstacles(data);
-
-      flightMap.Obstacles.AddRange(data.Obstacles);
-
       return flightMap;
     }
   }

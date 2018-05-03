@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
-using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.AI;
 
 namespace PuppetMasterKit.Template.Game
 {
   public class LevelData
   {
-    public Polygon[] Obstacles { get; set; }
+    public Obstacle[] Obstacles { get; set; }
 
     /// <summary>
     /// Load the specified resourceName.
@@ -21,7 +20,9 @@ namespace PuppetMasterKit.Template.Game
       using (var resource = new StreamReader(stream))
       {
         var json = resource.ReadToEnd();
-        var data = JsonConvert.DeserializeObject<LevelData>(json);
+        var data = JsonConvert.DeserializeObject<LevelData>(json, new JsonSerializerSettings {
+          TypeNameHandling = TypeNameHandling.Auto
+        });
         return data;
       }
     }
@@ -33,7 +34,9 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="resourceName">Resource name.</param>
     public string Save(string resourceName)
     {
-      return JsonConvert.SerializeObject(this);
+      return JsonConvert.SerializeObject(this, new JsonSerializerSettings {
+        TypeNameHandling = TypeNameHandling.Auto
+      });
     }
   }
 }

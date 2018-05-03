@@ -8,7 +8,7 @@ namespace PuppetMasterKit.AI.Goals
 {
   public class GoalToAvoidObstacles : Goal
   {
-    private Func<Entity, IEnumerable<Polygon>> obstaclesProvider;
+    private Func<Entity, IEnumerable<Obstacle>> obstaclesProvider;
 
     private float maxSeeAhead;
 
@@ -17,7 +17,7 @@ namespace PuppetMasterKit.AI.Goals
     /// </summary>
     /// <param name="obstaclesProvider">Obstacles.</param>
     /// <param name="maxSeeAhead">Max see ahead.</param>
-    public GoalToAvoidObstacles(Func<Entity, IEnumerable<Polygon>> obstaclesProvider, 
+    public GoalToAvoidObstacles(Func<Entity, IEnumerable<Obstacle>> obstaclesProvider, 
                                 float maxSeeAhead = 20)
     {
       this.obstaclesProvider = obstaclesProvider;
@@ -26,6 +26,7 @@ namespace PuppetMasterKit.AI.Goals
 
     /// <summary>
     /// Force the specified agent.
+    /// https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777
     /// </summary>
     /// <returns>The force.</returns>
     /// <param name="agent">Agent.</param>
@@ -35,18 +36,18 @@ namespace PuppetMasterKit.AI.Goals
       if (obstacles.Count == 0 || agent.Position == null)
         return Vector.Zero;
 
-      var avoidance = Vector.Zero;
-      var probe = (agent.Velocity.Unit() * maxSeeAhead
-                   + agent.Position).ToPosition();
+      var maxSpeed = agent.Entity.GetComponent<PhysicsComponent>()?.MaxSpeed ?? 1;
+      var lenghtAhead = Math.Max( agent.Velocity.Magnitude() / maxSpeed,  this.maxSeeAhead );
+      var probe = (agent.Velocity.Unit() * lenghtAhead + agent.Position).ToPosition();
+      var probe2 = (agent.Velocity.Unit() * lenghtAhead * 0.5f + agent.Position).ToPosition();
+      var obstacleHit = obstacles.FirstOrDefault(x => x.IsInside(probe) || x.IsInside(probe2));
 
-      var obstacleHit = obstacles
-          .FirstOrDefault(x => x.IsPointInside(probe));
+      var avoidance = Vector.Zero;
 
       if (!Object.ReferenceEquals(obstacleHit,null)) {
-        avoidance = (probe - obstacleHit.Centroid()).Unit()
-                    * agent.Velocity.Magnitude();
+        var centroid = obstacleHit.GetCenterPoint();
+        avoidance = (probe - centroid).Truncate(maxSpeed);
       }
-
       return avoidance;
     }
   }
