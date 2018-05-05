@@ -11,21 +11,38 @@ namespace PuppetMasterKit.AI.Components
 {
   public class Agent : Component
   {
-    public Point Position { get; set; }
+    private Point position = Point.Zero;
+
+    private List<Tuple<Goal, float>> goals = new List<Tuple<Goal, float>>();
+
+    private List<Constraint> constraints = new List<Constraint>();
 
     public Vector Velocity { get; private set; }
-
-    List<Tuple<Goal, float>> goals = new List<Tuple<Goal, float>>();
-
-    List<Constraint> constraints = new List<Constraint>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.Agent"/> class.
     /// </summary>
     public Agent()
     {
-      Position = Point.Zero;
+      position = Point.Zero;
       Velocity = Vector.Zero;
+    }
+
+    /// <summary>
+    /// Gets or sets the position.
+    /// </summary>
+    /// <value>The position.</value>
+    public Point Position {
+      get { return position; }
+      set {
+        position = value;
+        if (Entity != null) {
+          var flightMap = Container.GetContainer().GetInstance<FlightMap>();
+          var delegates = Entity.GetComponents<IAgentDelegate>();
+          delegates.ForEach(x => x.AgentDidUpdate(this));
+          flightMap.AgentDidUpdate(this);
+        }
+      }
     }
 
     /// <summary>
@@ -102,13 +119,12 @@ namespace PuppetMasterKit.AI.Components
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var delegates = Entity.GetComponents<IAgentDelegate>();
 
-      flightMap.AgentWillUpdate(this);
       delegates.ForEach(x => x.AgentWillUpdate(this));
+      flightMap.AgentWillUpdate(this);
 
       if (Position != null) {
         Velocity = Force();
-        Position.X += Velocity.Dx;
-        Position.Y += Velocity.Dy;
+        position = new Point(Velocity.Dx + position.X, Velocity.Dy + position.Y);
       }
 
       delegates.ForEach(x => x.AgentDidUpdate(this));

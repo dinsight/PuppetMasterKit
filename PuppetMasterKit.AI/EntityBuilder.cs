@@ -17,20 +17,35 @@ namespace PuppetMasterKit.AI
 			entity = new Entity();
 		}
 
-		/// <summary>
-		/// Build this instance.
-		/// </summary>
-		/// <returns>The build.</returns>
-		public static EntityBuilder Build()
-		{
-			return new EntityBuilder();
-		}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.EntityBuilder"/> class.
+    /// </summary>
+    /// <param name="entity">Entity.</param>
+    private EntityBuilder(Entity entity)
+    {
+      this.entity = entity;
+      entity.Components.ForEach(x => x.SetEntity(entity));
+    }
+
+    /// <summary>
+    /// Build the specified entity.
+    /// </summary>
+    /// <returns>The build.</returns>
+    /// <param name="entity">Entity.</param>
+    public static EntityBuilder Build(Entity entity = null)
+    {
+      if(entity!=null){
+        return new EntityBuilder(entity);
+      }
+      return new EntityBuilder();
+    }
 
 		/// <summary>
 		/// Gets the entity.
 		/// </summary>
 		/// <returns>The entity.</returns>
-		public Entity GetEntity(){
+		public Entity GetEntity()
+    {
 			return entity;
 		}
 

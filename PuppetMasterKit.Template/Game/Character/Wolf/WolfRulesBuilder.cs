@@ -50,7 +50,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
         .GetEntities(t => t.Name == "rabbit")
         .FirstOrDefault(x => {
           var agent = x.GetComponent<Agent>();
-          var dist = Point.Distance(agent.Position, thisAgent.Position);
+        var dist = Point.Distance(agent.Position, thisAgent.Position);
           return dist <= maxAttackRange;
         });
       return target;

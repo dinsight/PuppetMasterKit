@@ -5,6 +5,7 @@ using Foundation;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.Template.Game.Level;
 using PuppetMasterKit.Utility;
 using SpriteKit;
 using UIKit;

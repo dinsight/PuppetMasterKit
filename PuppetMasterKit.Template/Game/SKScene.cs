@@ -5,6 +5,7 @@ using UIKit;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility;
+using PuppetMasterKit.Template.Game.Level;
 
 namespace PuppetMasterKit.Template.Game
 {

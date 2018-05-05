@@ -67,8 +67,8 @@ namespace PuppetMasterKit.UnitTest
 
       //list of neighbors
       {
-        flightMap.Add(EntityBuilder.Build().With(cs, new Agent() { Position = new Point(0.5f,0.5f)}).GetEntity());
-        flightMap.Add(EntityBuilder.Build().With(cs, new Agent() { Position = new Point(1.5f, 0.5f)}).GetEntity());
+        flightMap.Add(EntityBuilder.Build().With(cs, new Agent() { Position = new Point(0.5f,0.5f) }).GetEntity());
+        flightMap.Add(EntityBuilder.Build().With(cs, new Agent() { Position = new Point(1.5f, 0.5f) }).GetEntity());
         flightMap.Add(EntityBuilder.Build().With(cs, new Agent() { Position = new Point(2f, 0.5f) }).GetEntity());
 
         flightMap.Add(EntityBuilder.Build().With(cs, new Agent() { Position = new Point(0.1f, 1.7f) }).GetEntity());

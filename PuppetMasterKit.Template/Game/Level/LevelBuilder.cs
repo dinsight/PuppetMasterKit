@@ -14,7 +14,7 @@ using SceneKit;
 using SpriteKit;
 using UIKit;
 
-namespace PuppetMasterKit.Template.Game
+namespace PuppetMasterKit.Template.Game.Level
 {
   public class LevelBuilder
   {
@@ -42,9 +42,10 @@ namespace PuppetMasterKit.Template.Game
     }
 
     /// <summary>
-    /// Adds the entities.
+    /// Gets the frame.
     /// </summary>
-    private void AddEntities()
+    /// <returns>The frame.</returns>
+    private Polygon GetFrame()
     {
       var frameRect = scene.GetFrame();
       var frame = new Polygon(
@@ -53,37 +54,56 @@ namespace PuppetMasterKit.Template.Game
         new Point((float)frameRect.Width, (float)frameRect.Height),
         new Point((float)frameRect.Width, 0)
       );
+      return frame;
+    }
+
+    /// <summary>
+    /// Adds the entities.
+    /// </summary>
+    private void AddEntities()
+    {
+      var frame = GetFrame();
+
       for (int i = 0; i < 1 ; i++) {
         var rabbit = RabbitBuilder.Build(componentSystem, frame);
-        var theSprite = rabbit.GetComponent<SpriteComponent>()?.Sprite;
+        var agent = rabbit.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
         //var y = random.Next(100, 600);
         var x = 150;
         var y = 195;
-        theSprite.Position = new Point(x, y);
+        agent.Position = new Point(x, y);
         flightMap.AddHero(rabbit);
       }
 
       for (int i = 0; i < 0 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame);
-        var theSprite = wolf.GetComponent<SpriteComponent>()?.Sprite;
+        var agent = wolf.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);
         var y = random.Next(100, 600);
-        theSprite.Position = new Point(x, y);
+        agent.Position = new Point(x, y);
         flightMap.Add(wolf);
       }
 
-      for (int i = 0; i < 1; i++) {
+      for (int i = 0; i < 0 ; i++) {
         var store = StoreBuilder.Build(componentSystem, frame);
-        var theSprite = store.GetComponent<SpriteComponent>()?.Sprite;
+        var agent = store.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);
         var y = random.Next(100, 600);
-        theSprite.Position = new Point(x, y);
+        agent.Position = new Point(x, y);
         flightMap.Add(store);
       }
+
+      for (int i = 0; i < 0 ; i++) {
+        var hole = HoleBuilder.Build(componentSystem, frame);
+        var agent = hole.GetComponent<Agent>();
+        var random = new Random(Guid.NewGuid().GetHashCode());
+        var x = 250;
+        var y = 395;
+        agent.Position = new Point(x, y);
+      } 
     }
 
     /// <summary>
@@ -94,8 +114,8 @@ namespace PuppetMasterKit.Template.Game
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.9f;
-      cameraNode.YScale = 0.9f;
+      cameraNode.XScale = 0.7f;
+      cameraNode.YScale = 0.7f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -130,7 +150,20 @@ namespace PuppetMasterKit.Template.Game
     {
       var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
       flightMap.Obstacles.AddRange(data.Obstacles);
+      AddHoles(data.Holes);
       return data;
+    }
+
+    /// <summary>
+    /// Adds the holes.
+    /// </summary>
+    /// <param name="holes">Holes.</param>
+    private void AddHoles(Entity[] holes)
+    {
+      var frame = GetFrame();
+      foreach (var item in holes) {
+        HoleBuilder.Build(item, componentSystem, frame);
+      }
     }
 
     /// <summary>

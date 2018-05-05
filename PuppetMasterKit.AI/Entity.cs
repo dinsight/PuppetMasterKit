@@ -8,13 +8,25 @@ namespace PuppetMasterKit.AI
 {
   public class Entity : IDisposable
   {
-    public List<Component> Components { get; private set; }
+    private List<Component> components;
 
-    public String Id { get; private set; }
+    public String Id { get; set; }
 
     public EntityBucketId BucketId { get; set; }
 
     public String Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the components.
+    /// </summary>
+    /// <value>The components.</value>
+    public List<Component> Components { 
+      get { return components; } 
+      set { 
+        components = value;
+        components.ForEach(c => c.SetEntity(this));
+      } 
+    }
 
     /// <summary>
     /// Initialization
@@ -22,7 +34,7 @@ namespace PuppetMasterKit.AI
     public Entity()
     {
       Id = Guid.NewGuid().ToString();
-      Components = new List<Component>();
+      components = new List<Component>();
     }
 
     /// <summary>
@@ -33,7 +45,11 @@ namespace PuppetMasterKit.AI
     public Entity Add(Component component)
     {
       component.SetEntity(this);
-      Components.Add(component);
+
+      var type = component.GetType();
+      if(!components.Exists(x => x.GetType() == type)){
+        components.Add(component);
+      }
       return this;
     }
 
@@ -43,10 +59,10 @@ namespace PuppetMasterKit.AI
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public void Remove<T>()
     {
-      var toRemove = Components.Where(x => x is T).ToList();
+      var toRemove = components.Where(x => x is T).ToList();
       foreach (var item in toRemove) {
         item.System = null;
-        Components.Remove(item);
+        components.Remove(item);
       }
     }
 
@@ -57,7 +73,7 @@ namespace PuppetMasterKit.AI
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public T GetComponent<T>() where T : Component
     {
-      return Components.FirstOrDefault(x => x is T) as T;
+      return components.FirstOrDefault(x => x is T) as T;
     }
 
     /// <summary>
@@ -67,7 +83,7 @@ namespace PuppetMasterKit.AI
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public IEnumerable<T> GetComponents<T>() where T : class
     {
-      return Components.Where(x => x is T).Select(z => z as T);
+      return components.Where(x => x is T).Select(z => z as T);
     }
 
     /// <summary>
@@ -75,8 +91,8 @@ namespace PuppetMasterKit.AI
     /// </summary>
     public void Cleanup()
     {
-      Components.ForEach(x => x.Cleanup());
-      Components.Clear();
+      components.ForEach(x => x.Cleanup());
+      components.Clear();
     }
 
     /// <summary>

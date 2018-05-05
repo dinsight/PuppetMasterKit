@@ -20,6 +20,7 @@ namespace PuppetMasterKit.AI.Components
 
     public const string  ENTITY_ID_PPROPERTY = "id";
 
+
     /// <summary>
     /// Gets the sprite.
     /// </summary>
@@ -53,6 +54,10 @@ namespace PuppetMasterKit.AI.Components
     public override void OnSetEntity()
     {
       theSprite.AddProperty(ENTITY_ID_PPROPERTY, Entity.Id);
+      var agent = Entity.GetComponent<Agent>();
+      if(agent!=null){
+        theSprite.Position = agent.Position;
+      }
       base.OnSetEntity();
     }
 
@@ -77,7 +82,8 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="agent">Agent.</param>
     public void AgentWillUpdate(Agent agent)
     {
-      agent.Position = theSprite.Position;
+      agent.Position.X = theSprite.Position.X;
+      agent.Position.Y = theSprite.Position.Y;
     }
 
     /// <summary>

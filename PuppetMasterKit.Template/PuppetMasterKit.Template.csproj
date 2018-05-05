@@ -118,6 +118,12 @@
     <Folder Include="Media.xcassets\tiles.spriteatlas\rock1.imageset\" />
     <Folder Include="Media.xcassets\tiles.spriteatlas\rock2.imageset\" />
     <Folder Include="Media.xcassets\tiles.spriteatlas\carrot.imageset\" />
+    <Folder Include="Game\Character\Hole\" />
+    <Folder Include="Media.xcassets\hole.textureset\" />
+    <Folder Include="Media.xcassets\hole.spriteatlas\" />
+    <Folder Include="Media.xcassets\hole.spriteatlas\hole-open-e.imageset\" />
+    <Folder Include="Game\Level\" />
+    <Folder Include="Game\Components\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
@@ -163,12 +169,17 @@
     <Compile Include="Game\Character\Store\StoreRulesBuilder.cs" />
     <Compile Include="Game\Character\Store\StoreStates.cs" />
     <Compile Include="Game\GameScene.cs" />
-    <Compile Include="Game\LevelBuilder.cs" />
     <Compile Include="Game\GameFlightMap.cs" />
     <Compile Include="Game\SKScene.cs" />
     <Compile Include="Game\Hud.cs" />
     <Compile Include="Game\Facts\Idle.cs" />
-    <Compile Include="Game\LevelData.cs" />
+    <Compile Include="Game\Character\Hole\HoleBuilder.cs" />
+    <Compile Include="Game\Character\Hole\HoleHandlers.cs" />
+    <Compile Include="Game\Character\Hole\HoleRulesBuilder.cs" />
+    <Compile Include="Game\Character\Hole\HoleStates.cs" />
+    <Compile Include="Game\Level\LevelBuilder.cs" />
+    <Compile Include="Game\Level\LevelData.cs" />
+    <Compile Include="Game\Components\TravelComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -274,6 +285,9 @@
     <ImageAsset Include="Media.xcassets\tiles.spriteatlas\rock2.imageset\rock2.png" />
     <ImageAsset Include="Media.xcassets\tiles.spriteatlas\carrot.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\tiles.spriteatlas\carrot.imageset\carrot.png" />
+    <ImageAsset Include="Media.xcassets\hole.spriteatlas\Contents.json" />
+    <ImageAsset Include="Media.xcassets\hole.spriteatlas\hole-open-e.imageset\broken_tower_background.png" />
+    <ImageAsset Include="Media.xcassets\hole.spriteatlas\hole-open-e.imageset\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.json" />

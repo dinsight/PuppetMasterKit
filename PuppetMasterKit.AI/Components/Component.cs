@@ -1,10 +1,14 @@
 ﻿using System;
+using Newtonsoft.Json;
+
 namespace PuppetMasterKit.AI.Components
 {
   public class Component
   {
+    [JsonIgnore]
     public ComponentSystem System { get; set; }
 
+    [JsonIgnore]
     public Entity Entity { get; private set; }
 
     /// <summary>
@@ -13,6 +17,7 @@ namespace PuppetMasterKit.AI.Components
     public Component()
     {
     }
+
 
     /// <summary>
     /// Periodic update

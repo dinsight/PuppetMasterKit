@@ -3,11 +3,13 @@ using System.Reflection;
 using Newtonsoft.Json;
 using PuppetMasterKit.AI;
 
-namespace PuppetMasterKit.Template.Game
+namespace PuppetMasterKit.Template.Game.Level
 {
   public class LevelData
   {
     public Obstacle[] Obstacles { get; set; }
+
+    public Entity[] Holes { get; set; }
 
     /// <summary>
     /// Load the specified resourceName.
@@ -21,7 +23,8 @@ namespace PuppetMasterKit.Template.Game
       {
         var json = resource.ReadToEnd();
         var data = JsonConvert.DeserializeObject<LevelData>(json, new JsonSerializerSettings {
-          TypeNameHandling = TypeNameHandling.Auto
+          TypeNameHandling = TypeNameHandling.Auto,
+          ObjectCreationHandling = ObjectCreationHandling.Replace
         });
         return data;
       }

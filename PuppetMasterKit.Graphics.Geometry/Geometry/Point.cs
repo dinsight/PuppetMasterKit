@@ -180,5 +180,12 @@ namespace PuppetMasterKit.Graphics.Geometry
       list.Sort((x, y) => (int)(Distance(this, x) - Distance(x, y)));
       return list.ToArray();
     }
+
+    public Point Add(float x, float y)
+    {
+      this.X += x;
+      this.Y += y;
+      return this;
+    }
   }
 }
