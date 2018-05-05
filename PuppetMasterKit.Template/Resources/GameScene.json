@@ -13,7 +13,8 @@
   ],
   "Holes":  [
     {
-      "Name": "hole1",
+      "Id": "hole1",
+      "Name":  "hole",
       "Components":  [
         {
           "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
@@ -26,7 +27,8 @@
       ]
     },
     {
-      "Name": "hole2",
+      "Id": "hole2",
+      "Name": "hole",
       "Components": [
         {
           "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
@@ -37,7 +39,7 @@
         },
         {
           "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
-          "Destinations": [ "hole1" ]
+          "Destinations": [ "hole11" ]
         }
       ]
     }

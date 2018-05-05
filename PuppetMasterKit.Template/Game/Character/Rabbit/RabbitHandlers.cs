@@ -9,6 +9,7 @@ using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.AI.Rules;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Facts;
+using PuppetMasterKit.Template.Game.Components;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -68,6 +69,57 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     public void Handle(Entity target, Hungry fact)
     {
       Debug.WriteLine("Me Hungry...");
+    }
+
+    /// <summary>
+    /// Handle the specified rabbit, entity and state.
+    /// </summary>
+    /// <returns>The handle.</returns>
+    /// <param name="rabbit">Rabbit.</param>
+    /// <param name="entity">Entity.</param>
+    /// <param name="state">State.</param>
+    public static void HandleCollision(Entity rabbit,
+                              Entity entity,
+                              CollisionState state)
+    {
+      if(entity.Name == "store"){
+        GatherFood(rabbit, entity, state);
+      }
+
+      if(entity.Name == "hole"){
+        Travel(rabbit, entity, state);
+      }
+    }
+
+    /// <summary>
+    /// Travel the specified rabbit, store and state.
+    /// </summary>
+    /// <returns>The travel.</returns>
+    /// <param name="rabbit">Rabbit.</param>
+    /// <param name="hole">Store.</param>
+    /// <param name="state">State.</param>
+    public static void Travel(Entity rabbit,
+                              Entity hole,
+                              CollisionState state)
+    {
+      var agent = rabbit.GetComponent<Agent>();
+
+      var travel = hole.GetComponent<TravelComponent>();
+      if(travel!=null){
+        var dest = travel.Destinations.FirstOrDefault();
+        if(dest!=null){
+          var flightMap = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
+          var hud = Container.GetContainer().GetInstance<Hud>();
+          var otherHole = flightMap.GetEntityById(dest);
+          if(otherHole!=null){
+            var pos = otherHole.GetComponent<Agent>().Position;
+            agent.Remove<GoalToFollowPath>();
+            agent.Position = pos + new Point(36, 36);
+            //agent.Stop();
+            hud.SetMessage($"Rabbit hole travel :) !");
+          }
+        }
+      }
     }
 
     /// <summary>

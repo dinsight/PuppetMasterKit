@@ -29,7 +29,9 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 10, 1, 30),
               new CommandComponent(RabbitHandlers.OnTouched, RabbitHandlers.OnMoveToPoint),
-              new CollisionComponent((e) => flightMap.GetAdjacentEntities(e, p => p.Name == "store"), RabbitHandlers.GatherFood, 35),
+              new CollisionComponent((e) => 
+                                     flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole"), 
+                                     RabbitHandlers.HandleCollision, 35),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();

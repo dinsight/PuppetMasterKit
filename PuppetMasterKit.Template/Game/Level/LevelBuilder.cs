@@ -162,7 +162,8 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var frame = GetFrame();
       foreach (var item in holes) {
-        HoleBuilder.Build(item, componentSystem, frame);
+        var entity = HoleBuilder.Build(item, componentSystem, frame);
+        flightMap.Add(entity);
       }
     }
 
