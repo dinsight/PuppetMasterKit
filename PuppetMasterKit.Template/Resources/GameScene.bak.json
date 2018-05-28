@@ -1,0 +1,49 @@
+﻿
+{
+  "Obstacles": [
+    {
+      "$type": "PuppetMasterKit.AI.CircularObstacle, PuppetMasterKit",
+      "Center":{"X":200.0,"Y":200.0},
+      "Radius":50.0
+    },
+    {
+      "$type": "PuppetMasterKit.AI.CircularObstacle, PuppetMasterKit",
+      "Center": { "X": 382.0, "Y": 548.0},
+      "Radius": 100.0
+    }
+  ],
+  "Holes":  [
+    {
+      "Id": "hole1",
+      "Name":  "hole",
+      "Components":  [
+        {
+          "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
+          "Position":{"X": 222.0,"Y": 22.0}
+        },
+        {
+          "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
+          "Destinations":  ["hole2"]
+        }
+      ]
+    },
+    {
+      "Id": "hole2",
+      "Name": "hole",
+      "Components": [
+        {
+          "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
+          "Position": {
+            "X": 333.0,
+            "Y": 202.0
+          }
+        },
+        {
+          "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
+          "Destinations": [ "hole11" ]
+        }
+      ]
+    }
+    
+  ]
+}

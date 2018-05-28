@@ -124,6 +124,10 @@
     <Folder Include="Media.xcassets\hole.spriteatlas\hole-open-e.imageset\" />
     <Folder Include="Game\Level\" />
     <Folder Include="Game\Components\" />
+    <Folder Include="Media.xcassets\deer.spriteatlas\" />
+    <Folder Include="Media.xcassets\deer.spriteatlas\" />
+    <Folder Include="Media.xcassets\rabbit-walk-s.spriteatlas\" />
+    <Folder Include="Media.xcassets\hud-rabbit.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GameScene.sks" />
@@ -132,6 +136,7 @@
     <BundleResource Include="FireParticleEffect.sks" />
     <BundleResource Include="spark.png" />
     <BundleResource Include="Water.fsh" />
+    <BundleResource Include="Shadow.fsh" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -151,8 +156,6 @@
     </Compile>
     <Compile Include="Game\Ios.Bindings\Registration.cs" />
     <Compile Include="Game\Ios.Bindings\Sprite.cs" />
-    <Compile Include="Game\Ios.Bindings\TextureFactory.cs" />
-    <Compile Include="Game\Ios.Bindings\Texture.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitBuilder.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitHandlers.cs" />
     <Compile Include="Game\Character\Rabbit\RabbitStates.cs" />
@@ -214,15 +217,6 @@
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-se.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-sw.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-w.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-e.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-n.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-ne.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-nw.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-s.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-se.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-sw.imageset\Contents.json" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\dirt.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\dirt.imageset\dirt1_brown_qubodup_Lamoot_ccby3.png" />
     <ImageAsset Include="Media.xcassets\store.spriteatlas\Contents.json" />
@@ -267,14 +261,6 @@
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-w.imageset\wolf-w.png" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-a-n.imageset\wolf-n.png" />
     <ImageAsset Include="Media.xcassets\wolf.spriteatlas\a-b-n.imageset\wolf-n.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-e.imageset\rabbit-e.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-n.imageset\rabbit-n.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-ne.imageset\rabbit-ne.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-nw.imageset\rabbit-nw.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-s.imageset\rabbit-s.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-se.imageset\rabbit-se.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-sw.imageset\rabbit-sw.png" />
-    <ImageAsset Include="Media.xcassets\rabbit.spriteatlas\a-r-w.imageset\rabbit-w.png" />
     <ImageAsset Include="Media.xcassets\tiles.spriteatlas\water.imageset\Contents.json" />
     <ImageAsset Include="Media.xcassets\tiles.spriteatlas\water.imageset\water4.png" />
     <ImageAsset Include="Media.xcassets\tiles.spriteatlas\dirt2.imageset\Contents.json" />
@@ -288,10 +274,114 @@
     <ImageAsset Include="Media.xcassets\hole.spriteatlas\Contents.json" />
     <ImageAsset Include="Media.xcassets\hole.spriteatlas\hole-open-e.imageset\broken_tower_background.png" />
     <ImageAsset Include="Media.xcassets\hole.spriteatlas\hole-open-e.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\.DS_Store" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0096.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0097.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0098.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0099.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0100.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0353.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0354.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0355.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0356.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0357.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0358.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0359.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0360.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0361.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0362.png" />
+    <ImageAsset Include="Media.xcassets\deer.atlas\0363.png" />
+    <ImageAsset Include="Media.xcassets\hud-rabbit.imageset\0020.png" />
+    <ImageAsset Include="Media.xcassets\hud-rabbit.imageset\Contents.json" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\GameScene.json" />
+    <EmbeddedResource Include="Resources\GameScene.bak.json" />
     <EmbeddedResource Include="Resources\Backup.json" />
+    <EmbeddedResource Include="Resources\GameScene.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-e.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-n.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-ne.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-nw.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\.DS_Store" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-s.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-sw.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-w.atlas\0040.png" />
+    <AtlasTexture Include="Resources\hole.atlas\broken_tower_background.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0000.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0005.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0020.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0025.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-walk-se.atlas\0040.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-e.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-ne.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-nw.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-s.atlas\0015.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-se.atlas\0010.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-sw.atlas\0030.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-w.atlas\0035.png" />
+    <AtlasTexture Include="Resources\rabbit-idle-n.atlas\0025.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />

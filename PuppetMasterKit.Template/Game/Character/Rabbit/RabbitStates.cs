@@ -5,7 +5,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
   public enum RabbitStates
   {
-    [StringValue("r")] idle,
-    [StringValue("x")] run
+    [StringValue("idle")] idle,
+    [StringValue("run")] run,
+    [StringValue("walk")] walk,
   }
 }

@@ -5,6 +5,7 @@ using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
 using LightInject;
 using PuppetMasterKit.AI.Rules;
+using SpriteKit;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -41,8 +42,25 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           .Add(new GoalToSeparateFrom( x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.005f)
           .Add(new ConstraintToStayWithin(boundaries))
           .Add(new GoalToAvoidObstacles(x => ((GameFlightMap)flightMap).GetObstacles(entity), 30));
-      
+
+      AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
       return entity;
+    }
+
+    /// <summary>
+    /// Adds the shadow.
+    /// </summary>
+    /// <param name="node">Node.</param>
+    private static void AddShadow(SKSpriteNode node)
+    {
+      //node.Shader = SKShader.FromFile("Shadow.fsh");
+      var shadow = SKShapeNode.FromEllipse(size: new CoreGraphics.CGSize(14, 6));
+      shadow.FillColor = UIKit.UIColor.Black;
+      shadow.StrokeColor = UIKit.UIColor.FromRGBA(0, 0, 0, 0.1f);
+      shadow.Alpha = 0.3f;
+      shadow.Position = new CoreGraphics.CGPoint(0, 3);
+      node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
+      node.AddChild(shadow);
     }
   }
 }

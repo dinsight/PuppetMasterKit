@@ -34,8 +34,6 @@
     <Compile Include="Geometry\Polygon.cs" />
     <Compile Include="Geometry\Segment.cs" />
     <Compile Include="Geometry\Vector.cs" />
-    <Compile Include="Sprites\ITextureFactory.cs" />
-    <Compile Include="Sprites\ITexture.cs" />
     <Compile Include="Sprites\ISprite.cs" />
     <Compile Include="Geometry\Orientation.cs" />
     <Compile Include="Geometry\Size.cs" />

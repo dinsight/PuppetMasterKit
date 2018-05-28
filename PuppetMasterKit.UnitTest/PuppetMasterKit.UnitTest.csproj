@@ -104,8 +104,6 @@
     <Compile Include="UnitTestAppDelegate.cs" />
     <Compile Include="Test.Bindings\Registration.cs" />
     <Compile Include="Test.Bindings\Sprite.cs" />
-    <Compile Include="Test.Bindings\TextureFactory.cs" />
-    <Compile Include="Test.Bindings\Texture.cs" />
     <Compile Include="UnitTests\ComponentSystemTest.cs" />
     <Compile Include="UnitTests\FactUnitTest.cs" />
     <Compile Include="UnitTests\FlightMapUnitTest.cs" />

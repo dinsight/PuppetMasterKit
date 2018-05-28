@@ -10,6 +10,7 @@ using PuppetMasterKit.AI.Rules;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Facts;
 using PuppetMasterKit.Template.Game.Components;
+using System.Collections.Generic;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -28,35 +29,25 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     }
 
     /// <summary>
-    /// Ons the scene touched.
+    /// Ons the move to point.
     /// </summary>
+    /// <param name="entity">Entity.</param>
     /// <param name="location">Location.</param>
-    public static void OnMoveToPoint_test(Entity entity, Point location)
-    {
-      var agent = entity.GetComponent<Agent>();
-      if (agent == null)
-        return;
-
-      location = new Point(150, 320);
-      //remove existing follow path command
-      agent.Remove<GoalToFollowPath>();
-      //create new goal. Makes sure the goal is deleted upon arrival
-      var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
-        .WhenArrived((x, p) => { });
-      agent.Add(goToPoint, 3);
-    }
-
     public static void OnMoveToPoint(Entity entity, Point location)
     {
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
         return;
 
+      var state = entity.GetComponent<StateComponent<RabbitStates>>();
+      state.CurrentState = RabbitStates.walk;
       //remove existing follow path command
       agent.Remove<GoalToFollowPath>();
       //create new goal. Makes sure the goal is deleted upon arrival
       var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
-        .WhenArrived((x, p) => { });
+        .WhenArrived((x, p) => {
+          state.CurrentState = RabbitStates.idle;
+      });
       agent.Add(goToPoint, 3);
     }
 
@@ -114,8 +105,11 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           if(otherHole!=null){
             var pos = otherHole.GetComponent<Agent>().Position;
             agent.Remove<GoalToFollowPath>();
-            agent.Position = pos + new Point(36, 36);
-            //agent.Stop();
+            agent.Position = pos;
+            var separate = new List<Entity>();
+            separate.Add(hole);
+            agent.Add(new GoalToSeparateFrom(x => separate), 36);
+
             hud.SetMessage($"Rabbit hole travel :) !");
           }
         }

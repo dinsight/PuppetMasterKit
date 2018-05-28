@@ -5,7 +5,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
 {
   public enum WolfStates
   {
-    [StringValue("b")] idle,
-    [StringValue("a")] attack
+    [StringValue("idle")] idle,
+    [StringValue("attack")] attack
   }
 }

@@ -42,10 +42,21 @@ namespace PuppetMasterKit.Template.Game.Level
     }
 
     /// <summary>
+    /// Loads the scene data.
+    /// </summary>
+    private LevelData LoadSceneData()
+    {
+      var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
+      flightMap.Obstacles.AddRange(data.Obstacles);
+      AddHoles(data.Holes);
+      return data;
+    }
+
+    /// <summary>
     /// Gets the frame.
     /// </summary>
     /// <returns>The frame.</returns>
-    private Polygon GetFrame()
+    private Polygon GetMapFrame()
     {
       var frameRect = scene.GetFrame();
       var frame = new Polygon(
@@ -62,7 +73,7 @@ namespace PuppetMasterKit.Template.Game.Level
     /// </summary>
     private void AddEntities()
     {
-      var frame = GetFrame();
+      var frame = GetMapFrame();
 
       for (int i = 0; i < 1 ; i++) {
         var rabbit = RabbitBuilder.Build(componentSystem, frame);
@@ -114,8 +125,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.7f;
-      cameraNode.YScale = 0.7f;
+      cameraNode.XScale = 0.6f;
+      cameraNode.YScale = 0.6f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -144,23 +155,12 @@ namespace PuppetMasterKit.Template.Game.Level
     }
 
     /// <summary>
-    /// Loads the scene data.
-    /// </summary>
-    private LevelData LoadSceneData()
-    {
-      var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
-      flightMap.Obstacles.AddRange(data.Obstacles);
-      AddHoles(data.Holes);
-      return data;
-    }
-
-    /// <summary>
     /// Adds the holes.
     /// </summary>
     /// <param name="holes">Holes.</param>
     private void AddHoles(Entity[] holes)
     {
-      var frame = GetFrame();
+      var frame = GetMapFrame();
       foreach (var item in holes) {
         var entity = HoleBuilder.Build(item, componentSystem, frame);
         flightMap.Add(entity);
