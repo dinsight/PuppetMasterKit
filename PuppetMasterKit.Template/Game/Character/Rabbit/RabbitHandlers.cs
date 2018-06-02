@@ -11,6 +11,7 @@ using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Facts;
 using PuppetMasterKit.Template.Game.Components;
 using System.Collections.Generic;
+using PuppetMasterKit.Graphics.Sprites;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -39,12 +40,14 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       if (agent == null)
         return;
 
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+               
       var state = entity.GetComponent<StateComponent<RabbitStates>>();
       state.CurrentState = RabbitStates.walk;
       //remove existing follow path command
       agent.Remove<GoalToFollowPath>();
       //create new goal. Makes sure the goal is deleted upon arrival
-      var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, location })
+      var goToPoint = new GoalToFollowPath(new Point[] { agent.Position, mapper.FromScene(location) })
         .WhenArrived((x, p) => {
           state.CurrentState = RabbitStates.idle;
       });

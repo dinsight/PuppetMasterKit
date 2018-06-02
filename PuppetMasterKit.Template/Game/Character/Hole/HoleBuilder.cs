@@ -34,7 +34,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       entity = EntityBuilder.Build(entity)
         .With(componentSystem,
-              //new StateComponent<HoleStates>(HoleStates.open),
+              new StateComponent<HoleStates>(HoleStates.open),
               new SpriteComponent(CharacterName, new Size(65, 65)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 15),

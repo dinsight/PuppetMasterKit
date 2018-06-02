@@ -1,11 +1,14 @@
 ﻿using System.Linq;
 using CoreGraphics;
 using SpriteKit;
+using LightInject;
 using UIKit;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility;
 using PuppetMasterKit.Template.Game.Level;
+using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Graphics.Sprites;
 
 namespace PuppetMasterKit.Template.Game
 {
@@ -25,6 +28,18 @@ namespace PuppetMasterKit.Template.Game
         return new CGRect(0, 0, frame.Height, frame.Width);
       }
       return frame;
+    }
+
+    /// <summary>
+    /// Gets the size of the map.
+    /// </summary>
+    /// <returns>The map size.</returns>
+    /// <param name="scene">Scene.</param>
+    public static Size GetMapSize(this SKScene scene)
+    {
+      var map = scene.Children.OfType<SKTileMapNode>().First();
+      var mapWidth = (float) map.TileSize.Width * map.NumberOfRows;
+      return new Size(mapWidth, mapWidth);
     }
 
     /// <summary>
@@ -63,9 +78,10 @@ namespace PuppetMasterKit.Template.Game
     private static void DrawObstacle(SKScene scene, CircularObstacle obstacle)
     {
       var circle = SKShapeNode.FromCircle(obstacle.Radius);
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      var center = mapper.ToScene(obstacle.Center);
 
-      circle.Position = new CGPoint(obstacle.Center.X,obstacle.Center.Y);
-      //circle.FillColor = UIColor.Yellow;
+      circle.Position = new CGPoint(center.X,center.Y);
       circle.StrokeColor = UIColor.Yellow;
       circle.LineWidth = 1;
       circle.ZPosition = 100;

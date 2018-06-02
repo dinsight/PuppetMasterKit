@@ -35,8 +35,9 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       this.componentSystem = componentSystem;
       this.scene = scene;
-      var rect = scene.GetFrame();
-      this.flightMap = new GameFlightMap((float)rect.Width, (float)rect.Height, 7, 7);
+      var size = scene.GetMapSize();
+
+      this.flightMap = new GameFlightMap(size.Width, size.Height, 7, 7);
       Registration.RegisterBindings(scene);
       Registration.Register<FlightMap>(flightMap);
     }
@@ -58,13 +59,14 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <returns>The frame.</returns>
     private Polygon GetMapFrame()
     {
-      var frameRect = scene.GetFrame();
+      var frameRect = scene.GetMapSize();
       var frame = new Polygon(
         new Point(0, 0),
         new Point(0, (float)frameRect.Height),
         new Point((float)frameRect.Width, (float)frameRect.Height),
         new Point((float)frameRect.Width, 0)
       );
+
       return frame;
     }
 
@@ -81,8 +83,8 @@ namespace PuppetMasterKit.Template.Game.Level
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
         //var y = random.Next(100, 600);
-        var x = 150;
-        var y = 195;
+        var x = 100;
+        var y = 100;
         agent.Position = new Point(x, y);
         flightMap.AddHero(rabbit);
       }
@@ -125,8 +127,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.6f;
-      cameraNode.YScale = 0.6f;
+      cameraNode.XScale = 0.9f;
+      cameraNode.YScale = 0.9f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -175,7 +177,7 @@ namespace PuppetMasterKit.Template.Game.Level
     private void Debug(LevelData data)
     {
       scene.DrawObstacles(data);
-      scene.DrawEnclosure();
+      //scene.DrawEnclosure();
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using LightInject;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
@@ -20,6 +21,7 @@ namespace PuppetMasterKit.AI.Components
 
     public const string ENTITY_ID_PPROPERTY = "id";
 
+    ICoordinateMapper mapper;
 
     /// <summary>
     /// Gets the sprite.
@@ -39,6 +41,7 @@ namespace PuppetMasterKit.AI.Components
     {
       this.atlasName = atlasName;
       this.size = size;
+      mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
     }
 
     /// <summary>
@@ -78,6 +81,8 @@ namespace PuppetMasterKit.AI.Components
     private String GetTextureName(String atlas, string orientation,
                               string state)
     {
+      Debug.WriteLine($"orientation: {orientation}");
+      orientation = mapper.ToSceneOrientation(orientation);
       var strState = String.IsNullOrEmpty(state) ? "" : $"-{state}";
       var strOrientation = String.IsNullOrEmpty(orientation) ? "" : $"-{orientation}";
       var suffix = $"{atlas}{strState}{strOrientation}";

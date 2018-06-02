@@ -66,9 +66,9 @@ namespace PuppetMasterKit.AI.Components
       damageSprite = factory.CreateSprite(DamageColor.Red, DamageColor.Green, DamageColor.Blue, DamageColor.Alpha);
       healthSprite.Size = new Size(Width, Height);
       damageSprite.Size = new Size(0, Height);
-      healthSprite.Position = new Point(0, spriteComponent.Sprite.Size.Height);
+      healthSprite.RelativePosition = new Point(0, spriteComponent.Sprite.Size.Height);
       healthSprite.AddChild(damageSprite);
-      damageSprite.Position = new Point(-Width / 2, 0);
+      damageSprite.RelativePosition = new Point(Width / 2, 0);
       damageSprite.AnchorPoint = new Point(0f, 0.5f);
       spriteComponent.Sprite.AddChild(healthSprite);
     }

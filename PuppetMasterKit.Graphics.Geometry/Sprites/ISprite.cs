@@ -10,6 +10,8 @@ namespace PuppetMasterKit.Graphics.Sprites
 
     Point Position { get; set; }
 
+    Point RelativePosition { get; set; }
+
     Size Size { get; set; }
 
     Point AnchorPoint { get; set; }

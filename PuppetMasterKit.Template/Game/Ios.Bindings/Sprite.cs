@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using PuppetMasterKit.AI.Configuration;
 using Foundation;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
+using LightInject;
 using SpriteKit;
+using CoreGraphics;
 
 namespace PuppetMasterKit.Template.Game.Ios.Bindings
 {
@@ -12,6 +14,8 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     SKScene scene;
 
     SKSpriteNode node;
+
+    ICoordinateMapper mapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.Ios.Bindings.Sprite"/> class.
@@ -22,6 +26,19 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     {
       this.scene = scene;
       this.node = node;
+      this.mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+    }
+
+    /// <summary>
+    /// Adds the debug border.
+    /// </summary>
+    private void AddDebugBorder(){
+      var frame = CGRect.FromLTRB(0, node.Size.Height, node.Size.Width, 0);
+
+      var border = SKShapeNode.FromRect(frame);
+      node.AddChild(border);
+      border.StrokeColor = UIKit.UIColor.Red;
+      border.LineWidth = 2;
     }
 
     /// <summary>
@@ -43,13 +60,31 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// <value>The position.</value>
     public Point Position {
       get {
-        return
-            new Point((float)node.Position.X, (float)node.Position.Y);
+        return mapper.FromScene(
+          new Point((float)node.Position.X, (float)node.Position.Y));
       }
 
       set {
-        if (!node.Position.X.Equals(value.X) || 
+        if (!node.Position.X.Equals(value.X) ||
             !node.Position.Y.Equals(value.Y)) {
+          var translated = mapper.ToScene(value);
+          node.Position = new CoreGraphics.CGPoint(translated.X, translated.Y);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the relative position.
+    /// </summary>
+    /// <value>The relative position.</value>
+    public Point RelativePosition { 
+      get{
+        return new Point((float)node.Position.X, (float)node.Position.Y);
+      }
+
+      set{
+        if (!node.Position.X.Equals(value.X) ||
+            !node.Position.Y.Equals(value.Y)) { 
           node.Position = new CoreGraphics.CGPoint(value.X, value.Y);
         }
       }
@@ -67,6 +102,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
 
       set {
         node.Size = new CoreGraphics.CGSize(value.Width, value.Height);
+        //AddDebugBorder();
       }
     }
 

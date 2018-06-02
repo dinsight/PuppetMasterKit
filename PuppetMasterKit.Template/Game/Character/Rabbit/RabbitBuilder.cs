@@ -26,7 +26,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               //new RuleSystemComponent<FlightMap, RabbitHandlers>(
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<RabbitStates>(RabbitStates.idle),
-              new SpriteComponent(CharacterName, new Size(30, 30)),
+              new SpriteComponent(CharacterName, new Size(60, 60)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 10, 1, 30),
               new CommandComponent(RabbitHandlers.OnTouched, RabbitHandlers.OnMoveToPoint),
@@ -54,7 +54,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     private static void AddShadow(SKSpriteNode node)
     {
       //node.Shader = SKShader.FromFile("Shadow.fsh");
-      var shadow = SKShapeNode.FromEllipse(size: new CoreGraphics.CGSize(14, 6));
+      var shadow = SKShapeNode.FromEllipse(size: new CoreGraphics.CGSize(20, 10));
       shadow.FillColor = UIKit.UIColor.Black;
       shadow.StrokeColor = UIKit.UIColor.FromRGBA(0, 0, 0, 0.1f);
       shadow.Alpha = 0.3f;

@@ -11,6 +11,7 @@ namespace PuppetMasterKit.Template.Test.Bindings
   {
     public float Alpha { get => 0; set { } }
     public Point Position { get => Point.Zero; set { } }
+    public Point RelativePosition { get => Point.Zero; set { } }
     public Point AnchorPoint { get => Point.Zero; set { } }
     public Size Size { get => Size.Zero; set { } }
 
