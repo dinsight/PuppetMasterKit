@@ -18,9 +18,23 @@ namespace PuppetMasterKit.AI
       this.Polygon = new Polygon(points);
     }
 
+    /// <summary>
+    /// Gets the center point.
+    /// </summary>
+    /// <returns>The center point.</returns>
     public override Point GetCenterPoint()
     {
       return Centroid;
+    }
+
+    /// <summary>
+    /// Ises the inside.
+    /// </summary>
+    /// <returns><c>true</c>, if inside was ised, <c>false</c> otherwise.</returns>
+    /// <param name="point">Point.</param>
+    public override bool IsInside(Point point)
+    {
+      return Polygon.IsPointInside(point);
     }
   }
 }

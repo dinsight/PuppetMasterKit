@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
+using LightInject;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
-using PuppetMasterKit.Template.Game.Ios.Bindings;
-using PuppetMasterKit.Utility;
-using SceneKit;
 using SpriteKit;
-using UIKit;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -38,8 +36,60 @@ namespace PuppetMasterKit.Template.Game.Level
       var size = scene.GetMapSize();
 
       this.flightMap = new GameFlightMap(size.Width, size.Height, 7, 7);
-      Registration.RegisterBindings(scene);
-      Registration.Register<FlightMap>(flightMap);
+      Ios.Bindings.Registration.RegisterBindings(scene);
+      Ios.Bindings.Registration.Register<FlightMap>(flightMap);
+    }
+
+    /// <summary>
+    /// Loads the obstacles.
+    /// </summary>
+    /// <returns>The obstacles.</returns>
+    private Obstacle[] LoadObstacles()
+    {      
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      var obstacles = scene.Children
+           .Where(x => x.Name == "obstacle").OfType<SKSpriteNode>()
+           .Select(a=> new CircularObstacle( mapper.FromScene(
+                       new Point((float)a.Position.X, 
+                                 (float)a.Position.Y)), 
+                                 (float)a.Size.Width/2 ))
+           .ToArray();
+      return obstacles;
+    }
+
+    /// <summary>
+    /// Loads the obstacles from map.
+    /// </summary>
+    /// <returns>The obstacles from map.</returns>
+    private Obstacle[] LoadObstaclesFromMap()
+    {
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      var obstacleMap = scene.Children.OfType<SKTileMapNode>()
+                             .Where(x => x.Name == "Obstacles").FirstOrDefault();
+
+      var map = new Dictionary<Tuple<int, int>, PolygonalObstacle>();
+      if(obstacleMap!=null){
+        var width = (float)obstacleMap.TileSize.Width;
+        var height = (float)obstacleMap.TileSize.Height;
+        for (nuint row = 0; row < obstacleMap.NumberOfRows; row++) {
+          for (nuint col = 0; col < obstacleMap.NumberOfColumns; col++) {
+            var tile = obstacleMap.GetTileDefinition(col,row);
+            if(tile!=null){
+              float dx = (obstacleMap.NumberOfRows-row-1) * width;
+              float dy = col * width;
+                var obstacle = 
+                new PolygonalObstacle(
+                  new Point(dx,dy),
+                  new Point(dx + width,dy),
+                  new Point(dx + width, dy + width),
+                  new Point(dx, dy + width));
+
+              map.Add(Tuple.Create((int)row, (int)col), obstacle);
+            }
+          }
+        }
+      }
+      return ObstacleCluster.CreateClusters(map);
     }
 
     /// <summary>
@@ -48,7 +98,7 @@ namespace PuppetMasterKit.Template.Game.Level
     private LevelData LoadSceneData()
     {
       var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
-      flightMap.Obstacles.AddRange(data.Obstacles);
+      flightMap.Obstacles.AddRange(LoadObstaclesFromMap());
       AddHoles(data.Holes);
       return data;
     }
@@ -127,8 +177,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.9f;
-      cameraNode.YScale = 0.9f;
+      cameraNode.XScale = 1.3f;
+      cameraNode.YScale = 1.3f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -162,6 +212,7 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <param name="holes">Holes.</param>
     private void AddHoles(Entity[] holes)
     {
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
       var frame = GetMapFrame();
       foreach (var item in holes) {
         var entity = HoleBuilder.Build(item, componentSystem, frame);
@@ -176,7 +227,7 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <param name="data">Data.</param>
     private void Debug(LevelData data)
     {
-      scene.DrawObstacles(data);
+      //scene.DrawObstacles(flightMap.Obstacles);
       //scene.DrawEnclosure();
     }
 

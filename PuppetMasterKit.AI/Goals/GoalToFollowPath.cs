@@ -60,7 +60,7 @@ namespace PuppetMasterKit.AI.Goals
       if (currentPointIndex == path.Length - 1) {
         //slow down as we approach the last node
         var lastDist = Point.Distance(target, path[currentPointIndex - 1]);
-        velocity *= dist.Magnitude() / lastDist;
+          //velocity *= dist.Magnitude() / lastDist;
       }
 
       //When we get close enough to this point, vector in on the next one

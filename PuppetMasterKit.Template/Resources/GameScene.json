@@ -25,13 +25,13 @@
         {
           "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
           "Position": {
-            "X": 0,
+            "X": 1536,
             "Y": 0
           }
         },
         {
           "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
-          "Destinations": [ "hole2" ]
+          "Destinations": [ ]
         }
       ]
     },
@@ -42,16 +42,66 @@
         {
           "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
           "Position": {
-            "X": 333.0,
-            "Y": 202.0
+            "X": 3072,
+            "Y": 0
           }
         },
         {
           "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
-          "Destinations": [ "hole11" ]
+          "Destinations": []
+        }
+      ]
+    },
+    {
+      "Id": "hole3",
+      "Name": "hole",
+      "Components": [
+        {
+          "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
+          "Position": {
+            "X": 3072,
+            "Y": 3072
+          }
+        },
+        {
+          "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
+          "Destinations": []
+        }
+      ]
+    },
+    {
+      "Id": "hole4",
+      "Name": "hole",
+      "Components": [
+        {
+          "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
+          "Position": {
+            "X": 0,
+            "Y": 3072
+          }
+        },
+        {
+          "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
+          "Destinations": []
+        }
+      ]
+    },
+    {
+      "Id": "hole5",
+      "Name": "hole",
+      "Components": [
+        {
+          "$type": "PuppetMasterKit.AI.Components.Agent, PuppetMasterKit",
+          "Position": {
+            "X": 1536,
+            "Y": 1536
+          }
+        },
+        {
+          "$type": "PuppetMasterKit.Template.Game.Components.TravelComponent, PuppetMasterKit.Template",
+          "Destinations": []
         }
       ]
     }
-
   ]
 }

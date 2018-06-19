@@ -43,6 +43,16 @@ namespace PuppetMasterKit.Graphics.Geometry
     }
 
     /// <summary>
+    /// Clone this instance.
+    /// </summary>
+    /// <returns>The clone.</returns>
+    public Polygon Clone(){
+      var newPoints = Points.Select(x => new Point(x)).ToArray();
+      var clone = new Polygon(newPoints);
+      return clone;
+    }
+
+    /// <summary>
     /// Gets the <see cref="T:PuppetMasterKit.Polygons.Polygon"/> with the specified n.
     /// </summary>
     /// <param name="n">N.</param>
@@ -134,6 +144,17 @@ namespace PuppetMasterKit.Graphics.Geometry
     public void Insert(Point point, int index)
     {
       Points.Insert(index, point);
+      CalcMinMax();
+    }
+
+    /// <summary>
+    /// Insert the specified points and index.
+    /// </summary>
+    /// <param name="points">Points.</param>
+    /// <param name="index">Index.</param>
+    public void Insert(IEnumerable<Point> points, int index)
+    {
+      Points.InsertRange(index, points);
       CalcMinMax();
     }
 

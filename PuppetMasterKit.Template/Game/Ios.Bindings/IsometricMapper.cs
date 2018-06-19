@@ -11,21 +11,41 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
   {
     SKScene scene;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.Ios.Bindings.IsometricMapper"/> class.
+    /// </summary>
+    /// <param name="scene">Scene.</param>
     public IsometricMapper(SKScene scene)
     {
       this.scene = scene;
     }
 
+    /// <summary>
+    /// Froms the scene.
+    /// </summary>
+    /// <returns>The scene.</returns>
+    /// <param name="point">Point.</param>
     public Point FromScene(Point point)
     {
-      return new Point((2* point.Y + point.X)/2, (2* point.Y - point.X)/2) * -1;
+      point = point * -1;
+      return new Point(point.X + 2*point.Y, 2*point.Y - point.X);
     }
 
+    /// <summary>
+    /// Tos the scene.
+    /// </summary>
+    /// <returns>The scene.</returns>
+    /// <param name="point">Point.</param>
     public Point ToScene(Point point)
     {
-      return new Point(point.X - point.Y, (point.X + point.Y)/2) * -1;
+      return new Point((point.X - point.Y)/2, (point.X + point.Y)/4) * -1;
     }
 
+    /// <summary>
+    /// Tos the scene orientation.
+    /// </summary>
+    /// <returns>The scene orientation.</returns>
+    /// <param name="orientation">Orientation.</param>
     public String ToSceneOrientation(String orientation)
     {
       

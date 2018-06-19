@@ -9,6 +9,7 @@ using PuppetMasterKit.Utility;
 using PuppetMasterKit.Template.Game.Level;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Sprites;
+using System.Collections.Generic;
 
 namespace PuppetMasterKit.Template.Game
 {
@@ -62,12 +63,12 @@ namespace PuppetMasterKit.Template.Game
     /// Draws the obstacles.
     /// </summary>
     /// <param name="scene">Scene.</param>
-    /// <param name="level">Level.</param>
-    public static void DrawObstacles(this SKScene scene, LevelData level)
+    /// <param name="obstacles">Level.</param>
+    public static void DrawObstacles(this SKScene scene, List<Obstacle> obstacles)
     {
-      level.Obstacles.OfType<CircularObstacle>().ForEach(c => DrawObstacle(scene, c));
+      obstacles.OfType<CircularObstacle>().ForEach(c => DrawObstacle(scene, c));
 
-      level.Obstacles.OfType<PolygonalObstacle>().ForEach(c => DrawObstacle(scene, c));
+      obstacles.OfType<PolygonalObstacle>().ForEach(c => DrawObstacle(scene, c));
     }
 
     /// <summary>
@@ -96,10 +97,10 @@ namespace PuppetMasterKit.Template.Game
     private static void DrawObstacle(SKScene scene, PolygonalObstacle obstacle)
     {
       Point prev = null;
-
       var path = new CGPath();
-      foreach (var point in obstacle.Polygon.Points) {
-
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      foreach (var _2dPoint in obstacle.Polygon.Points) {
+        var point = mapper.ToScene(_2dPoint);
         if (prev == null) {
           path.MoveToPoint(point.X, point.Y);
         } else {
@@ -107,7 +108,8 @@ namespace PuppetMasterKit.Template.Game
         }
         prev = point;
       }
-      path.AddLineToPoint(obstacle.Polygon.Points[0].X, obstacle.Polygon.Points[0].Y);
+      var lastPoint  = mapper.ToScene(new Point(obstacle.Polygon.Points[0].X, obstacle.Polygon.Points[0].Y));
+      path.AddLineToPoint(new CGPoint(lastPoint.X, lastPoint.Y));
 
       var poly = SKShapeNode.FromPath(path);
       poly.FillColor = UIColor.Yellow;
