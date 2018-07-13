@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+
+namespace ConsoleApp1
+{
+    class Program
+    {
+        private static List<int[,]> CreateRooms()
+        {
+            var rooms = new List<int[,]>();
+            rooms.Add(new int[,] {
+                {-1, 1}, { 0, 1},   { 1, 1},
+                {-1, 0}, { 0, 0},  { 1, 0},
+                {-1,-1}, { 0, -1}, { 1, -1},
+                         { 0, -2 },
+                         { 0, -3 },
+            });
+
+            return rooms;
+        }
+
+        static void Main(string[] args)
+        {
+            var gen = new MapGenerator(124, 124, CreateRooms());
+            gen.AddRoom(0, 10, 10);
+            gen.DebugPrint();
+            Console.ReadKey();
+        }
+    }
+}
