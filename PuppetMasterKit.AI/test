@@ -1,5 +1,146 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleApp1
+{
+    class MapGenerator
+    {
+        private int roomPadding;
+        public int Rows { get; set; }
+        public int Cols { get; set; }
+
+        private int[,] Map;
+
+        private List<int[,]> rooms;
+
+        private const int blank = int.MinValue;
+
+        public MapGenerator(int rows, int cols, int roomPadding, List<int[,]> rooms)
+        {
+            this.Rows = rows;
+            this.Cols = cols;
+            Map = new int[Rows, Cols];
+            this.rooms = rooms;
+            this.roomPadding = roomPadding;
+            ResetMap();
+        }
+
+        private void ResetMap()
+        {
+            for (int i = 0; i < Rows; i++){
+                for (int j = 0; j < Cols; j++){
+                    Map[i, j] = blank;
+                }
+            }
+        }
+
+        public bool AddRoom(int index, int row, int col) {
+            var room = rooms[index];
+            return AddRoom(room, row, col, index);
+        }
+
+        public bool AddRoom(int[,] room, int row, int col, int fill)
+        {
+            if (!CanAddRoom(room, row, col))
+                return false;
+            for (int i = 0; i < room.GetLength(0); i++){
+                var c = room[i, 0];
+                var r = room[i, 1];
+                Map[row + r, col + c] = fill;
+            }
+            return true;
+        }
+
+        public bool CanAddRoom(int[,] room, int row, int col) {
+            if (roomPadding > 0) {
+                room = PadRoom(room, roomPadding);
+            }
+            for (int i = 0; i < room.GetLength(0); i++){
+                var c = room[i, 0];
+                var r = room[i, 1];
+                if( row+r < 0 || row+r >= Rows ||
+                    col+c < 0 || col+c >= Cols ||
+                    Map[row + r, col + c] != blank)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public int[,] PadRoom(int[,] room, int padding)
+        {
+            var oldSet = new HashSet<Tuple<int, int>>();
+            for (int i = 0; i < room.GetLength(0); i++){
+                oldSet.Add(Tuple.Create(room[i, 0], room[i, 1]));
+            }
+
+            while (padding-- > 0) {
+                var padSet = new HashSet<Tuple<int, int>>();
+                foreach (var item in oldSet){
+                    padSet.Add(Tuple.Create(item.Item1 - 1, item.Item2 - 1));
+                    padSet.Add(Tuple.Create(item.Item1 - 1, item.Item2));
+                    padSet.Add(Tuple.Create(item.Item1 - 1, item.Item2 + 1));
+                    padSet.Add(Tuple.Create(item.Item1 + 1, item.Item2 - 1));
+                    padSet.Add(Tuple.Create(item.Item1 + 1, item.Item2));
+                    padSet.Add(Tuple.Create(item.Item1 + 1, item.Item2 + 1));
+                    padSet.Add(Tuple.Create(item.Item1, item.Item2 - 1));
+                    padSet.Add(Tuple.Create(item.Item1, item.Item2 + 1));
+                }
+                oldSet = padSet;
+            }
+
+            var padded = new int[oldSet.Count, 2];
+            var index = 0;
+            foreach (var item in oldSet){
+                padded[index, 0] = item.Item1;
+                padded[index, 1] = item.Item2;
+                index++;
+            }
+
+            return padded;
+        }
+
+        private List<int> GenRandomSequence(int count, int rangeStart, int rangeEnd)
+        {
+            List<int> numbers = new List<int>();
+            Random r = new Random(Guid.NewGuid().GetHashCode());
+            for (int i = 0; i < count; ++i){
+                numbers.Add(r.Next(rangeStart, rangeEnd));
+            }
+            return numbers;
+        }
+
+        public int RandomizeRooms(int count, int padding)
+        {
+            var actual = 0;
+            var roomsIndex = GenRandomSequence(count, 0, rooms.Count);
+            var colPos = GenRandomSequence(count, 0, Cols-1);
+            var rowPos = GenRandomSequence(count, 0, Rows-1);
+
+            for (int i = 0; i < count; i++){
+                if (AddRoom(roomsIndex[i], rowPos[i], colPos[i])){
+                    actual++;
+                }
+            }
+            return actual;
+        }
+
+        public void DebugPrint()
+        {
+            for (int i = Rows-1; i  >=0; i--){
+                for (int j = 0; j < Cols; j++){
+                    Console.Write(Map[i, j]== blank ? "*": Map[i, j].ToString());
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}
+----------------
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
@@ -9,11 +150,37 @@ namespace ConsoleApp1
         {
             var rooms = new List<int[,]>();
             rooms.Add(new int[,] {
-                {-1, 1}, { 0, 1},   { 1, 1},
+                        {-2, 3},{-1, 3}, { 0, 3},
+                {-3, 2},{-2, 2},{-1, 2}, { 0, 2}, { 1, 2},
+                {-3, 1},{-2, 1},{-1, 1}, { 0, 1}, { 1, 1},
+                {-3, 0},{-2, 0},{-1, 0}, { 0, 0}, { 1, 0},
+                {-3,-1},{-2,-1},{-1,-1}, { 0, -1},{ 1, -1},
+                        {-2,-2},{-1,-2}, { 0, -2 },
+                                         { 0, -3 },
+            });
+
+            rooms.Add(new int[,] {
+                         { 0, 2},
+                {-1, 1}, { 0, 1},  { 1, 1},
                 {-1, 0}, { 0, 0},  { 1, 0},
                 {-1,-1}, { 0, -1}, { 1, -1},
-                         { 0, -2 },
-                         { 0, -3 },
+                         { 0, -2 }
+            });
+
+            rooms.Add(new int[,] {
+                {-1, 2}, { 0, 2}, { 1, 2},
+                {-1, 1}, { 0, 1}, { 1, 1},
+                {-1, 0}, { 0, 0}, { 1, 0},
+                {-1,-1}, { 0, -1}, { 1, -1},
+                         { 0, -2 }
+            });
+
+            rooms.Add(new int[,] {
+                                          {-1, 2}, { 0, 2}, { 1, 2},
+               {-4,1 }, {-3,1 }, {-2,1 }, {-1, 1}, { 0, 1}, { 1, 1},{2, 1}, {3,1},
+               {-4,0 }, {-3,0 }, {-2,0 }, {-1, 0}, { 0, 0}, { 1, 0},{1, 1},
+               {-4,-1 },{-3,-1 },{-2,-1 }, {-1,-1}, { 0, -1},{ 1, -1},
+                                             { 0, -2},{ 1, -2}
             });
 
             return rooms;
@@ -21,9 +188,14 @@ namespace ConsoleApp1
 
         static void Main(string[] args)
         {
-            var gen = new MapGenerator(124, 124, CreateRooms());
-            gen.AddRoom(0, 10, 10);
+            var rooms = CreateRooms();
+            int desired = 200;
+            var gen = new MapGenerator(124, 124, 2, rooms);
+            var actual = gen.RandomizeRooms(desired,2);
+            
             gen.DebugPrint();
+            Console.WriteLine();
+            Console.WriteLine($"Generated {actual} out of {desired}");
             Console.ReadKey();
         }
     }
