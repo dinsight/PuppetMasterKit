@@ -1,28 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace ConsoleApp2.Map
 {
-    class MapGenerator
+    public class MapBuilder
     {
+        public static readonly int Blank = int.MinValue;
+
+        public int Rows { get; private set; }
+        public int Cols { get; private set; }
+
+        private int[,] map;
         private int roomPadding;
-        public int Rows { get; set; }
-        public int Cols { get; set; }
-
-        private int[,] Map;
-
-        private List<int[,]> rooms;
-
-        private const int blank = int.MinValue;
-
-        public MapGenerator(int rows, int cols, int roomPadding, List<int[,]> rooms)
+        
+        public MapBuilder(int rows, int cols, int roomPadding)
         {
             this.Rows = rows;
             this.Cols = cols;
-            Map = new int[Rows, Cols];
-            this.rooms = rooms;
             this.roomPadding = roomPadding;
+            map = new int[Rows, Cols];
             ResetMap();
         }
 
@@ -30,172 +29,246 @@ namespace ConsoleApp1
         {
             for (int i = 0; i < Rows; i++){
                 for (int j = 0; j < Cols; j++){
-                    Map[i, j] = blank;
+                    map[i, j] = Blank;
                 }
             }
         }
-
-        public bool AddRoom(int index, int row, int col) {
-            var room = rooms[index];
-            return AddRoom(room, row, col, index);
-        }
-
-        public bool AddRoom(int[,] room, int row, int col, int fill)
+        private bool CanAdd(Module module, int row, int col)
         {
-            if (!CanAddRoom(room, row, col))
-                return false;
-            for (int i = 0; i < room.GetLength(0); i++){
-                var c = room[i, 0];
-                var r = room[i, 1];
-                Map[row + r, col + c] = fill;
-            }
-            return true;
-        }
-
-        public bool CanAddRoom(int[,] room, int row, int col) {
+            var toAdd = module;
             if (roomPadding > 0) {
-                room = PadRoom(room, roomPadding);
+                toAdd = module.Pad(roomPadding);
             }
-            for (int i = 0; i < room.GetLength(0); i++){
-                var c = room[i, 0];
-                var r = room[i, 1];
+            for (int i = 0; i < toAdd.Rows; i++){
+                for (int j = 0; j < toAdd.Cols; j++){
+                    var val = toAdd[i,j];
+                }
+                
                 if( row+r < 0 || row+r >= Rows ||
                     col+c < 0 || col+c >= Cols ||
-                    Map[row + r, col + c] != blank)
-                {
+                    map[row + r, col + c] != Blank) {
                     return false;
                 }
             }
             return true;
         }
 
-        public int[,] PadRoom(int[,] room, int padding)
+        public bool Add(Module module, int row, int col)
         {
-            var oldSet = new HashSet<Tuple<int, int>>();
-            for (int i = 0; i < room.GetLength(0); i++){
-                oldSet.Add(Tuple.Create(room[i, 0], room[i, 1]));
-            }
-
-            while (padding-- > 0) {
-                var padSet = new HashSet<Tuple<int, int>>();
-                foreach (var item in oldSet){
-                    padSet.Add(Tuple.Create(item.Item1 - 1, item.Item2 - 1));
-                    padSet.Add(Tuple.Create(item.Item1 - 1, item.Item2));
-                    padSet.Add(Tuple.Create(item.Item1 - 1, item.Item2 + 1));
-                    padSet.Add(Tuple.Create(item.Item1 + 1, item.Item2 - 1));
-                    padSet.Add(Tuple.Create(item.Item1 + 1, item.Item2));
-                    padSet.Add(Tuple.Create(item.Item1 + 1, item.Item2 + 1));
-                    padSet.Add(Tuple.Create(item.Item1, item.Item2 - 1));
-                    padSet.Add(Tuple.Create(item.Item1, item.Item2 + 1));
-                }
-                oldSet = padSet;
-            }
-
-            var padded = new int[oldSet.Count, 2];
-            var index = 0;
-            foreach (var item in oldSet){
-                padded[index, 0] = item.Item1;
-                padded[index, 1] = item.Item2;
-                index++;
-            }
-
-            return padded;
+            if(CanAdd(module, row, col)) {
+                module.Stamp(map, row, col);
+                return true;
+            }   
+            return false;
         }
 
-        private List<int> GenRandomSequence(int count, int rangeStart, int rangeEnd)
+        public void Apply(Action<int,int,int> action)
         {
-            List<int> numbers = new List<int>();
-            Random r = new Random(Guid.NewGuid().GetHashCode());
-            for (int i = 0; i < count; ++i){
-                numbers.Add(r.Next(rangeStart, rangeEnd));
-            }
-            return numbers;
-        }
-
-        public int RandomizeRooms(int count, int padding)
-        {
-            var actual = 0;
-            var roomsIndex = GenRandomSequence(count, 0, rooms.Count);
-            var colPos = GenRandomSequence(count, 0, Cols-1);
-            var rowPos = GenRandomSequence(count, 0, Rows-1);
-
-            for (int i = 0; i < count; i++){
-                if (AddRoom(roomsIndex[i], rowPos[i], colPos[i])){
-                    actual++;
-                }
-            }
-            return actual;
-        }
-
-        public void DebugPrint()
-        {
-            for (int i = Rows-1; i  >=0; i--){
+            for (int i = 0; i < Rows; i++){
                 for (int j = 0; j < Cols; j++){
-                    Console.Write(Map[i, j]== blank ? "*": Map[i, j].ToString());
+                    action(i,j,map[i, j]);
                 }
-                Console.WriteLine();
             }
         }
     }
 }
-----------------
+=====================================
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Pair = System.Tuple<int, int>;
+
+namespace ConsoleApp2.Map
+{
+    public class Module
+    {
+        public static int PADDING = 4;
+        public static int CENTER = 3;
+        public static int EXIT = 2;
+        public static int X = 1;
+
+        private int[,] pattern;
+        private Pair patternCenter;
+        private List<Pair> exits;
+
+        public int Rows { get => pattern.GetLength(0); }
+
+        public int Cols { get => pattern.GetLength(1); }
+
+        public Module(int[,] pattern)
+        {
+            this.pattern = pattern;
+            patternCenter = GetPatternCenter();
+            if (patternCenter == null) {
+                throw new ArgumentException("The pattern is missing a center point");
+            }
+            exits = GetExits();
+        }
+
+        private Pair GetPatternCenter() => FilterPattern(v => v == CENTER).FirstOrDefault();
+
+        private List<Pair> GetExits() => FilterPattern(v => v == EXIT).ToList();
+
+        private IEnumerable<Pair> FilterPattern(Func<int, bool> filter)
+        {
+            for (int r = 0; r < Rows; r++) {
+                for (int c = 0; c < Cols; c++) {
+                    if (filter(pattern[r, c])) {
+                        yield return Tuple.Create(r, c);
+                    }
+                }
+            }
+        }
+
+        private void Apply(Action<int, int, int> action)
+        {
+            for (int r = 0; r < Rows; r++) {
+                for (int c = 0; c < Cols; c++) {
+                    action(r, c, pattern[r, c]);
+                }
+            }
+        }
+
+        private void Set(int val, int row, int col, bool ignoreIfSet)
+        {
+            if (row >= 0 && row < Rows &&
+                col >= 0 && col < Cols) {
+                var isSet = pattern[row, col] != 0;
+                if (!ignoreIfSet || !isSet) {
+                    pattern[row, col] = val;
+                }
+            }
+        }
+
+        public void SetIfNotEmpty(int val, int row, int col) => Set(val, row, col, true);
+
+        public void Set(int val, int row, int col) => Set(val, row, col, false);
+
+        public int this[int row, int col]
+        {
+            get {
+                return pattern[row, col];
+            }
+        }
+
+        public Module Pad(int padding)
+        {
+            var newPattern = new int[Rows + 2 * padding, Cols + 2 * padding];
+            Stamp(newPattern, patternCenter.Item1 + padding, patternCenter.Item2 + padding);
+            var module = new Module(newPattern);
+            while (padding-- > 0)
+            {
+                module.Apply((r, c, v) => {
+                    if (v != 0 && v != PADDING) {
+                        module.SetIfNotEmpty(PADDING, r - 1, c - 1);
+                        module.SetIfNotEmpty(PADDING, r - 1, c);
+                        module.SetIfNotEmpty(PADDING, r - 1, c + 1);
+                        module.SetIfNotEmpty(PADDING, r, c - 1);
+                        module.SetIfNotEmpty(PADDING, r, c + 1);
+                        module.SetIfNotEmpty(PADDING, r + 1, c - 1);
+                        module.SetIfNotEmpty(PADDING, r + 1, c);
+                        module.SetIfNotEmpty(PADDING, r + 1, c + 1);
+                    }
+                });
+
+                module.Apply((r, c, v) =>{
+                    if (v == PADDING){
+                        module.Set(X, r, c);
+                    }
+                });
+            }
+            return module;
+        }
+
+        public void Stamp(int[,] map, int row, int col)
+        {
+            var rows = map.GetLength(0);
+            var cols = map.GetLength(1);
+            FilterPattern(v => v != 0)
+                .ToList()
+                .ForEach(x => {
+                    var dr = x.Item1 - patternCenter.Item1;
+                    var dc = x.Item2 - patternCenter.Item2;
+                    if (row + dr >= 0 && row + dr < rows && 
+                        col + dc >=0 && col + dc < cols) {
+                        map[row + dr, col + dc] = pattern[x.Item1, x.Item2];
+                    }
+                });
+        }
+    }
+}
+===========================
+using ConsoleApp2.Map;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ConsoleApp1
 {
     class Program
     {
-        private static List<int[,]> CreateRooms()
-        {
-            var rooms = new List<int[,]>();
-            rooms.Add(new int[,] {
-                        {-2, 3},{-1, 3}, { 0, 3},
-                {-3, 2},{-2, 2},{-1, 2}, { 0, 2}, { 1, 2},
-                {-3, 1},{-2, 1},{-1, 1}, { 0, 1}, { 1, 1},
-                {-3, 0},{-2, 0},{-1, 0}, { 0, 0}, { 1, 0},
-                {-3,-1},{-2,-1},{-1,-1}, { 0, -1},{ 1, -1},
-                        {-2,-2},{-1,-2}, { 0, -2 },
-                                         { 0, -3 },
-            });
-
-            rooms.Add(new int[,] {
-                         { 0, 2},
-                {-1, 1}, { 0, 1},  { 1, 1},
-                {-1, 0}, { 0, 0},  { 1, 0},
-                {-1,-1}, { 0, -1}, { 1, -1},
-                         { 0, -2 }
-            });
-
-            rooms.Add(new int[,] {
-                {-1, 2}, { 0, 2}, { 1, 2},
-                {-1, 1}, { 0, 1}, { 1, 1},
-                {-1, 0}, { 0, 0}, { 1, 0},
-                {-1,-1}, { 0, -1}, { 1, -1},
-                         { 0, -2 }
-            });
-
-            rooms.Add(new int[,] {
-                                          {-1, 2}, { 0, 2}, { 1, 2},
-               {-4,1 }, {-3,1 }, {-2,1 }, {-1, 1}, { 0, 1}, { 1, 1},{2, 1}, {3,1},
-               {-4,0 }, {-3,0 }, {-2,0 }, {-1, 0}, { 0, 0}, { 1, 0},{1, 1},
-               {-4,-1 },{-3,-1 },{-2,-1 }, {-1,-1}, { 0, -1},{ 1, -1},
-                                             { 0, -2},{ 1, -2}
-            });
-
-            return rooms;
-        }
+        static int rows = 50;
+        static int cols = 50;
 
         static void Main(string[] args)
         {
-            var rooms = CreateRooms();
-            int desired = 200;
-            var gen = new MapGenerator(124, 124, 2, rooms);
-            var actual = gen.RandomizeRooms(desired,2);
             
-            gen.DebugPrint();
-            Console.WriteLine();
-            Console.WriteLine($"Generated {actual} out of {desired}");
+            var builder = new MapBuilder(rows, cols, 2);
+
+
+            var module = new Module(new int[,] {
+                { 0,0,1,1,1,1,1,1,0,0 },
+                { 0,1,1,1,1,1,1,1,1,0 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,Module.CENTER,1,1,1,1 },
+                { 0,0,0,1,1,1,1,1,1,1 },
+                { 0,0,0,1,1,1,1,1,1,0 },
+                { 0,0,0,1,1,1,1,1,1,0 },
+            });
+
+            var module2 = new Module(new int[,] {
+                { 0,0,1,1,1,1,1,1,0,0 },
+                { 0,1,1,1,1,1,1,1,1,0 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,Module.CENTER,1,1,1,1 },
+                { 0,0,0,1,1,1,1,1,1,1 },
+                { 0,0,0,1,1,1,1,1,1,0 },
+                { 0,0,0,1,1,1,1,1,1,0 },
+            });
+
+            builder.Add(module, 10, 6);
+
+            builder.Add(module2, 10, 15);
+            PrintMap(builder);
+        }
+
+        private static void PrintMap(MapBuilder builder)
+        {
+            var buffer = new StringBuilder();
+            var line = new StringBuilder();
+            line.Append("    ");
+            for (int i = 0; i < cols; i++)
+            {
+                line.Append((i % 10).ToString("D1"));
+            }
+            buffer.Append(line.ToString());
+            buffer.AppendLine();
+            line.Length = 0;
+            line.Append("000 ");
+            builder.Apply((i, j, x) =>
+            {
+                line.Append(x == MapBuilder.Blank ? "*" : x.ToString());
+                if (j == cols - 1)
+                {
+                    line.AppendLine();
+                    buffer.Append(line.ToString());
+                    line.Length = 0;
+                    line.Append((i + 1).ToString("D3") + " ");
+                }
+            });
+            Console.WriteLine(buffer.ToString());
             Console.ReadKey();
         }
     }
