@@ -93,14 +93,35 @@ namespace PuppetMasterKit.AI
 
     private void CreatePaths()
     {
-      for (int index = 0; index < rooms.Count; index++) {
-        var room = rooms[index];
-        for (int j = index + 1; j < rooms.Count; j++) {
-          var nextRoom = rooms[j];
-          var path = pathFinder.Find(map, room.Row, room.Col, nextRoom.Row, nextRoom.Col);
-          path.ForEach(x => map[x.Item1, x.Item2] = MapCodes.PATH);
-        }
-      }
+     var connected = new List<Tuple<int,int>>();
+     for (int index = 0; index < rooms.Count; index++) {
+         var room = rooms[index];
+         var nextRoom = rooms.Where(r =>!(room.Row == r.Row && room.Col == r.Col))
+             .MinBy(r => Point.Distance(room.Row, room.Col, r.Row, r.Col)) ;
+
+         if (connected.FirstOrDefault(x => x.Item1 == room.Id && x.Item2 == nextRoom.Id) == null)
+         {
+             connected.Add(Tuple.Create(room.Id, nextRoom.Id));
+             var sources = room.GetExits(map).Select(x => new Point(x.Item1, x.Item2));
+             var destinations = nextRoom.GetExits(map).Select(x => new Point(x.Item1, x.Item2));
+             float minDist = float.MaxValue;
+             var start = (Point)null;
+             var end= (Point)null;
+             foreach (var s in sources){
+                 foreach (var d in destinations){
+                     var dist = Point.Distance(s, d);
+                     if (dist < minDist) {
+                         minDist = dist;
+                         start = s;
+                         end = d;
+                     }
+                 }
+             }
+             
+             var path = pathFinder.Find(map, (int)start.X, (int)start.Y, (int)end.X, (int)end.Y);
+             path.ForEach(x => map[x.Item1, x.Item2] = MapCodes.PATH);
+         }
+     }
     }
   }
 }
