@@ -63,6 +63,7 @@ namespace PuppetMasterKit.AI.Map
       while (open.Count > 0) {
         var node = open.MinBy(x => x.FCost);
         if (node.Equals(end)) {
+          end = node;
           break;//found destination
         }
         var neighbours = GetNeighbours(walkable, node);
