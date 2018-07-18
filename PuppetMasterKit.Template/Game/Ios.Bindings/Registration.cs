@@ -12,6 +12,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     {
       Container.GetContainer().Register<ISpriteFactory>(factory => new SpriteFactory(scene));
       Container.GetContainer().Register<ICoordinateMapper>(factory => new IsometricMapper(scene));
+      Container.GetContainer().Register<SKScene>(factory => scene);
     }
 
     public static void Register<T>(T instance)

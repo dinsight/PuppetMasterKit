@@ -9,7 +9,7 @@ using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Template.Game
 {
-  public class ObstacleCluster
+  public static class ObstacleCluster
   {
     /// <summary>
     /// Clusters the obstacles.
@@ -27,11 +27,31 @@ namespace PuppetMasterKit.Template.Game
         var obstacle = obstacleMap.First(x=>!visited.Contains(x.Key));
         var cluster = ClusterFrom(obstacle.Key, obstacleMap, visited);
         var merged = MergePolygons(cluster.ToList());
+        TrimPolygon(merged.Polygon);
         result.Add(merged);
 
       } while (visited.Count != obstacleMap.Count);
 
       return result.ToArray();
+    }
+
+    /// <summary>
+    /// Trims the polygon.
+    /// </summary>
+    /// <param name="polygon">Polygon.</param>
+    private static void TrimPolygon(Polygon polygon)
+    {
+      var toRemove = new List<Point>();
+      for (int index = 0; index < polygon.Count; index++) {
+        var prev = polygon[index>0?index-1:polygon.Count-1];
+        var current = polygon[index];
+        var next = polygon[index + 1 == polygon.Count ? 0 : index+1];
+        //if(polygon.IsPointInside(current)){
+        if(Segment.AreColinear(prev, next, current)){
+          toRemove.Add(current);
+        }
+      }
+      toRemove.ForEach(x => polygon.Points.Remove(x));
     }
 
     /// <summary>

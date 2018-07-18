@@ -130,7 +130,6 @@
     <Folder Include="Media.xcassets\hud-rabbit.imageset\" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="GameScene.sks" />
     <BundleResource Include="Hud.sks" />
     <BundleResource Include="Wind.fsh" />
     <BundleResource Include="FireParticleEffect.sks" />
@@ -139,6 +138,7 @@
     <BundleResource Include="Shadow.fsh" />
     <BundleResource Include="TileSet.sks" />
     <BundleResource Include="GameScene.bak.sks" />
+    <BundleResource Include="GameScene.sks" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -187,6 +187,7 @@
     <Compile Include="Game\Components\TravelComponent.cs" />
     <Compile Include="Game\Ios.Bindings\IsometricMapper.cs" />
     <Compile Include="Game\ObstacleCluster.cs" />
+    <Compile Include="Game\ObstaclePath.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

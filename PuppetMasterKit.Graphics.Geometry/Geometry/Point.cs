@@ -144,8 +144,26 @@ namespace PuppetMasterKit.Graphics.Geometry
     /// <param name="point2">Point2.</param>
     public static float Distance(Point point1, Point point2)
     {
+      if (Object.ReferenceEquals(point1, null) ||
+         Object.ReferenceEquals(point2, null))
+        return 0;
       var dxsq = ((point1.X - point2.X) * (point1.X - point2.X));
       var dysq = ((point1.Y - point2.Y) * (point1.Y - point2.Y));
+      return (float)Math.Sqrt(dxsq + dysq);
+    }
+
+    /// <summary>
+    /// Distance the specified x1, y1, x2 and y2.
+    /// </summary>
+    /// <returns>The distance.</returns>
+    /// <param name="x1">The first x value.</param>
+    /// <param name="y1">The first y value.</param>
+    /// <param name="x2">The second x value.</param>
+    /// <param name="y2">The second y value.</param>
+    public static float Distance(float x1, float y1, float x2, float y2)
+    {
+      var dxsq = ((x1 - x2) * (x1 - x2));
+      var dysq = ((y1 - y2) * (y1 - y2));
       return (float)Math.Sqrt(dxsq + dysq);
     }
 

@@ -75,12 +75,12 @@ namespace PuppetMasterKit.Template.Game.Level
           for (nuint col = 0; col < obstacleMap.NumberOfColumns; col++) {
             var tile = obstacleMap.GetTileDefinition(col,row);
             if(tile!=null){
-              float dx = (obstacleMap.NumberOfRows-row-1) * width;
+              float dx = (obstacleMap.NumberOfRows - row - 1) * width;
               float dy = col * width;
-                var obstacle = 
+              var obstacle =
                 new PolygonalObstacle(
-                  new Point(dx,dy),
-                  new Point(dx + width,dy),
+                  new Point(dx, dy),
+                  new Point(dx + width, dy),
                   new Point(dx + width, dy + width),
                   new Point(dx, dy + width));
 
@@ -177,8 +177,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 1.3f;
-      cameraNode.YScale = 1.3f;
+      cameraNode.XScale = 2.3f;
+      cameraNode.YScale = 2.3f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -227,7 +227,7 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <param name="data">Data.</param>
     private void Debug(LevelData data)
     {
-      //scene.DrawObstacles(flightMap.Obstacles);
+      scene.DrawObstacles(flightMap.Obstacles);
       //scene.DrawEnclosure();
     }
 

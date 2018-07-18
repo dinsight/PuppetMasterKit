@@ -112,11 +112,20 @@ namespace PuppetMasterKit.Template.Game
       path.AddLineToPoint(new CGPoint(lastPoint.X, lastPoint.Y));
 
       var poly = SKShapeNode.FromPath(path);
-      poly.FillColor = UIColor.Yellow;
-      poly.StrokeColor = UIColor.Yellow;
+      poly.FillColor = UIColor.Purple;
+      poly.StrokeColor = UIColor.Purple;
       poly.LineWidth = 1;
       poly.ZPosition = 100;
       scene.AddChild(poly);
+
+      obstacle.Polygon.Points.ForEach((x,index) => {
+        var pos = mapper.ToScene(x);
+        var circle = SKShapeNode.FromCircle(10);
+        circle.Position = new CGPoint(pos.X, pos.Y);
+        circle.FillColor = index == 0 ? UIColor.Red : (index == obstacle.Polygon.Count-1 ? UIColor.Blue : UIColor.Green);
+        circle.ZPosition = 101;
+        scene.AddChild(circle);
+      });
     }
 
     /// <summary>
@@ -134,6 +143,32 @@ namespace PuppetMasterKit.Template.Game
       poly.LineWidth = 1;
       poly.ZPosition = 100;
       scene.AddChild(poly);
+    }
+
+    /// <summary>
+    /// Draws the path.
+    /// </summary>
+    /// <param name="scene">Scene.</param>
+    /// <param name="path">Path.</param>
+    public static void DrawPath(this SKScene scene, List<Point> path)
+    {
+      if (path.Count == 0)
+        return;
+      
+      var cgPath = new CGPath();
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+
+      var transformed = path.Select(mapper.ToScene);
+      var first = transformed.First();
+      cgPath.MoveToPoint(first.X, first.Y);
+      transformed.Skip(1).ForEach(point => {
+        cgPath.AddLineToPoint(point.X, point.Y);
+      });
+      var scenePath = SKShapeNode.FromPath(cgPath);
+      scenePath.StrokeColor = UIColor.Yellow;
+      scenePath.LineWidth = 2;
+      scenePath.ZPosition = 100;
+      scene.AddChild(scenePath);
     }
   }
 }

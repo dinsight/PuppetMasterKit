@@ -54,6 +54,15 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
       }
     }
 
+    public float ZOrder {
+      get {
+        return (float)node.ZPosition;
+      }
+      set {
+        node.ZPosition = value;
+      }
+    }
+
     /// <summary>
     /// Gets or sets the position.
     /// </summary>

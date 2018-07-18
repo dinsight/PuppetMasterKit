@@ -113,6 +113,7 @@
     <Compile Include="UnitTests\RuleSystemUnitTest.cs" />
     <Compile Include="Test.Bindings\SpriteFactory.cs" />
     <Compile Include="Test.Bindings\IdentityMapper.cs" />
+    <Compile Include="UnitTests\MapBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">

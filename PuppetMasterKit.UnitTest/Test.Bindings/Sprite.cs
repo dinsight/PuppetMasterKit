@@ -10,6 +10,7 @@ namespace PuppetMasterKit.Template.Test.Bindings
   public class Sprite : ISprite
   {
     public float Alpha { get => 0; set { } }
+    public float ZOrder { get => 0; set { } }
     public Point Position { get => Point.Zero; set { } }
     public Point RelativePosition { get => Point.Zero; set { } }
     public Point AnchorPoint { get => Point.Zero; set { } }

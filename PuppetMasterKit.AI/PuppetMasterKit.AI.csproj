@@ -72,12 +72,19 @@
     <Compile Include="Obstacle.cs" />
     <Compile Include="CircularObstacle.cs" />
     <Compile Include="PolygonalObstacle.cs" />
+    <Compile Include="Map\MapBuilder.cs" />
+    <Compile Include="Map\Module.cs" />
+    <Compile Include="Map\IPathFinder.cs" />
+    <Compile Include="Map\PathFinder.cs" />
+    <Compile Include="Map\MapCodes.cs" />
+    <Compile Include="Map\Room.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />
     <Folder Include="Goals\" />
     <Folder Include="Configuration\" />
     <Folder Include="Rules\" />
+    <Folder Include="Map\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">

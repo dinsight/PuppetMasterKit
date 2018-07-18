@@ -6,6 +6,8 @@ namespace PuppetMasterKit.Graphics.Sprites
 {
   public interface ISprite
   {
+    float ZOrder { get; set; }
+
     float Alpha { get; set; }
 
     Point Position { get; set; }
