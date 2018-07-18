@@ -84,7 +84,23 @@ namespace PuppetMasterKit.AI.Map
         open.Remove(node);
       }
 
-      return new List<Pair>();
+      return GetPath(end);
+    }
+
+    /// <summary>
+    /// Gets the path.
+    /// </summary>
+    /// <returns>The path.</returns>
+    /// <param name="end">End.</param>
+    private List<Pair> GetPath(Node end){
+      var result = new List<Pair>();
+      var node = end;
+      while(node!=null){
+        result.Add(Tuple.Create(node.Row, node.Col));
+        node = node.Parent;
+      }
+      result.Reverse();
+      return result;
     }
 
     /// <summary>
