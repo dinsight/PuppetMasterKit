@@ -10,6 +10,7 @@ namespace PuppetMasterKit.AI.Map
     int row;
     int col;
 
+    public int Id { get; set; }
     public int Row { get => row; set => row = value; }
     public int Col { get => col; set => col = value; }
     public Module Module { get => module; }
