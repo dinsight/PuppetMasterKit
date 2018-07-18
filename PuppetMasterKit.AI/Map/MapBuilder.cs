@@ -62,6 +62,7 @@ namespace PuppetMasterKit.AI
         module.Stamp(map, row, col);
         var room = new Room(module, row, col);
         rooms.Add(room);
+        room.Id = rooms.Count-1;
         return room;
       }
       return null;
