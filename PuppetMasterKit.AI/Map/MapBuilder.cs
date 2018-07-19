@@ -196,4 +196,46 @@ private static void PrintMap(MapBuilder builder)
             Console.WriteLine(buffer.ToString());
             Console.ReadKey();
         }
+        
+static void Main(string[] args)
+        {
+            var C = MapCodes.CENTER;
+            var E = MapCodes.EXIT;
+            var builder = new MapBuilder(rows, cols, 2, new PathFinder() );
+            var modules = new List<Module>();
+
+            var module1 = new Module(new int[,] {
+                { 0,0,1,1,E,1,1,0,0,0 },
+                { 0,1,1,1,1,1,1,1,1,0 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 0,1,1,1,1,C,1,1,1,0 },
+                { 1,1,1,1,1,1,1,1,1,0 },
+                { 0,1,1,1,1,1,1,1,1,0 },
+                { 0,0,1,1,E,1,1,0,0,1 },
+            });
+
+            var module2 = new Module(new int[,] {
+                { 0,0,0,0,E,0,0,0,0,0 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,C,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,E,1,1 },
+            });
+
+            modules.Add(module1);
+            //var roomCount = 300;
+            //var actual = builder.Create(roomCount, modules);
+            //Console.WriteLine($"Created {actual} out of {roomCount}");
+            var r1= builder.AddRoom(module1, 20, 10);
+            var r2 = builder.AddRoom(module1, 30, 35);
+            var r3 = builder.AddRoom(module1, 15, 45);
+            var r4 = builder.AddRoom(module1, 40, 25);
+            var r5 = builder.AddRoom(module1, 20, 65);
+            builder.CreatePaths();
+            //builder.CreatePath(r2, r3);
+
+            PrintMap(builder);
+        }        
 */
