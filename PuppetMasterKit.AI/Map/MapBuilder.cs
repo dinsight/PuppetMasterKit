@@ -160,3 +160,38 @@ namespace PuppetMasterKit.AI
         }
     }
 }
+
+/*
+private static void PrintMap(MapBuilder builder)
+        {
+            var pathCh = 'A'- MapCodes.PATH;
+            var buffer = new StringBuilder();
+            var line = new StringBuilder();
+            line.Append("    ");
+            for (int i = 0; i < cols; i++){
+                line.Append((i % 10).ToString("D1"));
+            }
+            buffer.Append(line.ToString());
+            buffer.AppendLine();
+            line.Length = 0;
+            line.Append("000 ");
+            builder.Apply((i, j, x) =>{
+                if (x == MapBuilder.Blank) {
+                    line.Append("*");
+                } else if (x >= MapCodes.PATH) {
+                    var c = (char)(pathCh + x);
+                    line.Append(c);
+                } else {
+                    line.Append(x.ToString());
+                }
+                if (j == cols - 1){
+                    line.AppendLine();
+                    buffer.Append(line.ToString());
+                    line.Length = 0;
+                    line.Append((i + 1).ToString("D3") + " ");
+                }
+            });
+            Console.WriteLine(buffer.ToString());
+            Console.ReadKey();
+        }
+*/
