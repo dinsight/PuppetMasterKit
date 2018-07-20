@@ -40,6 +40,7 @@ namespace PuppetMasterKit.AI.Map
             }
         }
 
+        private int neighbourDepthCheck = 2;
         /// <summary>
         /// Find the specified map, rowFrom, colFrom, rowTo and colTo.
         /// </summary>
@@ -106,15 +107,38 @@ namespace PuppetMasterKit.AI.Map
         private float Heuristics(int[,] map, Node current, Node node, Node dest)
         {
             var cost = Point.Distance(node.Row, node.Col, dest.Row, dest.Col);
-            var walledNeighbours = CountWalledNeighbours(map, node);
-            var prevRowDir = current.Parent != null ? current.Row - current.Parent.Row : 0;
-            var prevColDir = current.Parent != null ? current.Col - current.Parent.Col : 0;
-            var nextRowDir = node.Row - current.Row;
-            var nextColDir = node.Col - current.Col;
-            var directionBias = nextRowDir != prevRowDir || nextColDir != prevColDir ? 2 : 1;
-          
-            //paths hugging the walls should be costlier
-            return cost * (3*walledNeighbours+1) * directionBias;
+            var turns = CountTurns(current) + (IsTurn(current, node) ? 1 : 0);
+            return cost * (turns+1);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        private bool IsTurn(Node from, Node next) {
+            return next.Row - from.Row != 0 && next.Col - from.Col != 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fromNode"></param>
+        /// <returns></returns>
+        private int CountTurns(Node fromNode)
+        {
+            var count = 0;
+            var current = fromNode;
+            while (current != null) {
+                var prev = current.Parent;
+                if (prev != null) {
+                    if (IsTurn(current, prev))
+                        count++;
+                }
+                current = prev;
+            }
+            return count;
         }
 
         /// <summary>
@@ -159,29 +183,11 @@ namespace PuppetMasterKit.AI.Map
             var cols = map.GetLength(1);
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
-                    if (map[r, c] == MapCodes.EXIT || map[r, c] == MapBuilder.Blank) {
+                    //if (map[r, c] == MapCodes.EXIT || map[r, c] == MapBuilder.Blank || map[r, c] == MapCodes.PATH ) {
                         yield return new Node() { Row = r, Col = c, Code = map[r, c] };
-                    }
+                    //}
                 }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="map"></param>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private int CountWalledNeighbours(int[,] map, Node node)
-        {
-            var count = 0;
-            var r = node.Row;
-            var c = node.Col;
-            if (r - 1 >= 0 && map[r - 1, c] == MapCodes.X) count++;
-            if (r + 1 < map.GetLength(0) && map[r + 1, c] == MapCodes.X) count++;
-            if (c - 1 >= 0  && map[r, c - 1] == MapCodes.X) count++;
-            if (c + 1 < map.GetLength(1) && map[r, c + 1] == MapCodes.X) count++;
-            return count;
         }
     }
 }
