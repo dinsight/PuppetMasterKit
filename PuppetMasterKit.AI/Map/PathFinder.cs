@@ -70,10 +70,7 @@ namespace PuppetMasterKit.AI.Map
                     break;//found destination
                 }
                 var neighbours = walkable
-                    .Where(IsNeighbor(node))
-                    //we don't want the path to cross over  other rooms' exits
-                    .Where(x => x.Code != MapCodes.EXIT ||
-                               (x.Code == MapCodes.EXIT && (x.Equals(start) || x.Equals(end))));
+                    .Where(IsNeighbor(node));
 
                 foreach (var neighbor in neighbours) {
                     if (closed.Contains(neighbor)) {
@@ -107,34 +104,28 @@ namespace PuppetMasterKit.AI.Map
         private float Heuristics(int[,] map, Node current, Node node, Node dest)
         {
             var cost = Point.Distance(node.Row, node.Col, dest.Row, dest.Col);
-            var turns = CountTurns(current) + (IsTurn(current, node) ? 1 : 0);
+            var turns = CountTurns(current, node);
             return cost * (turns+1);
         }
-
+        
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="from"></param>
-        /// <param name="next"></param>
+        /// <param name="current"></param>
+        /// <param name="node"></param>
         /// <returns></returns>
-        private bool IsTurn(Node from, Node next) {
-            return next.Row - from.Row != 0 && next.Col - from.Col != 0;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fromNode"></param>
-        /// <returns></returns>
-        private int CountTurns(Node fromNode)
+        private int CountTurns(Node current, Node node)
         {
             var count = 0;
-            var current = fromNode;
+            var prevDir = Tuple.Create(node.Row - current.Row, node.Col - current.Col);
+            
             while (current != null) {
                 var prev = current.Parent;
                 if (prev != null) {
-                    if (IsTurn(current, prev))
+                    var dir = Tuple.Create(node.Row - current.Row, node.Col - current.Col);
+                    if (prevDir.Item1 != dir.Item1 || prevDir.Item2 != dir.Item2) {
                         count++;
+                    }
                 }
                 current = prev;
             }
@@ -165,11 +156,8 @@ namespace PuppetMasterKit.AI.Map
         /// <returns></returns>
         private static Func<Node, bool> IsNeighbor(Node node)
         {
-            return x =>
-                (x.Row == node.Row - 1 && x.Col == node.Col) ||
-                (x.Row == node.Row + 1 && x.Col == node.Col) ||
-                (x.Row == node.Row && x.Col == node.Col - 1) ||
-                (x.Row == node.Row && x.Col == node.Col + 1);
+            return x => Math.Abs(x.Row - node.Row) <= 1 &&
+                        Math.Abs(x.Col - node.Col) <= 1;
         }
 
         /// <summary>
@@ -183,9 +171,7 @@ namespace PuppetMasterKit.AI.Map
             var cols = map.GetLength(1);
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
-                    //if (map[r, c] == MapCodes.EXIT || map[r, c] == MapBuilder.Blank || map[r, c] == MapCodes.PATH ) {
-                        yield return new Node() { Row = r, Col = c, Code = map[r, c] };
-                    //}
+                    yield return new Node() { Row = r, Col = c, Code = map[r, c] };
                 }
             }
         }
