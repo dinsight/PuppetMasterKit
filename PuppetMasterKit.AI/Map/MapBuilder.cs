@@ -125,14 +125,17 @@ namespace PuppetMasterKit.AI
         {
             var nextRoomExits = nextRoom.GetExits(map).Select(x => new Point(x.Item1, x.Item2));
             var roomExits = room.GetExits(map).Select(x => new Point(x.Item1, x.Item2));
-            var exitPair = GetClosestPair(roomExits, nextRoomExits, (a,b)=>Point.Distance(a,b));
+            //var exitPair = GetClosestPair(roomExits, nextRoomExits, (a,b)=>Point.Distance(a,b));
+            var exitPair = Tuple.Create(new Point(room.Row, room.Col), new Point(nextRoom.Row, nextRoom.Col));
+            if (exitPair == null)
+                return false;
             var path = pathFinder.Find(map,
                 (int)exitPair.Item1.X,
                 (int)exitPair.Item1.Y,
                 (int)exitPair.Item2.X,
                 (int)exitPair.Item2.Y);
             if (path.Count > 0) {
-                path.ForEach(x => map[x.Item1, x.Item2] = MapCodes.PATH + pathCount);
+                path.ForEach(x => map[x.Item1, x.Item2] = MapCodes.PATH);
                 return true;
             }
             return false;
@@ -164,7 +167,54 @@ namespace PuppetMasterKit.AI
 }
 
 /*
-private static void PrintMap(MapBuilder builder)
+class Program
+    {
+        static int rows = 50;
+        static int cols = 100;
+
+        static void Main(string[] args)
+        {
+            var C = MapCodes.CENTER;
+            var E = MapCodes.EXIT;
+            var builder = new MapBuilder(rows, cols, 3, new PathFinder() );
+            var modules = new List<Module>();
+
+            var module1 = new Module(new int[,] {
+                { 0,0,1,1,1,1,1,0,0,0 },
+                { 0,1,1,1,1,1,1,1,1,0 },
+                { 0,1,1,1,1,1,1,1,1,1 },
+                { 0,1,1,1,1,C,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,0 },
+                { 0,1,1,1,1,1,1,1,1,0 },
+                { 0,0,1,1,1,1,1,0,0,0 },
+            });
+
+            var module2 = new Module(new int[,] {
+                { 0,0,0,0,1,0,0,0,0,0 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,C,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1 },
+            });
+
+            modules.Add(module1);
+            //var roomCount = 100;
+            //var actual = builder.Create(roomCount, modules);
+            //Console.WriteLine($"Created {actual} out of {roomCount}");
+            var r1 = builder.AddRoom(module1, 25, 40);
+            var r2 = builder.AddRoom(module1, 37, 35);
+            //var r3 = builder.AddRoom(module1, 15, 45);
+            //var r4 = builder.AddRoom(module1, 40, 25);
+            //var r5 = builder.AddRoom(module1, 20, 65);
+            //builder.CreatePaths();
+            builder.CreatePath(r1, r2);
+
+            PrintMap(builder);
+        }
+
+        private static void PrintMap(MapBuilder builder)
         {
             var pathCh = 'A'- MapCodes.PATH;
             var buffer = new StringBuilder();
@@ -196,46 +246,5 @@ private static void PrintMap(MapBuilder builder)
             Console.WriteLine(buffer.ToString());
             Console.ReadKey();
         }
-        
-static void Main(string[] args)
-        {
-            var C = MapCodes.CENTER;
-            var E = MapCodes.EXIT;
-            var builder = new MapBuilder(rows, cols, 2, new PathFinder() );
-            var modules = new List<Module>();
-
-            var module1 = new Module(new int[,] {
-                { 0,0,1,1,E,1,1,0,0,0 },
-                { 0,1,1,1,1,1,1,1,1,0 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 0,1,1,1,1,C,1,1,1,0 },
-                { 1,1,1,1,1,1,1,1,1,0 },
-                { 0,1,1,1,1,1,1,1,1,0 },
-                { 0,0,1,1,E,1,1,0,0,1 },
-            });
-
-            var module2 = new Module(new int[,] {
-                { 0,0,0,0,E,0,0,0,0,0 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,C,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,E,1,1 },
-            });
-
-            modules.Add(module1);
-            //var roomCount = 300;
-            //var actual = builder.Create(roomCount, modules);
-            //Console.WriteLine($"Created {actual} out of {roomCount}");
-            var r1= builder.AddRoom(module1, 20, 10);
-            var r2 = builder.AddRoom(module1, 30, 35);
-            var r3 = builder.AddRoom(module1, 15, 45);
-            var r4 = builder.AddRoom(module1, 40, 25);
-            var r5 = builder.AddRoom(module1, 20, 65);
-            builder.CreatePaths();
-            //builder.CreatePath(r2, r3);
-
-            PrintMap(builder);
-        }        
+    }     
 */
