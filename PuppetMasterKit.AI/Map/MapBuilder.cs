@@ -8,243 +8,217 @@ using PuppetMasterKit.Utility;
 namespace PuppetMasterKit.AI
 {
   public class MapBuilder
+  {
+    public static readonly int Blank = int.MinValue;
+
+    public int Rows { get; private set; }
+    public int Cols { get; private set; }
+
+    private int[,] map;
+    private int roomPadding;
+    private int pathCount;
+    private List<Room> rooms = new List<Room>();
+    private IPathFinder pathFinder;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.MapBuilder"/> class.
+    /// </summary>
+    /// <param name="rows">Rows.</param>
+    /// <param name="cols">Cols.</param>
+    /// <param name="roomPadding">Room padding.</param>
+    /// <param name="pathFinder">Path finder.</param>
+    public MapBuilder(int rows, int cols, int roomPadding, IPathFinder pathFinder)
     {
-        public static readonly int Blank = int.MinValue;
-
-        public int Rows { get; private set; }
-        public int Cols { get; private set; }
-
-        private int[,] map;
-        private int roomPadding;
-        private int pathCount;
-        private List<Room> rooms = new List<Room>();
-        private IPathFinder pathFinder;
-        
-        public MapBuilder(int rows, int cols, int roomPadding, IPathFinder pathFinder)
-        {
-            this.pathFinder = pathFinder;
-            this.Rows = rows;
-            this.Cols = cols;
-            this.pathCount = 0;
-            this.roomPadding = roomPadding;
-            map = new int[Rows, Cols];
-            ResetMap();
-        }
-
-        private void ResetMap()
-        {
-            for (int i = 0; i < Rows; i++){
-                for (int j = 0; j < Cols; j++){
-                    map[i, j] = Blank;
-                }
-            }
-        }
-        private bool CanAdd(Module module, int row, int col)
-        {
-            var toAdd = module;
-            if (roomPadding > 0) {
-                toAdd = module.Pad(roomPadding);
-            }
-            return toAdd.CanFit(map, row, col);
-        }
-
-        private List<int> Randomize(int count, int rangeStart, int rangeEnd)
-        {
-            List<int> numbers = new List<int>();
-            Random r = new Random(Guid.NewGuid().GetHashCode());
-            for (int i = 0; i < count; ++i)
-            {
-                numbers.Add(r.Next(rangeStart, rangeEnd));
-            }
-            return numbers;
-        }
-
-        public Room AddRoom(Module module, int row, int col)
-        {
-            if(CanAdd(module, row, col)) {
-                module.Stamp(map, row, col);
-                var room = new Room(module, row, col);
-                rooms.Add(room);
-                room.Id = rooms.Count-1;
-                return room;
-            }   
-            return null;
-        }
-
-        public void Apply(Action<int,int,int> action)
-        {
-            for (int i = 0; i < Rows; i++){
-                for (int j = 0; j < Cols; j++){
-                    action(i,j,map[i, j]);
-                }
-            }
-        }
-
-        public int Create(int maxRooms, List<Module> modules) {
-            var rooms = Randomize(maxRooms, 0, modules.Count);
-            var rows = Randomize(maxRooms, 0, Rows);
-            var cols = Randomize(maxRooms, 0, Cols);
-            var actual = 0;
-            for (int i = 0; i < rooms.Count; i++){
-                if (null != AddRoom(modules[rooms[i]], rows[i], cols[i])) {
-                    actual++;
-                }
-            }
-            CreatePaths();
-            return actual;
-        }
-
-        internal void CreatePaths()
-        {
-            pathCount = 0;
-            var connected = new List<Room>();
-            var unconnected = new Queue<Room>(rooms.Skip(1));
-            connected.Add(rooms.First());
-
-            while (unconnected.Count > 0) {
-                var newRoom = unconnected.Dequeue();
-                var sorted = connected
-                    .OrderBy(x => Point.Distance(x.Row, x.Col, newRoom.Row, newRoom.Col));
-                var pathFound = false;
-                foreach (var item in sorted) {
-                    if (CreatePath(item, newRoom)) {
-                        pathFound = true;
-                        break;
-                    }
-                }
-                if (pathFound) {
-                    pathCount++;
-                    connected.Add(newRoom);
-                } else {
-                    ;
-                }
-            }
-        }
-
-        internal bool CreatePath(Room room, Room nextRoom)
-        {
-            var nextRoomExits = nextRoom.GetExits(map).Select(x => new Point(x.Item1, x.Item2));
-            var roomExits = room.GetExits(map).Select(x => new Point(x.Item1, x.Item2));
-            //var exitPair = GetClosestPair(roomExits, nextRoomExits, (a,b)=>Point.Distance(a,b));
-            var exitPair = Tuple.Create(new Point(room.Row, room.Col), new Point(nextRoom.Row, nextRoom.Col));
-            if (exitPair == null)
-                return false;
-            var path = pathFinder.Find(map,
-                (int)exitPair.Item1.X,
-                (int)exitPair.Item1.Y,
-                (int)exitPair.Item2.X,
-                (int)exitPair.Item2.Y);
-            if (path.Count > 0) {
-                path.ForEach(x => map[x.Item1, x.Item2] = MapCodes.PATH);
-                return true;
-            }
-            return false;
-        }
-
-        private Tuple<T, T> GetClosestPair<T>(
-            IEnumerable<T> set1, 
-            IEnumerable<T> set2,
-            Func<T,T,float> distance)
-        {
-            float minDist = float.MaxValue;
-            T start = default(T);
-            T end = default(T);
-            foreach (var s in set1) {
-                foreach (var d in set2) {
-                    var dist = distance(s, d); 
-                    if (dist < minDist){
-                        minDist = dist;
-                        start = s;
-                        end = d;
-                    }
-                }
-            }
-            if (start != null && end != null)
-                return Tuple.Create(start, end);
-            return null;
-        }
+      this.pathFinder = pathFinder;
+      this.Rows = rows;
+      this.Cols = cols;
+      this.pathCount = 0;
+      this.roomPadding = roomPadding;
+      map = new int[Rows, Cols];
+      ResetMap();
     }
-}
 
-/*
-class Program
+    /// <summary>
+    /// Resets the map.
+    /// </summary>
+    private void ResetMap()
     {
-        static int rows = 50;
-        static int cols = 100;
-
-        static void Main(string[] args)
-        {
-            var C = MapCodes.CENTER;
-            var E = MapCodes.EXIT;
-            var builder = new MapBuilder(rows, cols, 3, new PathFinder() );
-            var modules = new List<Module>();
-
-            var module1 = new Module(new int[,] {
-                { 0,0,1,1,1,1,1,0,0,0 },
-                { 0,1,1,1,1,1,1,1,1,0 },
-                { 0,1,1,1,1,1,1,1,1,1 },
-                { 0,1,1,1,1,C,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,0 },
-                { 0,1,1,1,1,1,1,1,1,0 },
-                { 0,0,1,1,1,1,1,0,0,0 },
-            });
-
-            var module2 = new Module(new int[,] {
-                { 0,0,0,0,1,0,0,0,0,0 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,C,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1,1 },
-            });
-
-            modules.Add(module1);
-            //var roomCount = 100;
-            //var actual = builder.Create(roomCount, modules);
-            //Console.WriteLine($"Created {actual} out of {roomCount}");
-            var r1 = builder.AddRoom(module1, 25, 40);
-            var r2 = builder.AddRoom(module1, 37, 35);
-            //var r3 = builder.AddRoom(module1, 15, 45);
-            //var r4 = builder.AddRoom(module1, 40, 25);
-            //var r5 = builder.AddRoom(module1, 20, 65);
-            //builder.CreatePaths();
-            builder.CreatePath(r1, r2);
-
-            PrintMap(builder);
+      for (int i = 0; i < Rows; i++) {
+        for (int j = 0; j < Cols; j++) {
+          map[i, j] = Blank;
         }
+      }
+    }
 
-        private static void PrintMap(MapBuilder builder)
-        {
-            var pathCh = 'A'- MapCodes.PATH;
-            var buffer = new StringBuilder();
-            var line = new StringBuilder();
-            line.Append("    ");
-            for (int i = 0; i < cols; i++){
-                line.Append((i % 10).ToString("D1"));
-            }
-            buffer.Append(line.ToString());
-            buffer.AppendLine();
-            line.Length = 0;
-            line.Append("000 ");
-            builder.Apply((i, j, x) =>{
-                if (x == MapBuilder.Blank) {
-                    line.Append("*");
-                } else if (x >= MapCodes.PATH) {
-                    var c = (char)(pathCh + x);
-                    line.Append(c);
-                } else {
-                    line.Append(x.ToString());
-                }
-                if (j == cols - 1){
-                    line.AppendLine();
-                    buffer.Append(line.ToString());
-                    line.Length = 0;
-                    line.Append((i + 1).ToString("D3") + " ");
-                }
-            });
-            Console.WriteLine(buffer.ToString());
-            Console.ReadKey();
+    /// <summary>
+    /// Cans the add.
+    /// </summary>
+    /// <returns><c>true</c>, if add was caned, <c>false</c> otherwise.</returns>
+    /// <param name="module">Module.</param>
+    /// <param name="row">Row.</param>
+    /// <param name="col">Col.</param>
+    private bool CanAdd(Module module, int row, int col)
+    {
+      var toAdd = module;
+      if (roomPadding > 0) {
+        toAdd = module.Pad(roomPadding);
+      }
+      return toAdd.CanFit(map, row, col);
+    }
+
+    /// <summary>
+    /// Randomize the specified count, rangeStart and rangeEnd.
+    /// </summary>
+    /// <returns>The randomize.</returns>
+    /// <param name="count">Count.</param>
+    /// <param name="rangeStart">Range start.</param>
+    /// <param name="rangeEnd">Range end.</param>
+    private List<int> Randomize(int count, int rangeStart, int rangeEnd)
+    {
+      List<int> numbers = new List<int>();
+      Random r = new Random(Guid.NewGuid().GetHashCode());
+      for (int i = 0; i < count; ++i) {
+        numbers.Add(r.Next(rangeStart, rangeEnd));
+      }
+      return numbers;
+    }
+
+    /// <summary>
+    /// Adds the room.
+    /// </summary>
+    /// <returns>The room.</returns>
+    /// <param name="module">Module.</param>
+    /// <param name="row">Row.</param>
+    /// <param name="col">Col.</param>
+    public Room AddRoom(Module module, int row, int col)
+    {
+      if (CanAdd(module, row, col)) {
+        module.Stamp(map, row, col);
+        var room = new Room(module, row, col);
+        rooms.Add(room);
+        room.Id = rooms.Count - 1;
+        return room;
+      }
+      return null;
+    }
+
+    /// <summary>
+    /// Apply the specified action.
+    /// </summary>
+    /// <param name="action">Action.</param>
+    public void Apply(Action<int, int, int> action)
+    {
+      for (int i = 0; i < Rows; i++) {
+        for (int j = 0; j < Cols; j++) {
+          action(i, j, map[i, j]);
         }
-    }     
-*/
+      }
+    }
+
+    /// <summary>
+    /// Create the specified maxRooms and modules.
+    /// </summary>
+    /// <returns>The create.</returns>
+    /// <param name="maxRooms">Max rooms.</param>
+    /// <param name="modules">Modules.</param>
+    public int Create(int maxRooms, List<Module> modules)
+    {
+      var roomIds = Randomize(maxRooms, 0, modules.Count);
+      var rowIds = Randomize(maxRooms, 0, Rows);
+      var colIds = Randomize(maxRooms, 0, Cols);
+      var actual = 0;
+      for (int i = 0; i < roomIds.Count; i++) {
+        if (null != AddRoom(modules[roomIds[i]], rowIds[i], colIds[i])) {
+          actual++;
+        }
+      }
+      CreatePaths();
+      return actual;
+    }
+
+    /// <summary>
+    /// Creates the paths.
+    /// </summary>
+    internal void CreatePaths()
+    {
+      pathCount = 0;
+      var connected = new List<Room>();
+      var unconnected = new Queue<Room>(rooms.Skip(1));
+      connected.Add(rooms.First());
+
+      while (unconnected.Count > 0) {
+        var newRoom = unconnected.Dequeue();
+        var sorted = connected
+            .OrderBy(x => Point.Distance(x.Row, x.Col, newRoom.Row, newRoom.Col));
+        var pathFound = false;
+        foreach (var item in sorted) {
+          if (CreatePath(item, newRoom)) {
+            pathFound = true;
+            break;
+          }
+        }
+        if (pathFound) {
+          pathCount++;
+          connected.Add(newRoom);
+        } else {
+          ;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Creates the path.
+    /// </summary>
+    /// <returns><c>true</c>, if path was created, <c>false</c> otherwise.</returns>
+    /// <param name="room">Room.</param>
+    /// <param name="nextRoom">Next room.</param>
+    public bool CreatePath(Room room, Room nextRoom)
+    {
+      var exitPair = Tuple.Create(new Point(room.Row, room.Col), 
+                                  new Point(nextRoom.Row, nextRoom.Col));
+      if (exitPair == null)
+        return false;
+      var path = pathFinder.Find(map,
+          (int)exitPair.Item1.X,
+          (int)exitPair.Item1.Y,
+          (int)exitPair.Item2.X,
+          (int)exitPair.Item2.Y);
+      if (path.Count > 0) {
+        path.ForEach(x => map[x.Item1, x.Item2] = MapCodes.PATH + pathCount);
+        return true;
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Gets the closest pair.
+    /// </summary>
+    /// <returns>The closest pair.</returns>
+    /// <param name="set1">Set1.</param>
+    /// <param name="set2">Set2.</param>
+    /// <param name="distance">Distance.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    private Tuple<T, T> GetClosestPair<T>(
+        IEnumerable<T> set1,
+        IEnumerable<T> set2,
+        Func<T, T, float> distance) where T : class
+    {
+      float minDist = float.MaxValue;
+      T start = default(T);
+      T end = default(T);
+      foreach (var s in set1) {
+        foreach (var d in set2) {
+          var dist = distance(s, d);
+          if (dist < minDist) {
+            minDist = dist;
+            start = s;
+            end = d;
+          }
+        }
+      }
+      if (start != null && end != null)
+        return Tuple.Create(start, end);
+      return null;
+    }
+  }
+}
