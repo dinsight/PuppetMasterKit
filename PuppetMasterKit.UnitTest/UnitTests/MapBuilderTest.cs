@@ -55,7 +55,7 @@ namespace PuppetMasterKit.UnitTest
     {
       var C = MapCodes.CENTER;
       var E = MapCodes.EXIT;
-      var builder = new MapBuilder(rows, cols, 3, new PathFinder());
+      var builder = new MapBuilder(rows, cols, 5, new PathFinder());
       var modules = new List<Module>();
 
       var module1 = new Module(new int[,] {
@@ -80,7 +80,7 @@ namespace PuppetMasterKit.UnitTest
 
       modules.Add(module1);
       modules.Add(module2);
-      var roomCount = 100;
+      var roomCount = 200;
       var actual = builder.Create(roomCount, modules);
       Console.WriteLine($"Created {actual} out of {roomCount}");
       //var r1 = builder.AddRoom(module1, 25, 40);

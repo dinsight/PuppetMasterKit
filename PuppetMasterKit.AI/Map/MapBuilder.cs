@@ -143,26 +143,20 @@ namespace PuppetMasterKit.AI
     {
       pathCount = 0;
       var connected = new List<Room>();
-      var unconnected = new Queue<Room>(rooms.Skip(1));
+      var unconnected = new List<Room>(rooms.Skip(1));
       connected.Add(rooms.First());
 
-      while (unconnected.Count > 0) {
-        var newRoom = unconnected.Dequeue();
-        var sorted = connected
-            .OrderBy(x => Point.Distance(x.Row, x.Col, newRoom.Row, newRoom.Col));
-        var pathFound = false;
-        foreach (var item in sorted) {
-          if (CreatePath(item, newRoom)) {
-            pathFound = true;
-            break;
-          }
-        }
-        if (pathFound) {
+      var closest = GetClosestPair(connected, unconnected, 
+                                   (a, b) => Point.Distance(a.Row, a.Col, b.Row, b.Col));
+      while (closest !=null ) {
+        
+        if (CreatePath(closest.Item1, closest.Item2)) {
           pathCount++;
-          connected.Add(newRoom);
-        } else {
-          ;
+          connected.Add(closest.Item2);
+          unconnected.Remove(closest.Item2);
         }
+        closest = GetClosestPair(connected, unconnected, 
+                                 (a, b) => Point.Distance(a.Row, a.Col, b.Row, b.Col));
       }
     }
 
