@@ -14,9 +14,12 @@ namespace PuppetMasterKit.AI.Map
     private Pair patternCenter;
 
     public int Rows { get => pattern.GetLength(0); }
-
     public int Cols { get => pattern.GetLength(1); }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Map.Module"/> class.
+    /// </summary>
+    /// <param name="pattern">Pattern.</param>
     public Module(int[,] pattern)
     {
       this.pattern = pattern;

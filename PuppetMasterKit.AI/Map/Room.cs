@@ -11,6 +11,7 @@ namespace PuppetMasterKit.AI.Map
     int col;
 
     public int Id { get; set; }
+    public int PathCount { get; set; }
     public int Row { get => row; set => row = value; }
     public int Col { get => col; set => col = value; }
     public Module Module { get => module; }
