@@ -13,13 +13,15 @@ namespace PuppetMasterKit.AI
 
     public int Rows { get; private set; }
     public int Cols { get; private set; }
-    public List<Room> Rooms { get => rooms; }
+    public IReadOnlyCollection<Room> Rooms { get => rooms.AsReadOnly(); }
+    public IReadOnlyCollection<Region> Regions { get => regions.AsReadOnly(); }
 
     private int[,] map;
     private int roomPadding;
     private int pathCount;
     private IPathFinder pathFinder;
     private List<Room> rooms = new List<Room>();
+    private List<Region> regions = new List<Region>();
     private Dictionary<Module, Module> paddedModules = new Dictionary<Module, Module>();
 
     private float roomDistance(Room a, Room b) => Point.Distance(a.Row, a.Col, b.Row, b.Col);
@@ -87,7 +89,7 @@ namespace PuppetMasterKit.AI
       if (CanAdd(module, row, col)) {
         module.Stamp(map, row, col);
         var room = new Room(module, map, row, col);
-        Rooms.Add(room);
+        rooms.Add(room);
         room.Id = Rooms.Count - 1;
         return room;
       }
@@ -129,7 +131,7 @@ namespace PuppetMasterKit.AI
         }
       }
       CreatePaths();
-      ParitionMap();
+      regions = CreateRegions();
       return actual;
     }
 
@@ -179,14 +181,24 @@ namespace PuppetMasterKit.AI
     /// <summary>
     /// Voronoi-like partitioning of the map
     /// </summary>
-    public void ParitionMap()
+    public List<Region> CreateRegions()
     {
+      var regionMap = new Dictionary<Room,Region>();
       Apply((r, c, v) => {
       if (v == Blank) {
           var closestRoom = rooms.MinBy(x => Point.Distance(r,c,x.Row,x.Col));
-          map[r, c] = MapCodes.REGION + closestRoom.Id;
+          Region region = null;
+          if(!regionMap.ContainsKey(closestRoom)){ 
+            region = new Region(closestRoom.Module.RegionFill);
+            regionMap.Add(closestRoom, region);
+          } else { 
+            region = regionMap[closestRoom];
+          }
+          map[r, c] = closestRoom.Module.RegionFill;
+          region.AddTile(r,c);
         }
       });
+      return regionMap.Values.ToList();
     }
 
     /// <summary>
