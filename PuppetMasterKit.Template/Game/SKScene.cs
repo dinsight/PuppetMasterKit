@@ -39,7 +39,8 @@ namespace PuppetMasterKit.Template.Game
     public static Size GetMapSize(this SKScene scene)
     {
       var map = scene.Children.OfType<SKTileMapNode>().First();
-      var mapWidth = (float) map.TileSize.Width * map.NumberOfRows;
+      //var mapWidth = (float) map.TileSize.Width * map.NumberOfRows;
+      var mapWidth = (float)map.TileSize.Width * 140;
       return new Size(mapWidth, mapWidth);
     }
 

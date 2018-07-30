@@ -52,7 +52,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       var obstacles = flightMap.Obstacles.OfType<PolygonalObstacle>().ToList();
       var newPath = ObstaclePath.GetPathTroughObstacles(obstacles, agent.Position, mapper.FromScene(location));
 
-      Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
+      //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival
       var goToPoint = new GoalToFollowPath(newPath.ToArray(), 100).WhenArrived((x, p) => {
           state.CurrentState = RabbitStates.idle;

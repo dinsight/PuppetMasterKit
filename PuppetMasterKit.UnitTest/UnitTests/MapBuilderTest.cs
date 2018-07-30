@@ -34,19 +34,12 @@ namespace PuppetMasterKit.UnitTest
       builder.Apply((i, j, x) => {
         if (x == MapBuilder.Blank) {
           line.Append("∙");
-        }if (x == MapCodes.X) { 
+        } else if (x == MapCodes.X) { 
           line.Append("@");
-        }
-        else if (x == MapCodes.PATH) {
-          //var c = (char)(pathCh + x - MapCodes.PATH);
-          var c = ' ';
-          line.Append(c);
-        } else if (x >= MapCodes.REGION ){
-          var c = 'A' + (x - MapCodes.REGION)%26;
-          line.Append((char)c);
-        } 
-        else {
-          line.Append(x.ToString());
+        } else if (x == MapCodes.PATH) {
+          line.Append(' ');
+        } else {
+          line.Append((char)x);
         }
         if (j == cols - 1) {
           line.AppendLine();
@@ -56,10 +49,9 @@ namespace PuppetMasterKit.UnitTest
         }
       });
       Console.WriteLine(buffer.ToString());
-
-      builder.Rooms.ForEach(x => {
+      foreach (var x in builder.Rooms) {
         Console.WriteLine($"builder.AddRoom(modules[{modules.IndexOf(x.Module)}],{x.Row},{x.Col});");
-      });
+      }
     }
 
     [Test]
@@ -73,14 +65,14 @@ namespace PuppetMasterKit.UnitTest
                 { 1,1,1,1,1,},
                 { 1,1,1,1,1,},
                 
-      });
+      }, '-');
       var module1 = new Module(new int[,] {
                 { 1,1,1,1,1,1,1,},
                 { 1,1,1,1,1,1,1,},
                 { 1,1,1,1,1,1,1,},
                 { 1,1,1,1,1,1,1,},
                 { 1,1,1,1,1,1,1,},
-            });
+            }, '+');
 
       var module2 = new Module(new int[,] {
                 { 0,0,0,1,0,0,0,0,0 },
@@ -90,7 +82,7 @@ namespace PuppetMasterKit.UnitTest
                 { 1,1,1,1,1,1,1,1,1 },
                 { 1,1,1,1,1,1,1,1,1 },
                 { 1,1,1,1,1,1,1,1,1 },
-            });
+            }, '|');
 
       modules.Add(module0);
       modules.Add(module1);

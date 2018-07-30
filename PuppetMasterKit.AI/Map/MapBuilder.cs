@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.AI.Map;
 using PuppetMasterKit.Utility;
+using System.Collections.ObjectModel;
 
 namespace PuppetMasterKit.AI
 {
@@ -13,8 +14,9 @@ namespace PuppetMasterKit.AI
 
     public int Rows { get; private set; }
     public int Cols { get; private set; }
-    public IReadOnlyCollection<Room> Rooms { get => rooms.AsReadOnly(); }
-    public IReadOnlyCollection<Region> Regions { get => regions.AsReadOnly(); }
+    public IReadOnlyCollection<Room> Rooms { get => new ReadOnlyCollection<Room>(rooms); }
+    public IReadOnlyCollection<Region> Regions { get => new ReadOnlyCollection<Region>(regions); }
+    public int[,] Map { get => map;}
 
     private int[,] map;
     private int roomPadding;
@@ -183,19 +185,19 @@ namespace PuppetMasterKit.AI
     /// </summary>
     public List<Region> CreateRegions()
     {
-      var regionMap = new Dictionary<Room,Region>();
+      var regionMap = new Dictionary<Room, Region>();
       Apply((r, c, v) => {
-      if (v == Blank) {
-          var closestRoom = rooms.MinBy(x => Point.Distance(r,c,x.Row,x.Col));
+        if (v == Blank) {
+          var closestRoom = rooms.MinBy(x => Point.Distance(r, c, x.Row, x.Col));
           Region region = null;
-          if(!regionMap.ContainsKey(closestRoom)){ 
+          if (!regionMap.ContainsKey(closestRoom)) {
             region = new Region(closestRoom.Module.RegionFill);
             regionMap.Add(closestRoom, region);
-          } else { 
+          } else {
             region = regionMap[closestRoom];
           }
           map[r, c] = closestRoom.Module.RegionFill;
-          region.AddTile(r,c);
+          region.AddTile(r, c);
         }
       });
       return regionMap.Values.ToList();

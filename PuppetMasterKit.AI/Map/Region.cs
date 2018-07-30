@@ -1,6 +1,7 @@
 using PuppetMasterKit.AI.Map;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,9 @@ namespace PuppetMasterKit.AI
   public class Region
   {
     public int RegionFill { get; }
-    public IReadOnlyCollection<Tuple<int,int>> Tiles { 
-      get { 
-        return tiles.AsReadOnly();
+    public IReadOnlyCollection<Pair> Tiles { 
+      get {
+        return new ReadOnlyCollection<Pair>(tiles);
         } 
     }
 

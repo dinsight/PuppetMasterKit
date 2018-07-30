@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using CoreGraphics;
+using Foundation;
 using LightInject;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.AI.Map;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
+using PuppetMasterKit.Tilemap;
 using SpriteKit;
 
 namespace PuppetMasterKit.Template.Game.Level
@@ -133,8 +137,8 @@ namespace PuppetMasterKit.Template.Game.Level
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
         //var y = random.Next(100, 600);
-        var x = 100;
-        var y = 100;
+        var x = 0;
+        var y = 0;
         agent.Position = new Point(x, y);
         flightMap.AddHero(rabbit);
       }
@@ -177,8 +181,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 2.3f;
-      cameraNode.YScale = 2.3f;
+      cameraNode.XScale = 0.7f;
+      cameraNode.YScale = 0.7f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -240,9 +244,109 @@ namespace PuppetMasterKit.Template.Game.Level
       AddEntities();
       var camera = AddCamera();
       var data = LoadSceneData();
-      Debug(data);
+      //Debug(data);
+      GenerateMap();
       AddHud(camera);
       return flightMap;
+    }
+
+    private void SplitTileTest()
+    {
+      var existing = scene.Children.OfType<SKTileMapNode>();
+      scene.RemoveChildren(existing.ToArray());
+
+      //var tile = SKSpriteNode.FromImageNamed("farm");
+      //var texture = scene.View.TextureFromNode(tile);
+
+      var texture = SKTexture.FromImageNamed("farm");
+      var split = TileHelper.SplitTile(texture, 100, 250);
+      if(split.topTile!=null){
+        var node = SKSpriteNode.FromTexture(split.topTile);
+        node.Position = new CGPoint(0, 0);
+        node.AnchorPoint = new CGPoint(0.5, 0.5);
+        scene.Add(node);
+      }
+
+      if (split.bottomTile != null) {
+        var node = SKSpriteNode.FromTexture(split.bottomTile);
+        node.Position = new CGPoint(0, 0);
+        node.AnchorPoint = new CGPoint(0.5, 0.5);
+        scene.Add(node);
+      }
+    }
+
+    private void GenerateMap1()
+    {
+      var existing = scene.Children.OfType<SKTileMapNode>();
+      scene.RemoveChildren(existing.ToArray());
+      var builder = new MapBuilder(140, 140, 5, new PathFinder());
+      var modules = new List<Module>();
+      var module0 = new Module(new int[,] {
+                { 1,1,1,1,1,},
+                { 1,1,1,1,1,},
+                { 1,1,1,1,1,},
+
+      }, '-');
+      var module1 = new Module(new int[,] {
+                { 1,1,1,1,1,1,1,},
+                { 1,1,1,1,1,1,1,},
+                { 1,1,1,1,1,1,1,},
+                { 1,1,1,1,1,1,1,},
+                { 1,1,1,1,1,1,1,},
+            }, '+');
+
+      var module2 = new Module(new int[,] {
+                { 0,0,0,1,0,0,0,0,0 },
+                { 1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1 },
+            }, '|');
+
+      modules.Add(module0);
+      modules.Add(module1);
+      modules.Add(module2);
+      var actual = builder.Create(100, modules);
+
+      var mapping = new Dictionary<int, string>();
+      mapping.Add((int)'-', "Grass");
+      mapping.Add((int)'+', "Sand");
+      mapping.Add((int)'|', "Water");
+
+      var ts = SKTileSet.FromName("Sample Isometric Tile Set");
+      var tileMap = new TileMap(builder.Map.GetLength(0),builder.Map.GetLength(1),128,128);
+      tileMap.CreateFrom(builder.Map, mapping, ts);
+      tileMap.Position = new CGPoint(0, 0);
+      scene.AddChild(tileMap);
+    }
+
+    private void GenerateMap()
+    {
+      var existing = scene.Children.OfType<SKTileMapNode>();
+      scene.RemoveChildren(existing.ToArray());
+      var map = new int[,]{
+        {'+','+','+','+','+','+','+'},
+        {'+','+','+','+','+','+','+'},
+        {'+','+','+','+','+','+','+'},
+        {'+','+','+','+','+','+','+'},
+        {'+','+','+','+','+','+','+'},
+        {'+','+','+','+','+','+','+'},
+        {'+','+','+','+','+','+','+'},
+      };
+      var mapping = new Dictionary<int, string> {
+        { '-', "Cobblestone" },
+        { '+', "Sand" },
+        { '|', "Water" },
+        { 'F', "farm" }
+      };
+
+      var ts = SKTileSet.FromName("Sample Isometric Tile Set");
+      var tileMap = new TileMap(map.GetLength(0), map.GetLength(1), 128, 128);
+      tileMap.CreateFrom(map, mapping, ts);
+      tileMap.Position = new CGPoint(0, 0);
+      scene.AddChild(tileMap);
     }
   }
 }

@@ -78,6 +78,7 @@
     <Compile Include="Map\PathFinder.cs" />
     <Compile Include="Map\MapCodes.cs" />
     <Compile Include="Map\Room.cs" />
+    <Compile Include="Map\Region.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

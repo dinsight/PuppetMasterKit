@@ -128,6 +128,7 @@
     <Folder Include="Media.xcassets\deer.spriteatlas\" />
     <Folder Include="Media.xcassets\rabbit-walk-s.spriteatlas\" />
     <Folder Include="Media.xcassets\hud-rabbit.imageset\" />
+    <Folder Include="Game\Tilemap\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -188,6 +189,9 @@
     <Compile Include="Game\Ios.Bindings\IsometricMapper.cs" />
     <Compile Include="Game\ObstacleCluster.cs" />
     <Compile Include="Game\ObstaclePath.cs" />
+    <Compile Include="Game\Tilemap\TileHelper.cs" />
+    <Compile Include="Game\Tilemap\TileMap.cs" />
+    <Compile Include="Game\Tilemap\TileMapLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
