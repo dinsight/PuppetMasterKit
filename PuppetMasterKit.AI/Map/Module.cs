@@ -16,6 +16,7 @@ public class Module
     public int Rows { get => pattern.GetLength(0); }
     public int Cols { get => pattern.GetLength(1); }
     public int RegionFill { get; set; }
+    public bool IsAccessible { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Map.Module"/> class.
@@ -24,6 +25,7 @@ public class Module
     public Module(int[,] pattern, int regionFill) {
       this.pattern = pattern;
       this.RegionFill = regionFill;
+      this.IsAccessible = true;
       patternCenter = GetPatternCenter();
       if (patternCenter == null) {
         throw new ArgumentException("The pattern is missing a center point");

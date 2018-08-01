@@ -181,8 +181,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.7f;
-      cameraNode.YScale = 0.7f;
+      cameraNode.XScale = 0.8f;//0.7f;
+      cameraNode.YScale = 0.8f;//0.7f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -255,9 +255,6 @@ namespace PuppetMasterKit.Template.Game.Level
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 
-      //var tile = SKSpriteNode.FromImageNamed("farm");
-      //var texture = scene.View.TextureFromNode(tile);
-
       var texture = SKTexture.FromImageNamed("farm");
       var split = TileHelper.SplitTile(texture, 100, 250);
       if(split.topTile!=null){
@@ -275,23 +272,51 @@ namespace PuppetMasterKit.Template.Game.Level
       }
     }
 
-    private void GenerateMap1()
+    private void GenerateMap2()
     {
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
-      var builder = new MapBuilder(140, 140, 5, new PathFinder());
-      var modules = new List<Module>();
-      var module0 = new Module(new int[,] {
-                { 1,1,1,1,1,},
-                { 1,1,1,1,1,},
-                { 1,1,1,1,1,},
+      var map = new int[,]{
+        {'+','|','|','|','|','|','|'},
+        {'+','|','|','|','|','|','|'},
+        {'+','+','+','|','+','+','|'},
+        {'+','+','+','|','+','+','|'},
+        {'+','+','+','+','+','+','|'},
+        {'+','|','+','+','+','|','|'},
+        {'|','|','|','|','|','|','|'},
+      };
+      var mapping = new Dictionary<int, string> {
+        { '-', "Cobblestone" },
+        { '+', "Sand" },
+        { '|', "Water" },
+        { 'F', "farm" }
+      };
 
-      }, '-');
+      var tileSize = 128;
+      var tileSet = SKTileSet.FromName("Sample Isometric Tile Set");
+      var tileMap = new TileMap(map, mapping, tileSet, tileSize, tileSize);
+      tileMap.Build('-','+', '|');
+      tileMap.Position = new CGPoint(0, 0);
+      scene.AddChild(tileMap);
+    }
+
+    private void GenerateMap()
+    {
+      var existing = scene.Children.OfType<SKTileMapNode>();
+      scene.RemoveChildren(existing.ToArray());
+
+      var modules = new List<Module>();
+
+      var module0 = new Module(new int[,] {
+                { 1,1,},
+                { 1,1,},
+      }, '-'){ IsAccessible = false };
+
       var module1 = new Module(new int[,] {
                 { 1,1,1,1,1,1,1,},
                 { 1,1,1,1,1,1,1,},
                 { 1,1,1,1,1,1,1,},
-                { 1,1,1,1,1,1,1,},
+                { 1,1,1,1,1,'W',1,},
                 { 1,1,1,1,1,1,1,},
             }, '+');
 
@@ -301,50 +326,31 @@ namespace PuppetMasterKit.Template.Game.Level
                 { 1,1,1,1,1,1,1,1,1 },
                 { 1,1,1,1,1,1,1,1,1 },
                 { 1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,'W',1 },
                 { 1,1,1,1,1,1,1,1,1 },
             }, '|');
 
       modules.Add(module0);
       modules.Add(module1);
       modules.Add(module2);
-      var actual = builder.Create(100, modules);
 
-      var mapping = new Dictionary<int, string>();
-      mapping.Add((int)'-', "Grass");
-      mapping.Add((int)'+', "Sand");
-      mapping.Add((int)'|', "Water");
+      var builder = new MapBuilder(55, 55, 5, new PathFinder());
+      builder.Create(120, modules);
 
-      var ts = SKTileSet.FromName("Sample Isometric Tile Set");
-      var tileMap = new TileMap(builder.Map.GetLength(0),builder.Map.GetLength(1),128,128);
-      tileMap.CreateFrom(builder.Map, mapping, ts);
-      tileMap.Position = new CGPoint(0, 0);
-      scene.AddChild(tileMap);
-    }
-
-    private void GenerateMap()
-    {
-      var existing = scene.Children.OfType<SKTileMapNode>();
-      scene.RemoveChildren(existing.ToArray());
-      var map = new int[,]{
-        {'+','+','+','+','+','+','+'},
-        {'+','+','+','+','+','+','+'},
-        {'+','+','+','+','+','+','+'},
-        {'+','+','+','+','+','+','+'},
-        {'+','+','+','+','+','+','+'},
-        {'+','+','+','+','+','+','+'},
-        {'+','+','+','+','+','+','+'},
-      };
       var mapping = new Dictionary<int, string> {
-        { '-', "Cobblestone" },
+        { '-', "Water" },
         { '+', "Sand" },
-        { '|', "Water" },
-        { 'F', "farm" }
+        { '|', "Cobblestone" },
+        { MapCodes.PATH, "Cobblestone"},
+        { 1, "Grass"},
+        { 'F', "farm" },
+        { 'W', "Wood" }
       };
 
-      var ts = SKTileSet.FromName("Sample Isometric Tile Set");
-      var tileMap = new TileMap(map.GetLength(0), map.GetLength(1), 128, 128);
-      tileMap.CreateFrom(map, mapping, ts);
+      var tileSize = 128;
+      var tileSet = SKTileSet.FromName("Sample Isometric Tile Set");
+      var tileMap = new TileMap(builder.Map, mapping, tileSet, tileSize, tileSize);
+      tileMap.Build('|','+', 1, '-');
       tileMap.Position = new CGPoint(0, 0);
       scene.AddChild(tileMap);
     }

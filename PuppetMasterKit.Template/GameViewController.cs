@@ -21,7 +21,8 @@ namespace PuppetMasterKit.Template
       skView.ShowsFPS = true;
       skView.ShowsNodeCount = true;
       /* Sprite Kit applies additional optimizations to improve rendering performance */
-      skView.IgnoresSiblingOrder = true;
+      skView.IgnoresSiblingOrder = false;
+
 
       // Create and configure the scene.
       var scene = SKNode.FromFile<GameScene>("GameScene");

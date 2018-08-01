@@ -12,12 +12,6 @@ namespace PuppetMasterKit.AI
   {
     public static readonly int Blank = int.MinValue;
 
-    public int Rows { get; private set; }
-    public int Cols { get; private set; }
-    public IReadOnlyCollection<Room> Rooms { get => new ReadOnlyCollection<Room>(rooms); }
-    public IReadOnlyCollection<Region> Regions { get => new ReadOnlyCollection<Region>(regions); }
-    public int[,] Map { get => map;}
-
     private int[,] map;
     private int roomPadding;
     private int pathCount;
@@ -25,8 +19,13 @@ namespace PuppetMasterKit.AI
     private List<Room> rooms = new List<Room>();
     private List<Region> regions = new List<Region>();
     private Dictionary<Module, Module> paddedModules = new Dictionary<Module, Module>();
+    private float RoomDistance(Room a, Room b) => Point.Distance(a.Row, a.Col, b.Row, b.Col);
 
-    private float roomDistance(Room a, Room b) => Point.Distance(a.Row, a.Col, b.Row, b.Col);
+    public int Rows { get; private set; }
+    public int Cols { get; private set; }
+    public IReadOnlyCollection<Room> Rooms { get => new ReadOnlyCollection<Room>(rooms); }
+    public IReadOnlyCollection<Region> Regions { get => new ReadOnlyCollection<Region>(regions); }
+    public int[,] Map { get => map; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.MapBuilder"/> class.
@@ -112,7 +111,7 @@ namespace PuppetMasterKit.AI
     }
 
     /// <summary>
-    /// Create the specified maxRooms and modules.
+    /// Randomly creates the rooms based on a list of modules.
     /// </summary>
     /// <returns>The create.</returns>
     /// <param name="maxRooms">Max rooms.</param>
@@ -143,18 +142,24 @@ namespace PuppetMasterKit.AI
     public void CreatePaths()
     {
       pathCount = 0;
+      var accessible = Rooms.Where(room => room.Module.IsAccessible);
       var connected = new List<Room>();
-      var unconnected = new List<Room>(Rooms.Skip(1));
-      connected.Add(Rooms.First());
+      //need at least two rooms to connect
+      if (accessible.Count() < 2)
+        return;
+      //skip the first room and add it to the connected list
+      var unconnected = new List<Room>(accessible.Skip(1));
+      connected.Add(accessible.First());
 
-      var closest = GetClosestPair(connected, unconnected, roomDistance);
+      //get the closest pair of rooms and build a path between them
+      var closest = GetClosestPair(connected, unconnected, RoomDistance);
       while (closest != null) {
         if (CreatePath(closest.Item1, closest.Item2)) {
           pathCount++;
           connected.Add(closest.Item2);
           unconnected.Remove(closest.Item2);
         }
-        closest = GetClosestPair(connected, unconnected, roomDistance);
+        closest = GetClosestPair(connected, unconnected, RoomDistance);
       }
       TieDeadends(connected);
     }
@@ -166,8 +171,8 @@ namespace PuppetMasterKit.AI
     /// <param name="connected">Connected.</param>
     private void TieDeadends(List<Room> connected)
     {
-      var deadends = rooms.Where(x => x.PathCount <= 1).ToList();
-      var pairs = GetClosestPair(deadends, deadends, roomDistance);
+      var deadends = rooms.Where(x => x.Module.IsAccessible && x.PathCount <= 1).ToList();
+      var pairs = GetClosestPair(deadends, deadends, RoomDistance);
       while (pairs != null) {
         if (pairs.Item1.PathCount == 1
             && pairs.Item2.PathCount == 1
@@ -176,7 +181,7 @@ namespace PuppetMasterKit.AI
         }
         deadends.Remove(pairs.Item1);
         deadends.Remove(pairs.Item2);
-        pairs = GetClosestPair(deadends, deadends, roomDistance);
+        pairs = GetClosestPair(deadends, deadends, RoomDistance);
       };
     }
 
@@ -204,7 +209,7 @@ namespace PuppetMasterKit.AI
     }
 
     /// <summary>
-    /// Creates the path.
+    /// Creates a path between two rooms.
     /// </summary>
     /// <returns><c>true</c>, if path was created, <c>false</c> otherwise.</returns>
     /// <param name="room">Room.</param>

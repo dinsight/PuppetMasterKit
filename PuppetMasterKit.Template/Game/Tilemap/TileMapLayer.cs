@@ -27,12 +27,12 @@ namespace PuppetMasterKit.Tilemap
     /// <summary>
     /// Sets the tile.
     /// </summary>
-    /// <param name="group">Group.</param>
+    /// <param name="texture">Texture.</param>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public void SetTile(SKTexture texture, int row, int col)
+    public void SetTile(SKTexture texture, int row, int col, float? zPos =null )
     {
-      if (!Validate(row, col))
+      if (!Validate(row, col) || texture==null)
         return;
       var x = (row + 1) * GetMap().TileWidth;
       var y = (col + 1) * GetMap().TileHeight;
@@ -42,6 +42,7 @@ namespace PuppetMasterKit.Tilemap
         var node = SKSpriteNode.FromTexture(texture);
         node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
         node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
+        node.ZPosition = zPos.HasValue ? zPos.Value : ZPosition;
         this.AddChild(node);
       }
     }

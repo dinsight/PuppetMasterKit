@@ -129,6 +129,7 @@
     <Folder Include="Media.xcassets\rabbit-walk-s.spriteatlas\" />
     <Folder Include="Media.xcassets\hud-rabbit.imageset\" />
     <Folder Include="Game\Tilemap\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-center-v2.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -466,6 +467,8 @@
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-top.imageset\grass-top.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree.imageset\old-tree.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-center-v2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-center-v2.imageset\grass-center-v2.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
