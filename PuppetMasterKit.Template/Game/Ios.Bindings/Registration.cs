@@ -2,6 +2,7 @@
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Sprites;
+using PuppetMasterKit.Tilemap;
 using SpriteKit;
 
 namespace PuppetMasterKit.Template.Game.Ios.Bindings

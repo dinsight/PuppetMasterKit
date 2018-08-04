@@ -15,6 +15,7 @@ using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
 using PuppetMasterKit.Tilemap;
 using SpriteKit;
+using UIKit;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -181,8 +182,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.8f;//0.7f;
-      cameraNode.YScale = 0.8f;//0.7f;
+      cameraNode.XScale = 8f;//0.7f;
+      cameraNode.YScale = 8f;//0.7f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -250,28 +251,6 @@ namespace PuppetMasterKit.Template.Game.Level
       return flightMap;
     }
 
-    private void SplitTileTest()
-    {
-      var existing = scene.Children.OfType<SKTileMapNode>();
-      scene.RemoveChildren(existing.ToArray());
-
-      var texture = SKTexture.FromImageNamed("farm");
-      var split = TileHelper.SplitTile(texture, 100, 250);
-      if(split.topTile!=null){
-        var node = SKSpriteNode.FromTexture(split.topTile);
-        node.Position = new CGPoint(0, 0);
-        node.AnchorPoint = new CGPoint(0.5, 0.5);
-        scene.Add(node);
-      }
-
-      if (split.bottomTile != null) {
-        var node = SKSpriteNode.FromTexture(split.bottomTile);
-        node.Position = new CGPoint(0, 0);
-        node.AnchorPoint = new CGPoint(0.5, 0.5);
-        scene.Add(node);
-      }
-    }
-
     private void GenerateMap2()
     {
       var existing = scene.Children.OfType<SKTileMapNode>();
@@ -334,7 +313,7 @@ namespace PuppetMasterKit.Template.Game.Level
       modules.Add(module1);
       modules.Add(module2);
 
-      var builder = new MapBuilder(55, 55, 5, new PathFinder());
+      var builder = new MapBuilder(155, 155, 5, new PathFinder());
       builder.Create(120, modules);
 
       var mapping = new Dictionary<int, string> {
@@ -353,6 +332,7 @@ namespace PuppetMasterKit.Template.Game.Level
       tileMap.Build('|','+', 1, '-');
       tileMap.Position = new CGPoint(0, 0);
       scene.AddChild(tileMap);
+      var layer = tileMap.FlattenLayer(0);
     }
   }
 }

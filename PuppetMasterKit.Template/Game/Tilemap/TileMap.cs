@@ -247,5 +247,18 @@ namespace PuppetMasterKit.Tilemap
       this.AddChild(layer);
       return layer;
     }
+
+    /// <summary>
+    /// Flattens the layer.
+    /// </summary>
+    /// <returns>The layer.</returns>
+    /// <param name="index">Index.</param>
+    public SKSpriteNode FlattenLayer(int index)
+    {
+      if(index>=0 && index < layers.Count){
+        return layers[index].FlattenLayer();
+      }
+      return null;
+    }
   }
 }

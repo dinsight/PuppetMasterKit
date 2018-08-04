@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Linq;
+using CoreGraphics;
+using Foundation;
 using LightInject;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using SpriteKit;
+using UIKit;
 
 namespace PuppetMasterKit.Tilemap
 {
   public class TileMapLayer : SKNode
   {
+    private const int maxSliceSize = 4000;
     private WeakReference<TileMap> map;
-
     private ICoordinateMapper mapper;
+    private TileHelper tileHelper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Tilemap.TileMapLayer"/> class.
@@ -22,6 +26,7 @@ namespace PuppetMasterKit.Tilemap
     {
       this.map = new WeakReference<TileMap>(map);
       this.mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      this.tileHelper = new TileHelper();
     }
 
     /// <summary>
@@ -42,9 +47,28 @@ namespace PuppetMasterKit.Tilemap
         var node = SKSpriteNode.FromTexture(texture);
         node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
         node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
-        node.ZPosition = zPos.HasValue ? zPos.Value : ZPosition;
+        node.ZPosition = zPos ?? ZPosition;
         this.AddChild(node);
       }
+    }
+
+    /// <summary>
+    /// Converts to texture.
+    /// </summary>
+    /// <returns>The to texture.</returns>
+    public SKSpriteNode FlattenLayer()
+    {
+      var image = tileHelper.FlattenNode(this, GetMap().TileWidth, GetMap().Rows, GetMap().Cols);
+      var newNode = tileHelper.SplitImage(image, maxSliceSize, maxSliceSize);
+#if DEBUG
+      tileHelper.SaveImage(image, "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map.png");
+#endif
+      RemoveAllChildren();
+      AddChild(newNode);
+      newNode.Position = new CGPoint(0, 0);
+      newNode.AnchorPoint = new CGPoint(0.5, 1);
+      newNode.Size = new CGSize(image.Width, image.Height);
+      return newNode;
     }
 
     /// <summary>
