@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.AI", "Puppe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.Template", "PuppetMasterKit.Template\PuppetMasterKit.Template.csproj", "{D5190088-D723-4DC5-AE96-2E50C9718550}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.Ios.Isometric", "PuppetMasterKit.Ios.Isometric\PuppetMasterKit.Ios.Isometric.csproj", "{34896846-E1E4-47CB-AC4B-8B28A8057292}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -59,6 +61,14 @@ Global
 		{D5190088-D723-4DC5-AE96-2E50C9718550}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{D5190088-D723-4DC5-AE96-2E50C9718550}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{D5190088-D723-4DC5-AE96-2E50C9718550}.Debug|iPhone.Build.0 = Debug|iPhone
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Release|iPhone.Build.0 = Release|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{34896846-E1E4-47CB-AC4B-8B28A8057292}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

@@ -128,8 +128,36 @@
     <Folder Include="Media.xcassets\deer.spriteatlas\" />
     <Folder Include="Media.xcassets\rabbit-walk-s.spriteatlas\" />
     <Folder Include="Media.xcassets\hud-rabbit.imageset\" />
-    <Folder Include="Game\Tilemap\" />
     <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-center-v2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree3.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\aspen-tree.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\maple-tree.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree-1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree-2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree-1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-main.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-bottom.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-left.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-ne.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-nw.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-right.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-se.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-sw.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-top.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartool-tree-2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-3.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-4.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-3.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-water-1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\ccartoon-water-2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-water-3.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-4.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -190,9 +218,6 @@
     <Compile Include="Game\Ios.Bindings\IsometricMapper.cs" />
     <Compile Include="Game\ObstacleCluster.cs" />
     <Compile Include="Game\ObstaclePath.cs" />
-    <Compile Include="Game\Tilemap\TileHelper.cs" />
-    <Compile Include="Game\Tilemap\TileMap.cs" />
-    <Compile Include="Game\Tilemap\TileMapLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -206,6 +231,10 @@
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
       <Project>{F3270C94-52FB-4C33-9640-93F991A67BB0}</Project>
       <Name>PuppetMasterKit.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Ios.Isometric\PuppetMasterKit.Ios.Isometric.csproj">
+      <Project>{34896846-E1E4-47CB-AC4B-8B28A8057292}</Project>
+      <Name>PuppetMasterKit.Ios.Isometric</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -386,73 +415,45 @@
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Sand_Iso_UpRightInterior.imageset\Sand_Iso_UpRightInterior.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Sign_Iso.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Sign_Iso.imageset\Sign_Iso.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Stump_Iso.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Stump_Iso.imageset\Stump_Iso.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Tree_Iso.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Tree_Iso.imageset\Tree_Iso.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Center.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Center.imageset\Water_Iso_Center.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Down.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Down.imageset\Water_Iso_Down.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownLeft.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownLeft.imageset\Water_Iso_DownLeft.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownLeftInterior.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownLeftInterior.imageset\Water_Iso_DownLeftInterior.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownRight.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownRight.imageset\Water_Iso_DownRight.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownRightInterior.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownRightInterior.imageset\Water_Iso_DownRightInterior.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Left.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Left.imageset\Water_Iso_Left.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Right.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Right.imageset\Water_Iso_Right.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Up.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Up.imageset\Water_Iso_Up.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpLeft.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpLeft.imageset\Water_Iso_UpLeft.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpLeftInterior.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpLeftInterior.imageset\Water_Iso_UpLeftInterior.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpRight.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpRight.imageset\Water_Iso_UpRight.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpRightInterior.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpRightInterior.imageset\Water_Iso_UpRightInterior.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-2-center.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-2-center.imageset\Grass-2-center.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-2-center.imageset\0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-left-top.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-left-top.imageset\Grass-left-top.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-left.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-left.imageset\Grass-left.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-right-bottom.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-right-bottom.imageset\Grass-right-bottom.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-right-top.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Grass-right-top.imageset\Grass-right-top.png" />
     <ImageAsset Include="Resources\Media.xcassets\farm.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\farm.imageset\farm.png" />
     <ImageAsset Include="Resources\Media.xcassets\hole.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\hole.imageset\hole.png" />
     <ImageAsset Include="Resources\Media.xcassets\trees.imageset\0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\trees.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass.imageset\grass.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree.imageset\tree.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\bush.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\bush.imageset\bush.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\pine.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\pine.imageset\pine.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\trees_1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\trees_1.imageset\trees1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\wall-2.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\wall-2.imageset\wall-2.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\wall-3.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\wall-3.imageset\wall-3.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\wall.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\wall.imageset\wall.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\TREE-OLD1.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\TREE-OLD1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\TREE-OLD1.imageset\0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Image.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree-2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree-2.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree-1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\tree-1.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-main.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-main.imageset\grass-main.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-bottom.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-bottom.imageset\grass-bottom.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-left-1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-left-1.imageset\grass-left.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-left.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-left.imageset\grass-left.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-ne.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-ne.imageset\grass-ne.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-nw.imageset\Contents.json" />
@@ -465,10 +466,39 @@
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-sw.imageset\grass-sw.png" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-top.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-top.imageset\grass-top.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\old-tree.imageset\old-tree.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-center-v2.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\grass-center-v2.imageset\grass-center-v2.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartool-tree-2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-4.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-1.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-2.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-sand-3.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-water-1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\ccartoon-water-2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\ccartoon-water-2.imageset\1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-water-3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-water-3.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownLeft.imageset\tile-left0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownRight.imageset\tile-bottom0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Left.imageset\tile-nw0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Right.imageset\tile-se0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Up.imageset\tile-ne0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpLeft.imageset\tile-top0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Down.imageset\tile-sw0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_Center.imageset\tile-main0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-water-1.imageset\tile-main0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownLeftInterior.imageset\tile-corner-right0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_DownRightInterior.imageset\tile-corner-top0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpLeftInterior.imageset\tile-corner-bottom0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpRight.imageset\tile-right0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\Water_Iso_UpRightInterior.imageset\tile-corner-left0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-4.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-1.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartoon-tree-3.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Isometric Tile Sprite Atlas.spriteatlas\cartool-tree-2.imageset\0001.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
