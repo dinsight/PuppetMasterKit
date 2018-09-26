@@ -6,6 +6,7 @@ using SpriteKit;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility;
 using Pair = System.Tuple;
+using CoreImage;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
@@ -67,32 +68,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     public void Build(params int[] order)
     {
-      regions = ExtractRegions(map);
+      regions = Region.ExtractRegions(map);
       PaintRegions(order);
-    }
-
-    /// <summary>
-    /// Extracts the regions.
-    /// </summary>
-    /// <returns>The regions.</returns>
-    /// <param name="geography">Geography.</param>
-    private List<Region> ExtractRegions(int[,] geography)
-    {
-      var dictRegions = new Dictionary<int, Region>();
-      for (int row = 0; row < rows; row++) {
-        for (int col = 0; col < cols; col++) {
-          var val = geography[row, col];
-          Region region = null;
-          if(dictRegions.ContainsKey(val)){
-            region = dictRegions[val];
-          } else {
-            region = new Region(val);
-            dictRegions.Add(val, region);
-          }
-          region.AddTile(row, col);
-        }
-      }
-      return dictRegions.Values.ToList();
     }
 
     /// <summary>
@@ -121,16 +98,17 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
                   .TileGroups
                   .FirstOrDefault(t => t.Name == x.Value))
           .FirstOrDefault();
-        
+
+        var corners = GetCorners(tileGroup);
         foreach (var tile in reg.Tiles) {
           if(tileGroup!=null){            
             //set the appropriate texture for the adjacent tiles
             SetAdjacentTiles(baseTileLayer, 
-                             tileGroup, 
+                             corners, 
                              tile.Item1, 
                              tile.Item2);
             //set the tile texture
-            baseTileLayer.SetTile(GetTexture(tileGroup, CENTER),
+            baseTileLayer.SetTile(tileGroup.GetTexture(CENTER),
                                   tile.Item1,
                                   tile.Item2);
           }
@@ -139,73 +117,99 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
+    /// Gets the corners.
+    /// </summary>
+    /// <returns>The corners.</returns>
+    /// <param name="tileGroup">Tile group.</param>
+    private Dictionary<string,SKTexture> GetCorners(SKTileGroup tileGroup){
+      var dictionary = new Dictionary<string, SKTexture>();
+
+      var maintTile = tileGroup.GetTexture(CENTER);
+      dictionary.Add(LOWER_LEFT_CORNER,  maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_CORNER)));
+      dictionary.Add(LOWER_RIGHT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_CORNER)));
+      dictionary.Add(UP_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UP_EDGE)));
+      dictionary.Add(UPPER_LEFT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_CORNER)));
+      dictionary.Add(RIGHT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(RIGHT_EDGE)));
+      dictionary.Add(UPPER_RIGHT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_RIGHT_CORNER)));
+      dictionary.Add(DOWN_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(DOWN_EDGE)));
+      dictionary.Add(LEFT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(LEFT_EDGE)));
+      dictionary.Add(UPPER_LEFT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_EDGE)));
+      dictionary.Add(UPPER_RIGHT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_RIGHT_EDGE)));
+      dictionary.Add(LOWER_RIGHT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_EDGE)));
+      dictionary.Add(LOWER_LEFT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_EDGE)));
+
+      return dictionary;
+    }
+
+    /// <summary>
     /// Sets the adjacent tiles.
     /// </summary>
     /// <param name="layer">Layer.</param>
-    /// <param name="tileGroup">Tile group.</param>
+    /// <param name="corners">Tile group.</param>
     /// <param name="i">The index.</param>
     /// <param name="j">J.</param>
     private void SetAdjacentTiles(TileMapLayer layer, 
-                                  SKTileGroup tileGroup, 
+                                  Dictionary<string, SKTexture> corners,
                                   int i, int j)
     {
       var v = map[i, j];
       int? z = null;
+
       //NE
       if (Filled(i - 1, j - 1, v) && Empty(i - 1, j, v) && Empty(i - 1, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, LOWER_LEFT_CORNER), i - 1, j, z);
+        layer.SetTile(corners[LOWER_LEFT_CORNER], i - 1, j, z);
       }
       if (Empty(i - 1, j - 1, v) && Empty(i - 1, j, v) && Filled(i - 1, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, LOWER_RIGHT_CORNER), i - 1, j, z);
+        layer.SetTile(corners[LOWER_RIGHT_CORNER], i - 1, j, z);
       }
       if (Empty(i - 1, j - 1, v) && Empty(i - 1, j, v) && Empty(i - 1, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, UP_EDGE), i - 1, j, z);
+        layer.SetTile(corners[UP_EDGE], i - 1, j, z);
       }
       //SE
       if (Filled(i - 1, j + 1, v) && Empty(i, j + 1, v) && Empty(i + 1, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, UPPER_LEFT_CORNER), i, j + 1, z);
+        layer.SetTile(corners[UPPER_LEFT_CORNER], i, j + 1, z);
       }
       if (Empty(i - 1, j + 1, v) && Empty(i, j + 1, v) && Filled(i + 1, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, LOWER_LEFT_CORNER), i, j + 1, z);
+        layer.SetTile(corners[LOWER_LEFT_CORNER], i, j + 1, z);
       }
       if (Empty(i - 1, j + 1, v) && Empty(i, j + 1, v) && Empty(i + 1, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, RIGHT_EDGE), i, j + 1, z);
+        layer.SetTile(corners[RIGHT_EDGE], i, j + 1, z);
       }
       //SW
       if (Filled(i + 1, j + 1, v) && Empty(i + 1, j, v) && Empty(i + 1, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, UPPER_RIGHT_CORNER), i + 1, j, z);
+        layer.SetTile(corners[UPPER_RIGHT_CORNER], i + 1, j, z);
       }
       if (Empty(i + 1, j + 1, v) && Empty(i + 1, j, v) && Filled(i + 1, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, UPPER_LEFT_CORNER), i + 1, j, z);
+        layer.SetTile(corners[UPPER_LEFT_CORNER], i + 1, j, z);
       }
       if (Empty(i + 1, j + 1, v) && Empty(i + 1, j, v) && Empty(i + 1, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, DOWN_EDGE), i + 1, j, z);
+        layer.SetTile(corners[DOWN_EDGE], i + 1, j, z);
       }
       //NW
       if (Filled(i + 1, j - 1, v) && Empty(i, j - 1, v) && Empty(i - 1, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, LOWER_RIGHT_CORNER), i, j - 1);
+        layer.SetTile(corners[LOWER_RIGHT_CORNER], i, j - 1);
       }
       if (Empty(i + 1, j - 1, v) && Empty(i, j - 1, v) && Filled(i - 1, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, UPPER_RIGHT_CORNER), i, j - 1);
+        layer.SetTile(corners[UPPER_RIGHT_CORNER], i, j - 1);
       }
       if (Empty(i + 1, j - 1, v) && Empty(i, j - 1, v) && Empty(i - 1, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, LEFT_EDGE), i, j - 1);
+        layer.SetTile(corners[LEFT_EDGE], i, j - 1);
       }
       //N corner
       if (Empty(i, j - 1, v) && Empty(i - 1, j - 1, v) && Empty(i - 1, j, v)) {
-        layer.SetTile(GetTexture(tileGroup, UPPER_LEFT_EDGE), i - 1, j - 1);
+        layer.SetTile(corners[UPPER_LEFT_EDGE], i - 1, j - 1);
       }
       ////E corner
       if (Empty(i - 1, j, v) && Empty(i - 1, j + 1, v) && Empty(i, j + 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, UPPER_RIGHT_EDGE), i - 1, j + 1);
+        layer.SetTile(corners[UPPER_RIGHT_EDGE], i - 1, j + 1);
       }
       //S corner
       if (Empty(i, j + 1, v) && Empty(i + 1, j + 1, v) && Empty(i + 1, j, v)) {
-        layer.SetTile(GetTexture(tileGroup, LOWER_RIGHT_EDGE), i + 1, j + 1, z);
+        layer.SetTile(corners[LOWER_RIGHT_EDGE], i + 1, j + 1, z);
       }
       ////W corner
       if (Empty(i + 1, j, v) && Empty(i + 1, j - 1, v) && Empty(i, j - 1, v)) {
-        layer.SetTile(GetTexture(tileGroup, LOWER_LEFT_EDGE), i + 1, j - 1);
+        layer.SetTile(corners[LOWER_LEFT_EDGE], i + 1, j - 1);
       }
     }
 
@@ -215,7 +219,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="regionFillCode">Region fill code.</param>
     /// <param name="group">Tile group.</param>
     /// <param name="targetLayer">Target layer.</param>
-    public void FillRegion(int regionFillCode, SKTileGroup group, int targetLayer)
+    public void FillRegion(int regionFillCode, SKTileGroup group, float densityFactor, int targetLayer)
     {
       if (targetLayer < 0 || targetLayer >= layers.Count)
         return;
@@ -228,7 +232,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
                       .SelectMany(b => b.Textures).ToList();
       
       regionsToFill.ForEach(x=>{
-        var density = 1f * x.MaxCol;
+        var density = densityFactor * x.MaxCol;
         var filler = UniformFill.Fill(0, 0, x.MaxCol+1, x.MaxRow+1, density);
 
         //var texture = defs[random.Next(0, defs.Count())];
@@ -246,37 +250,6 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
           }
         }
       });
-    }
-
-    /// <summary>
-    /// Gets the texture.
-    /// </summary>
-    /// <returns>The texture.</returns>
-    /// <param name="group">Group.</param>
-    private SKTexture GetTexture(SKTileGroup group, string ruleName)
-    {
-      if (group.Rules.Count() == 1) {
-        return group.Rules
-                    .First()
-                    .TileDefinitions
-                    .First()
-                    .Textures
-                    .First();
-      }
-
-      var tileDefs = group.Rules
-                          .Where(r => r.Name == ruleName && r.TileDefinitions != null)
-                          .SelectMany(x => x.TileDefinitions).ToList();
-      if(tileDefs.Count==0){
-        return null;
-      }
-
-      if (tileDefs.Count == 1) {
-        return tileDefs.First().Textures.First();
-      }
-
-      var index = random.Next(0, tileDefs.Count());
-      return tileDefs[index].Textures.First();
     }
 
     /// <summary>

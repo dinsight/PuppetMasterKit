@@ -270,13 +270,13 @@ namespace PuppetMasterKit.Template.Game.Level
       };
 
       var tileSize = 128;
-      var tileSet = SKTileSet.FromName("Sample Isometric Tile Set");
+      var tileSet = SKTileSet.FromName("Template Tile Set");
       var tileMap = new TileMap(map, mapping, tileSet, tileSize);
       tileMap.Build('-','+', 'W', '|');
       tileMap.Position = new CGPoint(0, 0);
       scene.AddChild(tileMap);
       var woods = tileSet.TileGroups.First(x => x.Name == "Wood");
-      tileMap.FillRegion('W', woods, 0);
+      tileMap.FillRegion('W', woods, 1, 0);
       var layer = tileMap.FlattenLayer(0);
     }
 
@@ -288,29 +288,29 @@ namespace PuppetMasterKit.Template.Game.Level
       var modules = new List<Module>();
 
       var module0 = new Module(new int[,] {
-                { '+','+','+','+','+'},
-                { '+','+','+','+','+'},
-                { '+','+','+','+','+'},
-                { '+','+','+','+','+'},
-      }, 'W');
+                { 3,3,3,3,3},
+                { 3,3,3,3,3},
+                { 3,3,3,3,3},
+                { 3,3,3,3,3},
+      }, '+');
 
       var module1 = new Module(new int[,] {
-                { '-','-','-','-','-','-','-',},
-                { '-','-','-','-','-','-','-',},
-                { '-','-','-','-','-','-','-',},
-                { '-','-','-','-','-','-','-',},
-                { '-','-','-','-','-','-','-',},
-      }, '-'){ IsAccessible = false };
+                { 3,3,3,3,3,3,3,},
+                { 3,3,3,3,3,3,3,},
+                { 3,3,3,3,3,3,3,},
+                { 3,3,3,3,3,3,3,},
+                { 3,3,3,3,3,3,3,},
+      }, 1){ IsAccessible = false };
 
       var module2 = new Module(new int[,] {
-                { 0,0,0,1,0,0,0,0,0 },
-                { 1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1 },
-                { 1,1,1,1,1,1,1,1,1 },
-            }, '+');
+                { 0,0,0,3,0,0,0,0,0 },
+                { 3,3,3,3,3,3,3,3,3 },
+                { 3,3,3,3,3,3,3,3,3 },
+                { 3,3,3,3,3,3,3,3,3 },
+                { 3,3,3,3,3,3,3,3,3 },
+                { 3,3,3,3,3,3,3,3,3 },
+                { 3,3,3,3,3,3,3,3,3 },
+            }, 'W');
 
       modules.Add(module0);
       modules.Add(module1);
@@ -323,20 +323,20 @@ namespace PuppetMasterKit.Template.Game.Level
       var mapping = new Dictionary<int, string> {
         { '-', "Water" },
         { '+', "Sand" },
-        { '|', "Cobblestone" },
-        { MapCodes.PATH, "Cobblestone" },
-        { 1, "Grass" },
+        //{ MapCodes.PATH, "Dirt" },
+        { MapCodes.PATH, "Dirt" },
+        { 1, "Water" },
         { 'W', "Grass"},
       };
 
       var tileSize = 128;
-      var tileSet = SKTileSet.FromName("Sample Isometric Tile Set");
+      var tileSet = SKTileSet.FromName("Template Tile Set");
       var tileMap = new TileMap(builder.Map, mapping, tileSet, tileSize);
-      tileMap.Build('|','+', 1, 'W',MapCodes.PATH,'-');
+      tileMap.Build('+', 1, 'W','|',MapCodes.PATH,'-');
       tileMap.Position = new CGPoint(0, 0);
 
-      var woods = tileSet.TileGroups.First(x => x.Name == "Wood");
-      tileMap.FillRegion('W', woods, 0);
+      var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
+      //tileMap.FillRegion('W', woods, 0.9f, 0);
       scene.AddChild(tileMap);
       var layer = tileMap.FlattenLayer(0);
     }

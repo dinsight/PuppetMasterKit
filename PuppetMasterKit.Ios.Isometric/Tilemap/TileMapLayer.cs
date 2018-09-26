@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CoreGraphics;
+using CoreImage;
 using Foundation;
 using LightInject;
 using PuppetMasterKit.AI.Configuration;
@@ -16,7 +17,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     private const int maxSliceSize = 4000;
     private WeakReference<TileMap> map;
     private ICoordinateMapper mapper;
-    private TileHelper tileHelper;
+    private ImageHelper tileHelper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Tilemap.TileMapLayer"/> class.
@@ -26,7 +27,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     {
       this.map = new WeakReference<TileMap>(map);
       this.mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
-      this.tileHelper = new TileHelper();
+      this.tileHelper = new ImageHelper();
     }
 
     /// <summary>

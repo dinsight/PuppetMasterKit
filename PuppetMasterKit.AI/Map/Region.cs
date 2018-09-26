@@ -73,5 +73,32 @@ namespace PuppetMasterKit.AI
         return value;
       }
     }
+
+    /// <summary>
+    /// Extracts the regions.
+    /// </summary>
+    /// <returns>The regions.</returns>
+    /// <param name="geography">Geography.</param>
+    public static List<Region> ExtractRegions(int[,] geography)
+    {
+      var rows = geography.GetLength(0);
+      var cols = geography.GetLength(1);
+
+      var dictRegions = new Dictionary<int, Region>();
+      for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < cols; col++) {
+          var val = geography[row, col];
+          Region region = null;
+          if (dictRegions.ContainsKey(val)) {
+            region = dictRegions[val];
+          } else {
+            region = new Region(val);
+            dictRegions.Add(val, region);
+          }
+          region.AddTile(row, col);
+        }
+      }
+      return dictRegions.Values.ToList();
+    }
   }
 }
