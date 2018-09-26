@@ -12,7 +12,7 @@ using CoreImage;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
-  public class ImageHelper
+  public static class ImageHelper
   {
     
     /// <summary>
@@ -22,6 +22,10 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     {
       public SKTexture topTile { get; set; }
       public SKTexture bottomTile { get; set; }
+      public static bool IsTopTile(int row, int col, int tileWidth, int tileHeight)
+      {
+        return row < tileHeight / 2;
+      }
     }
 
     const byte bitsPerComponent = 8;
@@ -32,22 +36,21 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// Gets the bytes from image.
     /// </summary>
     /// <returns>The bytes from image.</returns>
-    private  byte[] GetBytesFromImage(SKTexture texture)
-    {
-      using (var data = texture.CGImage.DataProvider.CopyData()) {
-        var bytes = new byte[data.Length];
-        Marshal.Copy(data.Bytes, bytes, 0, (int)data.Length);
-        return bytes;
+    /// <param name="image">Image.</param>
+    public static byte[] GetBytesFromImage(this CGImage image){
+      using (var data = image.DataProvider.CopyData()) {
+        var imageBuffer = new byte[data.Length];
+        Marshal.Copy(data.Bytes, imageBuffer, 0, (int)data.Length);
+        return imageBuffer;
       }
     }
-
     /// <summary>
     /// Gets the image from bytes.
     /// </summary>
     /// <returns>The image from bytes.</returns>
     /// <param name="originalTexture">Original texture.</param>
     /// <param name="bytes">Bytes.</param>
-    private CGImage GetImageFromBytes(SKTexture originalTexture, byte[] bytes)
+    private static CGImage GetImageFromBytes(SKTexture originalTexture, byte[] bytes)
     {
       CGImage cgImage = null;
       using (var dataProvider = new CGDataProvider(bytes, 0, bytes.Length)) {
@@ -75,7 +78,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="width">Width.</param>
     /// <param name="height">Height.</param>
     /// <param name="bytes">Bytes.</param>
-    private CGImage GetImageFromBytes(int width, int height, byte[] bytes)
+    private static CGImage GetImageFromBytes(int width, int height, byte[] bytes)
     {
       using (var colourSpace = CGColorSpace.CreateDeviceRGB()) {
         using (var context = new CGBitmapContext(bytes,
@@ -97,10 +100,10 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="texture">Texture.</param>
     /// <param name="tileWidth">Tile width.</param>
     /// <param name="tileHeight">Tile height.</param>
-    public Split SplitTile(SKTexture texture, int tileWidth, int tileHeight)
+    public static Split SplitTile(SKTexture texture, int tileWidth, int tileHeight)
     {
       var split = new Split();
-      var bytes = GetBytesFromImage(texture);
+      var bytes = texture.GetBytesFromTexture();
       var h = texture.CGImage.Height;
       var w = texture.CGImage.Width;
       var bpr = texture.CGImage.BytesPerRow;
@@ -115,7 +118,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       for (int index = 0; index < bytes.Length; index += bpp) {
         var row = (index / bpp) / w;
         var col = index - (w * row);
-        if(IsTopTile((int)row, (int)col, tileWidth, tileHeight)){
+        if(Split.IsTopTile((int)row, (int)col, tileWidth, tileHeight)){
           topBuffer[index] = bytes[index];
           topBuffer[index + 1] = bytes[index + 1];
           topBuffer[index + 2] = bytes[index + 2];
@@ -138,19 +141,6 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
-    /// Ises the top tile.
-    /// </summary>
-    /// <returns><c>true</c>, if top tile was ised, <c>false</c> otherwise.</returns>
-    /// <param name="row">Row.</param>
-    /// <param name="col">Col.</param>
-    /// <param name="tileWidth">Tile width.</param>
-    /// <param name="tileHeight">Tile height.</param>
-    private bool IsTopTile(int row, int col, int tileWidth, int tileHeight)
-    {
-      return row < tileHeight / 2;
-    }
-
-    /// <summary>
     /// Maps to image.
     /// </summary>
     /// <returns>The to image.</returns>
@@ -158,7 +148,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="tileSize">Tile size.</param>
     /// <param name="rows">Rows.</param>
     /// <param name="cols">Cols.</param>
-    public CGImage FlattenNode(SKNode node, int tileSize, int rows, int cols)
+    public static CGImage FlattenNode(SKNode node, int tileSize, int rows, int cols)
     {
       CGImage image = null;
       var width = cols * tileSize;
@@ -191,7 +181,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="image">Image.</param>
     /// <param name="maxWidth">Max width.</param>
     /// <param name="maxHeight">Max height.</param>
-    public SKSpriteNode SplitImage(CGImage image, int maxWidth, int maxHeight)
+    public static SKSpriteNode SplitImage(this CGImage image, int maxWidth, int maxHeight)
     {
       var imageWidth = (int)image.Width;
       var imageHeight = (int)image.Height;
@@ -208,6 +198,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
         return SKSpriteNode.FromTexture(SKTexture.FromImage(image));
       }
 
+      var data = image.GetBytesFromImage();
       var parentNode = new SKSpriteNode();        
       for (int v = 0; v < sliceVCount; v++) {
         for (int h = 0; h < sliceHCount; h++) {
@@ -215,7 +206,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
           var rowEnd = (int)Math.Min(rowStart + sliceHeight, image.Height);
           var colStart = h * sliceWidth;
           var colEnd = (int)Math.Min(colStart + sliceWidth, image.Width);
-          var slice = CopyFromImage(image, rowStart, rowEnd, colStart, colEnd);
+          var slice = CopyFromImage(data, imageWidth, imageHeight, rowStart, rowEnd, colStart, colEnd);
           var node = SKSpriteNode.FromTexture(SKTexture.FromImage(slice));
           parentNode.AddChild(node);
           node.AnchorPoint = new CGPoint(0, 1);
@@ -230,32 +221,31 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The from image.</returns>
     /// <param name="image">Image.</param>
+    /// <param name="imageWidth">Image width.</param>
+    /// <param name="imageHeight">Image height.</param>
     /// <param name="rowStart">Row start.</param>
     /// <param name="rowEnd">Row end.</param>
     /// <param name="colStart">Col start.</param>
     /// <param name="colEnd">Col end.</param>
-    private CGImage CopyFromImage(CGImage image, int rowStart, int rowEnd, int colStart, int colEnd)
+    private static CGImage CopyFromImage(byte[] image, 
+                                         int imageWidth, int imageHeight, 
+                                         int rowStart, int rowEnd, int colStart, int colEnd)
     {
       var width = colEnd - colStart;
       var height = rowEnd - rowStart;
 
-
-      using (var data = image.DataProvider.CopyData()) { 
-        var imageBuffer = new byte[data.Length];
-        Marshal.Copy(data.Bytes, imageBuffer, 0, (int)data.Length);
-
-        var bytes = new byte[width * height * bytesPerPixel];
-        for (int row = rowStart; row < rowEnd; row++) {
-          for (int col = colStart; col < colEnd; col++) {
-            var sourceIndex = (row * image.Width + col) * bytesPerPixel;
-            var destIndex = ((row - rowStart) * width + col - colStart) * bytesPerPixel;
-            for (int b = 0; b < bytesPerPixel; b++) {
-              bytes[destIndex + b] = imageBuffer[sourceIndex + b];
-            }
+      var bytes = new byte[width * height * bytesPerPixel];
+      for (int row = rowStart; row < rowEnd; row++) {
+        for (int col = colStart; col < colEnd; col++) {
+          var sourceIndex = (row * imageWidth + col) * bytesPerPixel;
+          var destIndex = ((row - rowStart) * width + col - colStart) * bytesPerPixel;
+          for (int b = 0; b < bytesPerPixel; b++) {
+            bytes[destIndex + b] = image[sourceIndex + b];
           }
         }
-        return GetImageFromBytes(width, height, bytes);
       }
+      return GetImageFromBytes(width, height, bytes);
+      
     }
 
     /// <summary>
@@ -263,7 +253,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <param name="image">Image.</param>
     /// <param name="fileName">File name.</param>
-    public void SaveImage(CGImage image, string fileName)
+    public static void SaveImage(this CGImage image, string fileName)
     {
       UIImage img = UIImage.FromImage(image);
       using (var data = img.AsPNG()) {

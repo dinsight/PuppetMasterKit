@@ -16,9 +16,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
   {
     private const int maxSliceSize = 4000;
     private WeakReference<TileMap> map;
-    private ICoordinateMapper mapper;
-    private ImageHelper tileHelper;
-
+    static ICoordinateMapper mapper;
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Tilemap.TileMapLayer"/> class.
     /// </summary>
@@ -26,8 +24,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     internal TileMapLayer(TileMap map)
     {
       this.map = new WeakReference<TileMap>(map);
-      this.mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
-      this.tileHelper = new ImageHelper();
+      mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
     }
 
     /// <summary>
@@ -54,36 +51,15 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
-    /// Sets the texture.
-    /// </summary>
-    /// <param name="texture">Texture.</param>
-    /// <param name="x">The x coordinate.</param>
-    /// <param name="y">The y coordinate.</param>
-    public void SetTexture(SKTexture texture, float x, float y, float? zPos = null){
-      
-      if (texture != null) {
-        var node = SKSpriteNode.FromTexture(texture);
-        //BUG : anchor point is not working properly
-        //We substract half the width so the image gets centered on the x axis
-        //var scenePos = mapper.ToScene(new Point(x+(float)node.Size.Width/2, y + GetMap().TileSize/2));
-        var scenePos = mapper.ToScene(new Point(x, y));
-        node.AnchorPoint = new CoreGraphics.CGPoint(0, 0);
-        node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
-        node.ZPosition = zPos ?? ZPosition;
-        this.AddChild(node);
-      }
-    }
-
-    /// <summary>
     /// Converts to texture.
     /// </summary>
     /// <returns>The to texture.</returns>
     public SKSpriteNode FlattenLayer()
     {
-      var image = tileHelper.FlattenNode(this, GetMap().TileSize, GetMap().Rows, GetMap().Cols);
-      var newNode = tileHelper.SplitImage(image, maxSliceSize, maxSliceSize);
+      var image = ImageHelper.FlattenNode(this, GetMap().TileSize, GetMap().Rows, GetMap().Cols);
+      var newNode = image.SplitImage(maxSliceSize, maxSliceSize);
 #if DEBUG
-      tileHelper.SaveImage(image, "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map.png");
+      image.SaveImage("/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map.png");
 #endif
       RemoveAllChildren();
       AddChild(newNode);

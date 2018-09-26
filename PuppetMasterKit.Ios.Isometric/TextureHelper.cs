@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using CoreImage;
+using PuppetMasterKit.Graphics.Sprites;
 using SpriteKit;
+using PuppetMasterKit.AI.Configuration;
+using LightInject;
+using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Ios.Isometric
 {
@@ -10,6 +15,12 @@ namespace PuppetMasterKit.Ios.Isometric
 
     static Random randomTexture = new Random(Guid.NewGuid().GetHashCode());
 
+    static ICoordinateMapper mapper;
+
+    static TextureHelper()
+    {
+      mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+    }
     /// <summary>
     /// Gets the texture.
     /// </summary>
@@ -59,6 +70,42 @@ namespace PuppetMasterKit.Ios.Isometric
       var cgimage = context.CreateCGImage(output, output.Extent);
       var blendedTexture = SKTexture.FromImage(cgimage);
       return blendedTexture;
+    }
+
+    /// <summary>
+    /// Gets the bytes from texture.
+    /// </summary>
+    /// <returns>The bytes from texture.</returns>
+    /// <param name="texture">Texture.</param>
+    public static byte[] GetBytesFromTexture(this SKTexture texture)
+    {
+      using (var data = texture.CGImage.DataProvider.CopyData()) {
+        var bytes = new byte[data.Length];
+        Marshal.Copy(data.Bytes, bytes, 0, (int)data.Length);
+        return bytes;
+      }
+    }
+
+    /// <summary>
+    /// Sets the texture.
+    /// </summary>
+    /// <param name="texture">Texture.</param>
+    /// <param name="x">The x coordinate.</param>
+    /// <param name="y">The y coordinate.</param>
+    public static void SetTexture(this SKTexture texture, SKNode dest, float x, float y, float? zPos = null)
+    {
+
+      if (texture != null) {
+        var node = SKSpriteNode.FromTexture(texture);
+        //BUG : anchor point is not working properly
+        //We substract half the width so the image gets centered on the x axis
+        //var scenePos = mapper.ToScene(new Point(x+(float)node.Size.Width/2, y + GetMap().TileSize/2));
+        var scenePos = mapper.ToScene(new Point(x, y));
+        node.AnchorPoint = new CoreGraphics.CGPoint(0, 0);
+        node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
+        node.ZPosition = zPos ?? dest.ZPosition;
+        dest.AddChild(node);
+      }
     }
   }
 }

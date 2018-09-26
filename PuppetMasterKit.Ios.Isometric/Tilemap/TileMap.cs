@@ -25,6 +25,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     public int Rows { get => rows; }
     public int Cols { get => cols; }
     public int TileSize { get => tileSize; }
+    public IEnumerable<Region> Regions { get => regions.AsReadOnly(); }
 
     private const string CENTER = "Center";
     private const string UP_EDGE = "Up Edge";
@@ -41,7 +42,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     private const string UPPER_LEFT_CORNER = "Upper Left Corner";
 
     private bool IsValid(int i, int j) => i >= 0 && j >= 0 && i < map.GetLength(0) && j < map.GetLength(1);
-    private bool Empty(int i, int j, int v) => !Filled(i,j,v);
+    private bool Empty(int i, int j, int v) => !Filled(i, j, v);
     private bool Filled(int i, int j, int v) => IsValid(i, j) && map[i, j] == v;
 
     /// <summary>
@@ -51,9 +52,9 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="tileMapping">Tile mapping.</param>
     /// <param name="tileSet">Tile set.</param>
     /// <param name="tileSize">Tile size.</param>
-    public TileMap(int[,] map, 
-                   Dictionary<int, string> tileMapping, 
-                   SKTileSet tileSet, 
+    public TileMap(int[,] map,
+                   Dictionary<int, string> tileMapping,
+                   SKTileSet tileSet,
                    int tileSize)
     {
       this.rows = map.GetLength(0);
@@ -62,13 +63,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       this.tileMapping = tileMapping;
       this.tileSet = tileSet;
       this.map = map;
+      this.regions = Region.ExtractRegions(map);
     }
     /// <summary>
     /// Build this instance.
     /// </summary>
     public void Build(params int[] order)
     {
-      regions = Region.ExtractRegions(map);
       PaintRegions(order);
     }
 
@@ -82,13 +83,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var topTileLayer = CreateLayer(1);
 
       //if a preferred build order is given, apply it to the region list
-      if(order!=null){
+      if (order != null) {
         var orderedList = order.ToList();
         //Sort the regions based on the list provided
         regions = regions.OrderBy(reg => {
           var index = orderedList.IndexOf(reg.RegionFill);
           return index < 0 ? int.MaxValue : index;
-        } ).ToList();
+        }).ToList();
       }
       //Select the tiles for each region and apply the corresponding texture
       regions.ForEach(reg => {
@@ -101,11 +102,11 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
 
         var corners = GetCorners(tileGroup);
         foreach (var tile in reg.Tiles) {
-          if(tileGroup!=null){            
+          if (tileGroup != null) {
             //set the appropriate texture for the adjacent tiles
-            SetAdjacentTiles(baseTileLayer, 
-                             corners, 
-                             tile.Item1, 
+            SetAdjacentTiles(baseTileLayer,
+                             corners,
+                             tile.Item1,
                              tile.Item2);
             //set the tile texture
             baseTileLayer.SetTile(tileGroup.GetTexture(CENTER),
@@ -121,11 +122,12 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The corners.</returns>
     /// <param name="tileGroup">Tile group.</param>
-    private Dictionary<string,SKTexture> GetCorners(SKTileGroup tileGroup){
+    private Dictionary<string, SKTexture> GetCorners(SKTileGroup tileGroup)
+    {
       var dictionary = new Dictionary<string, SKTexture>();
 
       var maintTile = tileGroup.GetTexture(CENTER);
-      dictionary.Add(LOWER_LEFT_CORNER,  maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_CORNER)));
+      dictionary.Add(LOWER_LEFT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_CORNER)));
       dictionary.Add(LOWER_RIGHT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_CORNER)));
       dictionary.Add(UP_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UP_EDGE)));
       dictionary.Add(UPPER_LEFT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_CORNER)));
@@ -148,7 +150,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="corners">Tile group.</param>
     /// <param name="i">The index.</param>
     /// <param name="j">J.</param>
-    private void SetAdjacentTiles(TileMapLayer layer, 
+    private void SetAdjacentTiles(TileMapLayer layer,
                                   Dictionary<string, SKTexture> corners,
                                   int i, int j)
     {
@@ -214,45 +216,6 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
-    /// Fills the region.
-    /// </summary>
-    /// <param name="regionFillCode">Region fill code.</param>
-    /// <param name="group">Tile group.</param>
-    /// <param name="targetLayer">Target layer.</param>
-    public void FillRegion(int regionFillCode, SKTileGroup group, float densityFactor, int targetLayer)
-    {
-      if (targetLayer < 0 || targetLayer >= layers.Count)
-        return;
-      var layer = layers[targetLayer];
-      var random = new Random(Guid.NewGuid().GetHashCode());
-      var regionsToFill = regions.Where(x => x.RegionFill == regionFillCode);
-
-      var defs = group.Rules
-                      .SelectMany(a => a.TileDefinitions)
-                      .SelectMany(b => b.Textures).ToList();
-      
-      regionsToFill.ForEach(x=>{
-        var density = densityFactor * x.MaxCol;
-        var filler = UniformFill.Fill(0, 0, x.MaxCol+1, x.MaxRow+1, density);
-
-        //var texture = defs[random.Next(0, defs.Count())];
-        //layer.SetTexture(texture, 4 * tileSize, 0 * tileSize);
-
-        foreach (var item in filler) {
-          var col = (int)item.X;
-          var row = (int)item.Y;
-          if(x[row, col]!=null){
-            //the point is inside the region
-            if(defs.Any()){
-              var texture = defs[random.Next(0, defs.Count())];
-              layer.SetTexture(texture, item.Y * tileSize, item.X * tileSize);
-            }
-          }
-        }
-      });
-    }
-
-    /// <summary>
     /// Creates the layer.
     /// </summary>
     /// <returns>The layer.</returns>
@@ -265,6 +228,16 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       layers.Add(layer);
       this.AddChild(layer);
       return layer;
+    }
+
+    /// <summary>
+    /// Gets the layer.
+    /// </summary>
+    /// <returns>The layer.</returns>
+    /// <param name="index">Index.</param>
+    public TileMapLayer GetLayer(int index)
+    {
+        return layers[index];
     }
 
     /// <summary>

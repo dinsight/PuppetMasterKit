@@ -16,6 +16,7 @@ using PuppetMasterKit.Template.Game.Character.Wolf;
 using PuppetMasterKit.Ios.Isometric.Tilemap;
 using SpriteKit;
 using UIKit;
+using PuppetMasterKit.Ios.Isometric.Fill;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -276,7 +277,7 @@ namespace PuppetMasterKit.Template.Game.Level
       tileMap.Position = new CGPoint(0, 0);
       scene.AddChild(tileMap);
       var woods = tileSet.TileGroups.First(x => x.Name == "Wood");
-      tileMap.FillRegion('W', woods, 1, 0);
+      RegionFill.Fill(tileMap.Regions, tileSize, 'W', woods, 1, tileMap.GetLayer(0));
       var layer = tileMap.FlattenLayer(0);
     }
 
@@ -336,7 +337,7 @@ namespace PuppetMasterKit.Template.Game.Level
       tileMap.Position = new CGPoint(0, 0);
 
       var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
-      //tileMap.FillRegion('W', woods, 0.9f, 0);
+      RegionFill.Fill(tileMap.Regions, tileSize, 'W', woods, 0.8f, tileMap.GetLayer(0));
       scene.AddChild(tileMap);
       var layer = tileMap.FlattenLayer(0);
     }
