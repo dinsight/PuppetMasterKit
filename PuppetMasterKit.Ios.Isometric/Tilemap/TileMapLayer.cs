@@ -16,13 +16,16 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
   {
     private const int maxSliceSize = 4000;
     private WeakReference<TileMap> map;
+    private int index;
     static ICoordinateMapper mapper;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Tilemap.TileMapLayer"/> class.
     /// </summary>
     /// <param name="map">Map.</param>
-    internal TileMapLayer(TileMap map)
+    internal TileMapLayer(TileMap map, int index)
     {
+      this.index = index;
       this.map = new WeakReference<TileMap>(map);
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
     }
@@ -59,7 +62,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var image = ImageHelper.FlattenNode(this, GetMap().TileSize, GetMap().Rows, GetMap().Cols);
       var newNode = image.SplitImage(maxSliceSize, maxSliceSize);
 #if DEBUG
-      image.SaveImage("/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map.png");
+      image.SaveImage($"/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map{index}.png");
 #endif
       RemoveAllChildren();
       AddChild(newNode);

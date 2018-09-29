@@ -17,6 +17,7 @@ using PuppetMasterKit.Ios.Isometric.Tilemap;
 using SpriteKit;
 using UIKit;
 using PuppetMasterKit.Ios.Isometric.Fill;
+using System.Diagnostics;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -183,8 +184,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 0.7f;
-      cameraNode.YScale = 0.7f;
+      cameraNode.XScale = 1.2f;
+      cameraNode.YScale = 1.2f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -227,17 +228,6 @@ namespace PuppetMasterKit.Template.Game.Level
     }
 
     /// <summary>
-    /// Debug the specified data.
-    /// </summary>
-    /// <returns>The debug.</returns>
-    /// <param name="data">Data.</param>
-    private void Debug(LevelData data)
-    {
-      scene.DrawObstacles(flightMap.Obstacles);
-      //scene.DrawEnclosure();
-    }
-
-    /// <summary>
     /// Build this instance.
     /// </summary>
     /// <returns>The build.</returns>
@@ -246,7 +236,8 @@ namespace PuppetMasterKit.Template.Game.Level
       AddEntities();
       var camera = AddCamera();
       var data = LoadSceneData();
-      //Debug(data);
+      //scene.DrawObstacles(flightMap.Obstacles);
+      //scene.DrawEnclosure();
       GenerateMap();
       AddHud(camera);
       return flightMap;
@@ -324,7 +315,6 @@ namespace PuppetMasterKit.Template.Game.Level
       var mapping = new Dictionary<int, string> {
         { '-', "Water" },
         { '+', "Sand" },
-        //{ MapCodes.PATH, "Dirt" },
         { MapCodes.PATH, "Dirt" },
         { 1, "Water" },
         { 'W', "Grass"},
@@ -337,9 +327,15 @@ namespace PuppetMasterKit.Template.Game.Level
       tileMap.Position = new CGPoint(0, 0);
 
       var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
+      var water = tileSet.TileGroups.First(x => x.Name == "Water");
       RegionFill.Fill(tileMap.Regions, tileSize, 'W', woods, 0.8f, tileMap.GetLayer(0));
+      //RegionFill.Blend(tileMap.Regions, tileSize, 1, water, tileMap.GetLayer(2));
       scene.AddChild(tileMap);
+      var start = DateTime.Now;
       var layer = tileMap.FlattenLayer(0);
+      tileMap.FlattenLayer(2);
+      var end = DateTime.Now;
+      Debug.WriteLine($"Took: {(end-start).TotalMilliseconds} ms");
     }
   }
 }

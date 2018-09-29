@@ -81,6 +81,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     {
       var baseTileLayer = CreateLayer(-1);
       var topTileLayer = CreateLayer(1);
+      var thirdLayer = CreateLayer(2);
 
       //if a preferred build order is given, apply it to the region list
       if (order != null) {
@@ -221,7 +222,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <returns>The layer.</returns>
     private TileMapLayer CreateLayer(int zPos)
     {
-      var layer = new TileMapLayer(this) {
+      var layer = new TileMapLayer(this, layers.Count) {
         ZPosition = zPos,
         Position = new CGPoint(0, 0),
       };
