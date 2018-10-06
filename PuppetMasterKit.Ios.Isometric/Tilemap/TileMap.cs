@@ -107,12 +107,12 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
             //set the appropriate texture for the adjacent tiles
             SetAdjacentTiles(baseTileLayer,
                              corners,
-                             tile.Item1,
-                             tile.Item2);
+                             tile.Row,
+                             tile.Col);
             //set the tile texture
             baseTileLayer.SetTile(tileGroup.GetTexture(CENTER),
-                                  tile.Item1,
-                                  tile.Item2);
+                                  tile.Row,
+                                  tile.Col);
           }
         }
       });

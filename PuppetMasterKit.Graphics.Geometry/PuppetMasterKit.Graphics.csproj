@@ -40,6 +40,8 @@
     <Compile Include="Sprites\ISpriteFactory.cs" />
     <Compile Include="Sprites\ICoordinateMapper.cs" />
     <Compile Include="Geometry\Perlin.cs" />
+    <Compile Include="Geometry\Bicubic.cs" />
+    <Compile Include="Geometry\GridCoord.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation">

@@ -114,6 +114,7 @@
     <Compile Include="Test.Bindings\SpriteFactory.cs" />
     <Compile Include="Test.Bindings\IdentityMapper.cs" />
     <Compile Include="UnitTests\MapBuilderTest.cs" />
+    <Compile Include="UnitTests\NoiseUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
@@ -128,10 +129,24 @@
       <Project>{5693F719-6696-4B36-A83C-5A54E1E5702C}</Project>
       <Name>PuppetMasterKit.AI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Ios.Isometric\PuppetMasterKit.Ios.Isometric.csproj">
+      <Project>{34896846-E1E4-47CB-AC4B-8B28A8057292}</Project>
+      <Name>PuppetMasterKit.Ios.Isometric</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Template\PuppetMasterKit.Template.csproj">
+      <Project>{D5190088-D723-4DC5-AE96-2E50C9718550}</Project>
+      <Name>PuppetMasterKit.Template</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Test.Bindings\" />
     <Folder Include="UnitTests\" />
+    <Folder Include="Media.xcassets\Water.imageset\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Media.xcassets\Contents.json" />
+    <ImageAsset Include="Media.xcassets\Water.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\Water.imageset\tile-main0001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
