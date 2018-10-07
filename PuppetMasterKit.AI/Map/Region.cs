@@ -106,33 +106,35 @@ namespace PuppetMasterKit.AI
       return dictRegions.Values.ToList();
     }
 
-    private static readonly int E = 0;
-    private static readonly int S = 1;
-    private static readonly int W = 2;
-    private static readonly int N = 3;
-
+    static readonly int N = 0, E = 1, S = 2, W = 3;
     //(row,col) coords of the neighbors to be visited fro m this position
     readonly int[,,] step = new int[4, 3, 2] {
-        { { 1, 1}, { 0, 1}, {-1, 1} },
-        { {-1, 1}, {-1, 0}, {-1,-1} },
-        { {-1,-1}, { 0,-1}, { 1,-1} },
-        { { 1,-1}, { 1, 0}, { 1, 1} }
+        { { 1, 0}, { 0,-1}, { 1, 1} }, //n - Fwd, Left, Right
+        { { 0, 1}, { 1, 0}, {-1, 1} }, //e
+        { {-1, 0}, { 0, 1}, {-1,-1} }, //s
+        { { 0,-1}, {-1, 0}, { 1,-1} }  //w
       };
 
     /// <summary>
     /// Returns a list of tiles wrapping the current region
+    /// The algorithm consists in walking around the tiles always
+    /// touching the wall with your right hand. If there is no tile on
+    /// your right, turn right. If there is a tile in front, turn left.
+    /// Repeat until you reach the first tile
     /// </summary>
     /// <returns>The contour.</returns>
     public List<GridCoord> TraceContour()
     {
-      var dir = N;
+      int dir = N;//North
       var result = new List<GridCoord>();
       var min = this.Tiles.MinBy(x => x.Col);
       var start = new GridCoord(min.Row, min.Col - 1);
       result.Add(start);
       var next = GetNext(start, ref dir);
       while (next != start) {
-        result.Add(next);
+        if (result.Last() != next) {
+          result.Add(next);
+        }
         next = GetNext(next, ref dir);
       }
       return result;
@@ -146,24 +148,30 @@ namespace PuppetMasterKit.AI
     /// <param name="dir">Dir.</param>
     private GridCoord GetNext(GridCoord current, ref int dir)
     {
-      var i = 0;
-      var spin = 0;
-      int prevRow = 0, prevCol = 0;
-      // if all "next" positions turn out to be null, rotate right (dir++)
-      //to prevent spinning around indefinitly, limit the number of turns to 4 (N,E,S,W)
-      while (spin < 4) {
-        for (i = 0; i < 3; i++) {
-          var row = current.Row + step[dir, i, 0];
-          var col = current.Col + step[dir, i, 1];
-          var tile = this[row, col];
-          if (tile != null)
-            return new GridCoord(prevRow, prevCol);
-          prevCol = col;
-          prevRow = row;
-        }
-        dir = (dir + 1) % 4;
-        spin++;
+      var fwdRow = current.Row + step[dir, 0, 0];
+      var fwdCol = current.Col + step[dir, 0, 1];
+      var leftRow = current.Row + step[dir, 1, 0];
+      var leftCol = current.Col + step[dir, 1, 1];
+      var rightRow = current.Row + step[dir, 2, 0];
+      var rightCol = current.Col + step[dir, 2, 1];
+
+      var fwd = this[fwdRow, fwdCol];
+      var left = this[leftRow, leftCol];
+      var right = this[rightRow, rightCol];
+
+      if(fwd == null && right != null){ // we have the wall on out right
+        return new GridCoord(fwdRow, fwdCol);
       }
+      if(fwd == null && right == null) { //turn right
+        dir = (dir + 1) % 4; // change direction
+        return new GridCoord(fwdRow, fwdCol);
+      }
+
+      if(fwd != null && left == null){ //change direction - turn left
+        dir = dir - 1 >= 0 ? dir - 1 : W;
+        return current;
+      }
+
       return null;
     }
   }

@@ -115,6 +115,7 @@
     <Compile Include="Test.Bindings\IdentityMapper.cs" />
     <Compile Include="UnitTests\MapBuilderTest.cs" />
     <Compile Include="UnitTests\NoiseUnitTest.cs" />
+    <Compile Include="UnitTests\RegionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">

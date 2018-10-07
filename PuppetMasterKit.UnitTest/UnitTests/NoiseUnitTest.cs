@@ -3,6 +3,7 @@ using System;
 using CoreGraphics;
 using CoreImage;
 using NUnit.Framework;
+using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Ios.Isometric.Tilemap;
@@ -20,25 +21,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
     const byte bytesPerPixel = 4;
     const uint mask = (uint)CGImageAlphaInfo.PremultipliedLast | (uint)CGBitmapFlags.ByteOrder32Big;
 
-    float[][] GenerateGradient(int dim)
-    {
-      var gradient = new float[dim][];
-      for (int i = 0; i < dim; i++) {
-        gradient[i] = new float[dim];
-        for (int j = 0; j < dim; j++) {
-          gradient[i][j] = random.Next(-255, 255) / 256f;
-        }
-      }
 
-      for (int i = 0; i < dim; i++) {
-        gradient[0][i] = 1;
-        gradient[dim-1][i] = 1;
-        gradient[i][0] = 1;
-        gradient[i][dim-1] = 1;
-      }
-
-      return gradient;
-    }
 
     [Test]
     public void GenerateDepth()
@@ -47,33 +30,6 @@ namespace PuppetMasterKit.UnitTest.UnitTests
       int width = 1280;
       int height = 1280;
       var bytes = new byte[width * height * bytesPerPixel];
-
-      //var gradient = new float[][]{
-      //  new float[]{1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f,  0.30f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f,  0.40f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f, -1.00f,  1.00f},
-      //  new float[]{1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f},
-      //};
-
-      //var gradient = new float[][]{
-      //  new float[]{1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f},
-      //  new float[]{1.00f,  0.80f,  0.60f,  0.40f,  0.50f,  0.50f,  0.40f,  0.60f,  0.80f,  1.00f},
-      //  new float[]{1.00f,  0.60f,  0.00f,  0.00f,  0.00f,  0.00f,  0.00f,  0.00f,  0.60f,  1.00f},
-      //  new float[]{1.00f,  0.50f,  0.10f, -0.50f, -0.50f, -0.50f, -0.50f,  0.00f,  0.50f,  1.00f},
-      //  new float[]{1.00f,  0.50f,  0.20f, -1.00f, -1.00f, -1.00f, -0.50f,  0.00f,  0.40f,  1.00f},
-      //  new float[]{1.00f,  0.50f,  0.30f, -0.50f, -1.00f, -1.00f, -0.50f,  0.00f,  0.40f,  1.00f},
-      //  new float[]{1.00f,  0.50f,  0.00f, -0.50f, -0.50f, -0.50f, -0.50f,  0.00f,  0.50f,  1.00f},
-      //  new float[]{1.00f,  0.60f,  0.00f,  0.00f, -0.00f,  0.00f,  0.00f,  0.00f,  0.60f,  1.00f},
-      //  new float[]{1.00f,  0.80f,  0.60f,  0.40f,  0.50f,  0.50f,  0.40f,  0.60f,  0.80f,  1.00f},
-      //  new float[]{1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  1.00f,  -1.00f},
-      //};
-
       var dim = 10;
       var gradient = GenerateGradient(dim);
       var depth = new Bicubic(gradient);
@@ -133,6 +89,38 @@ namespace PuppetMasterKit.UnitTest.UnitTests
       //cgimage.SaveImage($"/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/blended.png");
     }
 
+    /// <summary>
+    /// Generates the gradient.
+    /// </summary>
+    /// <returns>The gradient.</returns>
+    /// <param name="dim">Dim.</param>
+    float[][] GenerateGradient(int dim)
+    {
+      var gradient = new float[dim][];
+      for (int i = 0; i < dim; i++) {
+        gradient[i] = new float[dim];
+        for (int j = 0; j < dim; j++) {
+          gradient[i][j] = random.Next(-255, 255) / 256f;
+        }
+      }
+
+      for (int i = 0; i < dim; i++) {
+        gradient[0][i] = 1;
+        gradient[dim - 1][i] = 1;
+        gradient[i][0] = 1;
+        gradient[i][dim - 1] = 1;
+      }
+
+      return gradient;
+    }
+
+    /// <summary>
+    /// Creates the water.
+    /// </summary>
+    /// <returns>The water.</returns>
+    /// <param name="width">Width.</param>
+    /// <param name="height">Height.</param>
+    /// <param name="tileSize">Tile size.</param>
     private CGImage CreateWater(int width, int height, int tileSize)
     {
       var im = new IsometricMapper(null);
