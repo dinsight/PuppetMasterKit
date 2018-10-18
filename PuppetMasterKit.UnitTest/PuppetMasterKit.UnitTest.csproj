@@ -116,6 +116,7 @@
     <Compile Include="UnitTests\MapBuilderTest.cs" />
     <Compile Include="UnitTests\NoiseUnitTest.cs" />
     <Compile Include="UnitTests\RegionTest.cs" />
+    <Compile Include="UnitTests\TilePainterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">

@@ -1,7 +1,7 @@
 ﻿using System;
-namespace PuppetMasterKit.Graphics.Geometry
+namespace PuppetMasterKit.Graphics.Noise
 {
-  public class Bicubic
+  public class Bicubic : INoiseGenerator
   {
     private float[][] gradient;
 
@@ -9,6 +9,10 @@ namespace PuppetMasterKit.Graphics.Geometry
     /// 
     /// </summary>
     public float[][] Gradient { get => gradient; set => gradient = value; }
+
+    public int XDim => Gradient[0].GetLength(0);
+
+    public int YDim => Gradient.GetLength(0);
 
     /// <summary>
     /// 

@@ -1,7 +1,7 @@
 ﻿using System;
-namespace PuppetMasterKit.Graphics.Geometry
+namespace PuppetMasterKit.Graphics.Noise
 {
-  public class Perlin
+  public class Perlin : INoiseGenerator
   {
     private float[][] gradient;
 
@@ -9,6 +9,10 @@ namespace PuppetMasterKit.Graphics.Geometry
     /// 
     /// </summary>
     public float[][] Gradient { get => gradient; set => gradient = value; }
+
+    public int XDim => Gradient[0].GetLength(0);
+
+    public int YDim => Gradient.GetLength(0);
 
     /// <summary>
     /// 
@@ -39,7 +43,7 @@ namespace PuppetMasterKit.Graphics.Geometry
       return (dx * Gradient[iy][ix] + dy * Gradient[iy][ix]);
     }
 
-    public double Noise(float x, float y)
+    public float Noise(float x, float y)
     {
 
       // Determine grid cell coordinates
@@ -64,7 +68,7 @@ namespace PuppetMasterKit.Graphics.Geometry
       n1 = DotProduct(x1, y1, x, y);
       ix1 = Lerp((float)n0, (float)n1, sx);
       value = Lerp((float)ix0, (float)ix1, sy);
-      return value;
+      return (float)value;
     }
   }
 }

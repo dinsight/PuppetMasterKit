@@ -14,7 +14,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
   public static class ImageHelper
   {
-    
+
     /// <summary>
     /// Split.
     /// </summary>
@@ -32,12 +32,15 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     const byte bytesPerPixel = 4;
     const uint mask = (uint)CGImageAlphaInfo.PremultipliedLast | (uint)CGBitmapFlags.ByteOrder32Big;
 
+    public static byte BytesPerPixel => bytesPerPixel;
+
     /// <summary>
     /// Gets the bytes from image.
     /// </summary>
     /// <returns>The bytes from image.</returns>
     /// <param name="image">Image.</param>
-    public static byte[] GetBytesFromImage(this CGImage image){
+    public static byte[] GetBytesFromImage(this CGImage image)
+    {
       using (var data = image.DataProvider.CopyData()) {
         var imageBuffer = new byte[data.Length];
         Marshal.Copy(data.Bytes, imageBuffer, 0, (int)data.Length);
@@ -78,7 +81,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="width">Width.</param>
     /// <param name="height">Height.</param>
     /// <param name="bytes">Bytes.</param>
-    private static CGImage GetImageFromBytes(int width, int height, byte[] bytes)
+    public static CGImage GetImageFromBytes(int width, int height, byte[] bytes)
     {
       using (var colourSpace = CGColorSpace.CreateDeviceRGB()) {
         using (var context = new CGBitmapContext(bytes,
@@ -109,7 +112,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var bpr = texture.CGImage.BytesPerRow;
       var bpp = (int)texture.CGImage.BitsPerPixel / bitsPerComponent;
 
-      var topBufferSize = (h - tileHeight/2) * w * bpr;
+      var topBufferSize = (h - tileHeight / 2) * w * bpr;
       var bottomBufferSize = tileHeight * w * bpp;
       var topBuffer = new byte[topBufferSize];
       var bottomBuffer = new byte[bottomBufferSize];
@@ -118,12 +121,12 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       for (int index = 0; index < bytes.Length; index += bpp) {
         var row = (index / bpp) / w;
         var col = index - (w * row);
-        if(Split.IsTopTile((int)row, (int)col, tileWidth, tileHeight)){
+        if (Split.IsTopTile((int)row, (int)col, tileWidth, tileHeight)) {
           topBuffer[index] = bytes[index];
           topBuffer[index + 1] = bytes[index + 1];
           topBuffer[index + 2] = bytes[index + 2];
           topBuffer[index + 3] = bytes[index + 3];
-        }else{
+        } else {
           var bottomIndex = index - bottomStartIndex;
           bottomBuffer[bottomIndex] = bytes[index];
           bottomBuffer[bottomIndex + 1] = bytes[index + 1];
@@ -163,9 +166,9 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
                                                  (CGImageAlphaInfo)mask)) {
 
           foreach (SKSpriteNode item in node.Children) {
-            context.DrawImage(new CGRect(item.Position.X + width / 2 - tileSize / 2, 
+            context.DrawImage(new CGRect(item.Position.X + width / 2 - tileSize / 2,
                                          height + item.Position.Y,
-                                         item.Size.Width, 
+                                         item.Size.Width,
                                          item.Size.Height), item.Texture.CGImage);
           }
           image = context.ToImage();
@@ -185,21 +188,21 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     {
       var imageWidth = (int)image.Width;
       var imageHeight = (int)image.Height;
-      var sliceHCount = imageWidth % maxWidth != 0 ? 
-                             imageWidth / maxWidth + 1 : 
+      var sliceHCount = imageWidth % maxWidth != 0 ?
+                             imageWidth / maxWidth + 1 :
                              imageWidth / maxWidth;
-      var sliceVCount = imageHeight % maxHeight != 0 ? 
-                             imageHeight / maxHeight + 1 : 
+      var sliceVCount = imageHeight % maxHeight != 0 ?
+                             imageHeight / maxHeight + 1 :
                              imageHeight / maxHeight;
       var sliceWidth = imageWidth / sliceHCount;
       var sliceHeight = imageHeight / sliceVCount;
 
-      if(sliceHCount == 1 && sliceVCount == 1){
+      if (sliceHCount == 1 && sliceVCount == 1) {
         return SKSpriteNode.FromTexture(SKTexture.FromImage(image));
       }
 
       var data = image.GetBytesFromImage();
-      var parentNode = new SKSpriteNode();        
+      var parentNode = new SKSpriteNode();
       for (int v = 0; v < sliceVCount; v++) {
         for (int h = 0; h < sliceHCount; h++) {
           var rowStart = v * sliceHeight;
@@ -210,7 +213,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
           var node = SKSpriteNode.FromTexture(SKTexture.FromImage(slice));
           parentNode.AddChild(node);
           node.AnchorPoint = new CGPoint(0, 1);
-          node.Position = new CGPoint(h*sliceWidth - imageWidth/2, -v*sliceHeight);
+          node.Position = new CGPoint(h * sliceWidth - imageWidth / 2, -v * sliceHeight);
         }
       }
       return parentNode;
@@ -227,8 +230,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="rowEnd">Row end.</param>
     /// <param name="colStart">Col start.</param>
     /// <param name="colEnd">Col end.</param>
-    private static CGImage CopyFromImage(byte[] image, 
-                                         int imageWidth, int imageHeight, 
+    private static CGImage CopyFromImage(byte[] image,
+                                         int imageWidth, int imageHeight,
                                          int rowStart, int rowEnd, int colStart, int colEnd)
     {
       var width = colEnd - colStart;
@@ -245,7 +248,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
         }
       }
       return GetImageFromBytes(width, height, bytes);
-      
+
     }
 
     /// <summary>
