@@ -171,8 +171,11 @@ namespace PuppetMasterKit.AI
         dir = dir - 1 >= 0 ? dir - 1 : W;
         return current;
       }
-
-      return null;
+      if (fwd != null && left != null && right != null) { //change direction - turn back
+        dir = (dir + 2) % 4;
+        return current;
+      }
+      throw new Exception("Region.TraceContour: Get next should not return null");
     }
   }
 }

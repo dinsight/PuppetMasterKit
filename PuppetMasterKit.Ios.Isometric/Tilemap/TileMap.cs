@@ -12,72 +12,42 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
   public class TileMap : SKNode
   {
-    Random random = new Random(Guid.NewGuid().GetHashCode());
-    private List<TileMapLayer> layers = new List<TileMapLayer>();
-    private List<Region> regions = new List<Region>();
-    private Dictionary<int, string> tileMapping;
-    private SKTileSet tileSet;
-    private int[,] map;
-    private int rows;
-    private int cols;
-    private int tileSize;
+    #region Private members
+    private readonly Dictionary<int, IRegionPainter> regionPainter = new Dictionary<int, IRegionPainter>();
 
-    public int Rows { get => rows; }
-    public int Cols { get => cols; }
-    public int TileSize { get => tileSize; }
-    public IEnumerable<Region> Regions { get => regions.AsReadOnly(); }
+    private readonly Random random = new Random(Guid.NewGuid().GetHashCode());
 
-    private const string CENTER = "Center";
-    private const string UP_EDGE = "Up Edge";
-    private const string UPPER_RIGHT_EDGE = "Upper Right Edge";
-    private const string RIGHT_EDGE = "Right Edge";
-    private const string LOWER_RIGHT_EDGE = "Lower Right Edge";
-    private const string DOWN_EDGE = "Down Edge";
-    private const string LOWER_LEFT_EDGE = "Lower Left Edge";
-    private const string LEFT_EDGE = "Left Edge";
-    private const string UPPER_LEFT_EDGE = "Upper Left Edge";
-    private const string UPPER_RIGHT_CORNER = "Upper Right Corner";
-    private const string LOWER_RIGHT_CORNER = "Lower Right Corner";
-    private const string LOWER_LEFT_CORNER = "Lower Left Corner";
-    private const string UPPER_LEFT_CORNER = "Upper Left Corner";
+    private readonly List<TileMapLayer> layers = new List<TileMapLayer>();
 
-    private bool IsValid(int i, int j) => i >= 0 && j >= 0 && i < map.GetLength(0) && j < map.GetLength(1);
-    private bool Empty(int i, int j, int v) => !Filled(i, j, v);
-    private bool Filled(int i, int j, int v) => IsValid(i, j) && map[i, j] == v;
+    private readonly IRegionPainter defaultPainter;
+    #endregion
+
+    #region Public properties
+    public int Rows { get; }
+
+    public int Cols { get; }
+
+    public int TileSize { get; }
+    #endregion
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Tilemap.TileMap"/> class.
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Ios.Isometric.Tilemap.TileMap"/> class.
     /// </summary>
     /// <param name="map">Map.</param>
-    /// <param name="tileMapping">Tile mapping.</param>
-    /// <param name="tileSet">Tile set.</param>
+    /// <param name="defaultPainter">Default painter.</param>
     /// <param name="tileSize">Tile size.</param>
-    public TileMap(int[,] map,
-                   Dictionary<int, string> tileMapping,
-                   SKTileSet tileSet,
-                   int tileSize)
+    public TileMap(IRegionPainter defaultPainter, int rows, int cols, int tileSize)
     {
-      this.rows = map.GetLength(0);
-      this.cols = map.GetLength(1);
-      this.tileSize = tileSize;
-      this.tileMapping = tileMapping;
-      this.tileSet = tileSet;
-      this.map = map;
-      this.regions = Region.ExtractRegions(map);
+      this.Rows = rows;
+      this.Cols = cols;
+      this.TileSize = tileSize;
+      this.defaultPainter = defaultPainter;
     }
+
     /// <summary>
     /// Build this instance.
     /// </summary>
-    public void Build(params int[] order)
-    {
-      PaintRegions(order);
-    }
-
-    /// <summary>
-    /// Paints the regions.
-    /// </summary>
-    /// <param name="order">Order.</param>
-    private void PaintRegions(int[] order)
+    public void Build(IReadOnlyCollection<Region> regions, params int[] order)
     {
       var baseTileLayer = CreateLayer(-1);
       var topTileLayer = CreateLayer(1);
@@ -92,134 +62,60 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
           return index < 0 ? int.MaxValue : index;
         }).ToList();
       }
+      //var painter = new TiledRegionPainter(tileMapping, tileSet, map);
       //Select the tiles for each region and apply the corresponding texture
       regions.ForEach(reg => {
-        var tileGroup = tileMapping
-          .Where(k => k.Key == reg.RegionFill)
-          .Select(x => tileSet
-                  .TileGroups
-                  .FirstOrDefault(t => t.Name == x.Value))
-          .FirstOrDefault();
-
-        var corners = GetCorners(tileGroup);
-        foreach (var tile in reg.Tiles) {
-          if (tileGroup != null) {
-            //set the appropriate texture for the adjacent tiles
-            SetAdjacentTiles(baseTileLayer,
-                             corners,
-                             tile.Row,
-                             tile.Col);
-            //set the tile texture
-            baseTileLayer.SetTile(tileGroup.GetTexture(CENTER),
-                                  tile.Row,
-                                  tile.Col);
-          }
+        IRegionPainter painter = defaultPainter;
+        if (regionPainter.ContainsKey(reg.RegionFill)) {
+          painter = regionPainter[reg.RegionFill];
         }
+        painter.Paint(reg, baseTileLayer);
       });
     }
 
     /// <summary>
-    /// Gets the corners.
+    /// Adds special painters for specific regions.
     /// </summary>
-    /// <returns>The corners.</returns>
-    /// <param name="tileGroup">Tile group.</param>
-    private Dictionary<string, SKTexture> GetCorners(SKTileGroup tileGroup)
+    /// <param name="regionFill">Region fill.</param>
+    /// <param name="painter">Painter.</param>
+    public void AddPainter(int regionFill, IRegionPainter painter)
     {
-      var dictionary = new Dictionary<string, SKTexture>();
-
-      var maintTile = tileGroup.GetTexture(CENTER);
-      dictionary.Add(LOWER_LEFT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_CORNER)));
-      dictionary.Add(LOWER_RIGHT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_CORNER)));
-      dictionary.Add(UP_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UP_EDGE)));
-      dictionary.Add(UPPER_LEFT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_CORNER)));
-      dictionary.Add(RIGHT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(RIGHT_EDGE)));
-      dictionary.Add(UPPER_RIGHT_CORNER, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_RIGHT_CORNER)));
-      dictionary.Add(DOWN_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(DOWN_EDGE)));
-      dictionary.Add(LEFT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(LEFT_EDGE)));
-      dictionary.Add(UPPER_LEFT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_EDGE)));
-      dictionary.Add(UPPER_RIGHT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_RIGHT_EDGE)));
-      dictionary.Add(LOWER_RIGHT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_EDGE)));
-      dictionary.Add(LOWER_LEFT_EDGE, maintTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_EDGE)));
-
-      return dictionary;
+      if (regionPainter.ContainsKey(regionFill)){
+        regionPainter[regionFill] = painter;
+      } else {
+        regionPainter.Add(regionFill, painter);
+      }
     }
 
     /// <summary>
-    /// Sets the adjacent tiles.
+    /// Gets the layer.
     /// </summary>
-    /// <param name="layer">Layer.</param>
-    /// <param name="corners">Tile group.</param>
-    /// <param name="i">The index.</param>
-    /// <param name="j">J.</param>
-    private void SetAdjacentTiles(TileMapLayer layer,
-                                  Dictionary<string, SKTexture> corners,
-                                  int i, int j)
+    /// <returns>The layer.</returns>
+    /// <param name="index">Index.</param>
+    public TileMapLayer GetLayer(int index)
     {
-      var v = map[i, j];
-      int? z = null;
-
-      //NE
-      if (Filled(i - 1, j - 1, v) && Empty(i - 1, j, v) && Empty(i - 1, j + 1, v)) {
-        layer.SetTile(corners[LOWER_LEFT_CORNER], i - 1, j, z);
-      }
-      if (Empty(i - 1, j - 1, v) && Empty(i - 1, j, v) && Filled(i - 1, j + 1, v)) {
-        layer.SetTile(corners[LOWER_RIGHT_CORNER], i - 1, j, z);
-      }
-      if (Empty(i - 1, j - 1, v) && Empty(i - 1, j, v) && Empty(i - 1, j + 1, v)) {
-        layer.SetTile(corners[UP_EDGE], i - 1, j, z);
-      }
-      //SE
-      if (Filled(i - 1, j + 1, v) && Empty(i, j + 1, v) && Empty(i + 1, j + 1, v)) {
-        layer.SetTile(corners[UPPER_LEFT_CORNER], i, j + 1, z);
-      }
-      if (Empty(i - 1, j + 1, v) && Empty(i, j + 1, v) && Filled(i + 1, j + 1, v)) {
-        layer.SetTile(corners[LOWER_LEFT_CORNER], i, j + 1, z);
-      }
-      if (Empty(i - 1, j + 1, v) && Empty(i, j + 1, v) && Empty(i + 1, j + 1, v)) {
-        layer.SetTile(corners[RIGHT_EDGE], i, j + 1, z);
-      }
-      //SW
-      if (Filled(i + 1, j + 1, v) && Empty(i + 1, j, v) && Empty(i + 1, j - 1, v)) {
-        layer.SetTile(corners[UPPER_RIGHT_CORNER], i + 1, j, z);
-      }
-      if (Empty(i + 1, j + 1, v) && Empty(i + 1, j, v) && Filled(i + 1, j - 1, v)) {
-        layer.SetTile(corners[UPPER_LEFT_CORNER], i + 1, j, z);
-      }
-      if (Empty(i + 1, j + 1, v) && Empty(i + 1, j, v) && Empty(i + 1, j - 1, v)) {
-        layer.SetTile(corners[DOWN_EDGE], i + 1, j, z);
-      }
-      //NW
-      if (Filled(i + 1, j - 1, v) && Empty(i, j - 1, v) && Empty(i - 1, j - 1, v)) {
-        layer.SetTile(corners[LOWER_RIGHT_CORNER], i, j - 1);
-      }
-      if (Empty(i + 1, j - 1, v) && Empty(i, j - 1, v) && Filled(i - 1, j - 1, v)) {
-        layer.SetTile(corners[UPPER_RIGHT_CORNER], i, j - 1);
-      }
-      if (Empty(i + 1, j - 1, v) && Empty(i, j - 1, v) && Empty(i - 1, j - 1, v)) {
-        layer.SetTile(corners[LEFT_EDGE], i, j - 1);
-      }
-      //N corner
-      if (Empty(i, j - 1, v) && Empty(i - 1, j - 1, v) && Empty(i - 1, j, v)) {
-        layer.SetTile(corners[UPPER_LEFT_EDGE], i - 1, j - 1);
-      }
-      ////E corner
-      if (Empty(i - 1, j, v) && Empty(i - 1, j + 1, v) && Empty(i, j + 1, v)) {
-        layer.SetTile(corners[UPPER_RIGHT_EDGE], i - 1, j + 1);
-      }
-      //S corner
-      if (Empty(i, j + 1, v) && Empty(i + 1, j + 1, v) && Empty(i + 1, j, v)) {
-        layer.SetTile(corners[LOWER_RIGHT_EDGE], i + 1, j + 1, z);
-      }
-      ////W corner
-      if (Empty(i + 1, j, v) && Empty(i + 1, j - 1, v) && Empty(i, j - 1, v)) {
-        layer.SetTile(corners[LOWER_LEFT_EDGE], i + 1, j - 1);
-      }
+      return layers[index];
     }
 
+    /// <summary>
+    /// Flattens the layer.
+    /// </summary>
+    /// <returns>The layer.</returns>
+    /// <param name="index">Index.</param>
+    public SKSpriteNode FlattenLayer(int index, Action<CGImage> debug = null)
+    {
+      if (index >= 0 && index < layers.Count) {
+        return layers[index].FlattenLayer(debug);
+      }
+      return null;
+    }
+
+    #region Private Methods
     /// <summary>
     /// Creates the layer.
     /// </summary>
     /// <returns>The layer.</returns>
+    /// <param name="zPos">Z position.</param>
     private TileMapLayer CreateLayer(int zPos)
     {
       var layer = new TileMapLayer(this, layers.Count) {
@@ -230,28 +126,6 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       this.AddChild(layer);
       return layer;
     }
-
-    /// <summary>
-    /// Gets the layer.
-    /// </summary>
-    /// <returns>The layer.</returns>
-    /// <param name="index">Index.</param>
-    public TileMapLayer GetLayer(int index)
-    {
-        return layers[index];
-    }
-
-    /// <summary>
-    /// Flattens the layer.
-    /// </summary>
-    /// <returns>The layer.</returns>
-    /// <param name="index">Index.</param>
-    public SKSpriteNode FlattenLayer(int index)
-    {
-      if(index>=0 && index < layers.Count){
-        return layers[index].FlattenLayer();
-      }
-      return null;
-    }
+    #endregion
   }
 }

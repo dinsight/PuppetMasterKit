@@ -57,13 +57,11 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// Converts to texture.
     /// </summary>
     /// <returns>The to texture.</returns>
-    public SKSpriteNode FlattenLayer()
+    public SKSpriteNode FlattenLayer(Action<CGImage> debug = null)
     {
       var image = ImageHelper.FlattenNode(this, GetMap().TileSize, GetMap().Rows, GetMap().Cols);
       var newNode = image.SplitImage(maxSliceSize, maxSliceSize);
-#if DEBUG
-      image.SaveImage($"/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map{index}.png");
-#endif
+      debug?.Invoke(image);
       RemoveAllChildren();
       AddChild(newNode);
       newNode.Position = new CGPoint(0, 0);
@@ -77,8 +75,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The map.</returns>
     private TileMap GetMap(){
-      TileMap tileMap = null;
-      if (!map.TryGetTarget(out tileMap)){
+      if (!map.TryGetTarget(out TileMap tileMap)) {
         throw new ArgumentException("TileMapLayer: Invalid map reference");
       }
       return tileMap;

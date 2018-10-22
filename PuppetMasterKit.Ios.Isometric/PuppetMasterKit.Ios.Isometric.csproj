@@ -65,6 +65,9 @@
     <Compile Include="TextureHelper.cs" />
     <Compile Include="Fill\RegionFill.cs" />
     <Compile Include="Tilemap\TilePainter.cs" />
+    <Compile Include="Tilemap\BicubicRegionPainter.cs" />
+    <Compile Include="Tilemap\TiledRegionPainter.cs" />
+    <Compile Include="Tilemap\IRegionPainter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

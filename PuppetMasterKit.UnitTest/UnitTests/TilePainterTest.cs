@@ -17,32 +17,6 @@ namespace PuppetMasterKit.UnitTest.UnitTests
 
     Random random = new Random(Guid.NewGuid().GetHashCode());
 
-    [Test]
-    public void BmpCoords()
-    {
-      var dim = 128;
-      var data = new byte[dim * dim * ImageHelper.BytesPerPixel];
-
-      for (int i = 0; i < dim; i++) {
-        for (int j = 0; j < dim; j++) {
-          var index = (i * dim + j) * ImageHelper.BytesPerPixel;
-          if(i==0&&j==0){
-            data[index] = 0xFF;
-            data[index+1] = 0x00;
-            data[index+2] = 0x00;
-            data[index+3] = 0xFF;
-          } else {
-            data[index] = 0xFF;
-            data[index + 1] = 0xFF;
-            data[index + 2] = 0xFF;
-            data[index + 3] = 0xFF;
-          }
-        }
-      }
-
-      ImageHelper.GetImageFromBytes(dim, dim, data).SaveImage($"{basePath}/orig.png");
-    }
-
 
     [Test]
     public void PaintNoise()
@@ -81,7 +55,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
         painter.SetTileContext(item.Row, item.Col)
              .PaintNoise(depth, scale, scale, s, e);
       }
-
+      /*
       painter.SetTileContext(3, 1).PaintNoise(depth, scale, scale, s, e).PaintBottomLeftJointAlpha();
       painter.SetTileContext(3, 3).PaintNoise(depth, scale, scale, s, e).PaintBottomRightJointAlpha();
       painter.SetTileContext(7, 3).PaintNoise(depth, scale, scale, s, e).PaintTopRightJointAlpha();
@@ -106,9 +80,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
       painter.SetTileContext(7, 0).PaintNoise(depth, scale, scale, s, e).PaintTopLeftCornerAlpha();
       painter.SetTileContext(3, 0).PaintNoise(depth, scale, scale, s, e).PaintBottomLeftCornerAlpha();
       painter.SetTileContext(2, 1).PaintNoise(depth, scale, scale, s, e).PaintBottomLeftCornerAlpha();
-
-      //painter.SetTileContext(0, 0).PaintBottomLeftJointAlpha();
-
+*/
       ImageHelper.GetImageFromBytes(size, size/2, buffer)
                  .SaveImage($"{basePath}/noise.png");
     }

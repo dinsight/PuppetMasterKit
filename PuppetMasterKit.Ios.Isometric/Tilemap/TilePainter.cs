@@ -47,8 +47,6 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       return this;
     }
 
-
-
     /// <summary>
     /// Paints the left side alpha.
     /// </summary>
@@ -126,10 +124,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="action">Action.</param>
     private void ScanPixels(Action<int, int> action)
     {
-      var xstart = col * tileSize;
-      var ystart = row * tileSize;
-      for (int x = xstart; x < xstart + tileSize; x++) {
-        for (int y = ystart; y < ystart + tileSize; y++) {
+      for (int y = 0; y < tileSize; y++) {
+        for (int x = 0; x < tileSize; x++) {
           action(x, y);
         }
       }
@@ -207,12 +203,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
                                    int[] startColor, 
                                    int[] endColor  )
     {
-      var dimX = noise.XDim;
-      var dimY = noise.YDim;
+
       ScanPixels((x,y)=>{
         int index = GetBitmapIndex(x, y);
-        var py = y * scaleY;
-        var px = x * scaleX;
+        //the niose's coordinates are on the top left
+        //the tile grid's coord are bottom left
+        var px = (x + row * tileSize) * scaleY;
+        var py = (y + col * tileSize) * scaleX;
         var value = noise.Noise(px, py);
         value = value < -1 ? -1 : (value > 1 ? 1 : value);
         data[index]     = (byte)(endColor[0] - (endColor[0] - startColor[0]) * (1 - value) / 2);
