@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.Terrain;
 using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.UnitTest.UnitTests

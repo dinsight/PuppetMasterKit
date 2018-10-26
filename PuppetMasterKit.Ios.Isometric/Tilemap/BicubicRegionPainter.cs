@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreGraphics;
 using LightInject;
-using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Configuration;
-using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
+using PuppetMasterKit.Terrain;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Terrain.Noise;
 using SpriteKit;
