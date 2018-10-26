@@ -6,8 +6,9 @@ using LightInject;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Graphics.Noise;
 using PuppetMasterKit.Graphics.Sprites;
+using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Terrain.Noise;
 using SpriteKit;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap

@@ -4,9 +4,10 @@ using CoreGraphics;
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Graphics.Noise;
 using PuppetMasterKit.Ios.Isometric.Tilemap;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
+using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Terrain.Noise;
 using SpriteKit;
 
 namespace PuppetMasterKit.UnitTest.UnitTests

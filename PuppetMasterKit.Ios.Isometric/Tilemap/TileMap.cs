@@ -7,6 +7,7 @@ using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility;
 using Pair = System.Tuple;
 using CoreImage;
+using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {

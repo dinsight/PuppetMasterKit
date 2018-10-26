@@ -1,4 +1,4 @@
-using PuppetMasterKit.AI.Map;
+
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Utility;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace PuppetMasterKit.AI
+namespace PuppetMasterKit.Terrain.Map
 {
   public class Region
   {

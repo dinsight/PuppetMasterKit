@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using PuppetMasterKit.Utility;
 using Pair = System.Tuple<int, int>;
 
-namespace PuppetMasterKit.AI.Map
+namespace PuppetMasterKit.Terrain.Map
 {
 public class Module
   {

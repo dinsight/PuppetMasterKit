@@ -1,4 +1,4 @@
-﻿namespace PuppetMasterKit.Graphics.Noise
+﻿namespace PuppetMasterKit.Terrain.Noise
 {
   public interface INoiseGenerator
   {

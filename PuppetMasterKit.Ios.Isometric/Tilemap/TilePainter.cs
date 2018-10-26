@@ -3,8 +3,8 @@ using CoreGraphics;
 using LightInject;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Graphics.Noise;
 using PuppetMasterKit.Graphics.Sprites;
+using PuppetMasterKit.Terrain.Noise;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {

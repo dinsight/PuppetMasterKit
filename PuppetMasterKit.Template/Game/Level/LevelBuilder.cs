@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using CoreGraphics;
-using Foundation;
 using LightInject;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.AI.Configuration;
-using PuppetMasterKit.AI.Map;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
 using PuppetMasterKit.Ios.Isometric.Tilemap;
 using SpriteKit;
-using UIKit;
 using PuppetMasterKit.Ios.Isometric.Fill;
 using System.Diagnostics;
+using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.Template.Game.Level
 {

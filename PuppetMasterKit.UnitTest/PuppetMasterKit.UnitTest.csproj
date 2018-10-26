@@ -139,6 +139,10 @@
       <Project>{D5190088-D723-4DC5-AE96-2E50C9718550}</Project>
       <Name>PuppetMasterKit.Template</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Terrain\PuppetMasterKit.Terrain.csproj">
+      <Project>{015A9DC7-97F3-4C58-8E18-C1C6C48B48E1}</Project>
+      <Name>PuppetMasterKit.Terrain</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Test.Bindings\" />

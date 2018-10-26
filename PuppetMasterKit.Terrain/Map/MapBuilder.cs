@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.AI.Map;
 using PuppetMasterKit.Utility;
 using System.Collections.ObjectModel;
 
-namespace PuppetMasterKit.AI
+namespace PuppetMasterKit.Terrain.Map
 {
   public class MapBuilder
   {

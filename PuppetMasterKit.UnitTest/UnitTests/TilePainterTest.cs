@@ -2,10 +2,11 @@
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Configuration;
-using PuppetMasterKit.Graphics.Noise;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Ios.Isometric.Tilemap;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
+using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Terrain.Noise;
 
 namespace PuppetMasterKit.UnitTest.UnitTests
 {

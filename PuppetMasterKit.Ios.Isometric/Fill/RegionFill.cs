@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility;
 using PuppetMasterKit.Graphics.Geometry;
+using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.Ios.Isometric.Fill
 {

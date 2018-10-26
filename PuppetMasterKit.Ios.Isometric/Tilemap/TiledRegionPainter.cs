@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.AI;
 using SpriteKit;
+using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {

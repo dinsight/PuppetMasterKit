@@ -4,8 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using PuppetMasterKit.AI;
-using PuppetMasterKit.AI.Map;
+using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.UnitTest
 {

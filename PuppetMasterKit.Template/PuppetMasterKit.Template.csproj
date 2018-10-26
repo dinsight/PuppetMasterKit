@@ -284,6 +284,10 @@
       <Project>{34896846-E1E4-47CB-AC4B-8B28A8057292}</Project>
       <Name>PuppetMasterKit.Ios.Isometric</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Terrain\PuppetMasterKit.Terrain.csproj">
+      <Project>{015A9DC7-97F3-4C58-8E18-C1C6C48B48E1}</Project>
+      <Name>PuppetMasterKit.Terrain</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Media.xcassets\Contents.json" />

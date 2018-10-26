@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Graphics.Noise
+namespace PuppetMasterKit.Terrain.Noise
 {
   public class Bicubic : INoiseGenerator
   {
