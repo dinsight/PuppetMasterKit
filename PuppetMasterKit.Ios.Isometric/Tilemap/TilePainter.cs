@@ -5,6 +5,7 @@ using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Terrain.Noise;
+using SpriteKit;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
@@ -35,6 +36,21 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Ios.Isometric.Tilemap.TilePainter"/> class.
+    /// </summary>
+    /// <param name="tileSize">Tile size.</param>
+    /// <param name="imageWidth">Image width.</param>
+    /// <param name="imageHeight">Image height.</param>
+    public TilePainter(int tileSize, int imageWidth, int imageHeight)
+    {
+      this.tileSize = tileSize;
+      this.mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      this.data = new byte[tileSize * (tileSize / 2) * ImageHelper.BytesPerPixel]; ;
+      this.imageWidth = imageWidth;
+      this.imageHeight = imageHeight;
+    }
+
+    /// <summary>
     /// Sets the coords.
     /// </summary>
     /// <returns>The coords.</returns>
@@ -45,6 +61,17 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       this.row = row;
       this.col = col;
       return this;
+    }
+
+    /// <summary>
+    /// Convert to texture.
+    /// </summary>
+    /// <returns>The texture.</returns>
+    public SKTexture ToTexture(){
+      var image = ImageHelper.GetImageFromBytes(tileSize, tileSize / 2, data);
+      //create texture from mage
+      var texture = SKTexture.FromImage(image);
+      return texture;
     }
 
     /// <summary>
@@ -177,10 +204,11 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="point">Point.</param>
     private TilePainter PaintCornerAlpha(Point point)
     {
-      var r = tileSize / 2;
+      var r = 0.5;
       ScanPixels((x, y) => {
-        var dist = Point.Distance(point.X * tileSize, point.Y * tileSize, x - col * tileSize, y - row * tileSize);
+        var dist = Point.Distance(point.X, point.Y, (float)x/tileSize, (float)y/tileSize);
         int index = GetBitmapIndex(x, y);
+        var f = (r - dist) / r;
         var c = 0xff * (r - dist) / r;
         var alpha = dist < r ? c : 0x0;
         data[index + 3] = (byte)alpha;

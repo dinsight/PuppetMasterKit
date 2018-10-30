@@ -245,17 +245,28 @@ namespace PuppetMasterKit.Template.Game.Level
       var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
-      var map = new int[,]{
-        {'W','W','W','W'},
-        {'W', 1,  1, 'W'},
-        {'W', 1,  1,  1 },
-        {'W','W', 1 ,'W'},
+      //var map = new int[,]{
+      //  {'W','W','W','W','W','W'},
+      //  {'W','W','W','W','W','W'},
+      //  {'W','W','A','W','W','W'},
+      //  {'W','W','W','W','W','W'},
+      //  {'W','W','W','W','W','W'},
+      //  {'W','W','W','W','W','W'}
+      //};
 
+      var map = new int[,]{
+        {'-','A','-','W','W','W','W'},
+        {'A','A','A','W','W','W','W'},
+        {'W','A','W','W','W','W','W'},
+        {'W','W','W','W','A','A','W'},
+        {'W','W','W','W','A','A','W'},
+        {'W','W','W','W','W','W','W'},
+        {'W','W','W','W','W','W','W'},
       };
       var mapping = new Dictionary<int, string> {
         { '-', "Dirt"},
         { '+', "Sand"},
-        { 1, "Water" },
+        { 'A', "Water" },
         { 'W', "Grass" },
       };
 
@@ -264,6 +275,7 @@ namespace PuppetMasterKit.Template.Game.Level
       var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
       var rows = map.GetLength(0);
       var cols = map.GetLength(1);
+
       var regions = Region.ExtractRegions(map);
       var tileSet = SKTileSet.FromName("Template Tile Set");
 
@@ -271,7 +283,7 @@ namespace PuppetMasterKit.Template.Game.Level
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
 
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      tileMap.AddPainter(1, bicubicPainter);
+      tileMap.AddPainter('A', bicubicPainter);
 
       tileMap.Build(regions, '-','+', 'W', 1);
       tileMap.Position = new CGPoint(0, 0);
@@ -295,11 +307,8 @@ namespace PuppetMasterKit.Template.Game.Level
       }, '+');
 
       var module1 = new Module(new int[,] {
-                { 3,3,3,3,3,3,3,},
-                { 3,3,3,3,3,3,3,},
-                { 3,3,3,3,3,3,3,},
-                { 3,3,3,3,3,3,3,},
-                { 3,3,3,3,3,3,3,},
+                { 1,1},
+                { 1,1}
       }, 1){ IsAccessible = false };
 
       var module2 = new Module(new int[,] {
@@ -316,7 +325,7 @@ namespace PuppetMasterKit.Template.Game.Level
       modules.Add(module1);
       modules.Add(module2);
 
-      var builder = new MapBuilder(105, 105, 5, new PathFinder());
+      var builder = new MapBuilder(65, 65, 5, new PathFinder());
       builder.Create(120, modules);
 
 
@@ -338,17 +347,20 @@ namespace PuppetMasterKit.Template.Game.Level
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var tileMap = new TileMap(defaultPainter, builder.Rows, builder.Cols, tileSize);
       tileMap.AddPainter(1, bicubicPainter);
-      tileMap.Build(regions, '+', 1, 'W','|',MapCodes.PATH,'-');
+      tileMap.Build(builder.Regions, '+', 'W','|',MapCodes.PATH,'-',1);
       tileMap.Position = new CGPoint(0, 0);
 
       var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
-      var water = tileSet.TileGroups.First(x => x.Name == "Water");
+      var water = tileSet.TileGroups.First(x => x.Name == "Water"); 
       RegionFill.Fill(regions, tileSize, 'W', woods, 0.8f, tileMap.GetLayer(0));
       //RegionFill.Blend(tileMap.Regions, tileSize, 1, water, tileMap.GetLayer(2));
       scene.AddChild(tileMap);
       var start = DateTime.Now;
       var layer0 = tileMap.FlattenLayer(0, x=> x.SaveImage($"{baseFolder}/map0.png"));
       var layer2 = tileMap.FlattenLayer(2, x => x.SaveImage($"{baseFolder}/map2.png"));
+      //var layer0 = tileMap.FlattenLayer(0, x=> {});
+      //var layer2 = tileMap.FlattenLayer(2, x => {});
+
       var end = DateTime.Now;
       Debug.WriteLine($"Took: {(end-start).TotalMilliseconds} ms");
     }

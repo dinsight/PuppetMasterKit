@@ -11,23 +11,17 @@ namespace PuppetMasterKit.Terrain.Map
   public class Region
   {
     public int RegionFill { get; }
-
+    public int MinRow { get; private set; } = int.MaxValue;
+    public int MaxRow { get; private set; } = int.MinValue;
+    public int MinCol { get; private set; } = int.MaxValue;
+    public int MaxCol { get; private set; } = int.MinValue;
     public IReadOnlyCollection<GridCoord> Tiles {
       get {
         return new ReadOnlyCollection<GridCoord>(tiles.Values.ToList());
       }
     }
 
-    public int MinRow { get => minRow; }
-    public int MaxRow { get => maxRow; }
-    public int MinCol { get => minCol; }
-    public int MaxCol { get => maxCol; }
-
     private Dictionary<int, GridCoord> tiles = new Dictionary<int, GridCoord>();
-    private int minRow = int.MaxValue;
-    private int maxRow = int.MinValue;
-    private int minCol = int.MaxValue;
-    private int maxCol = int.MinValue;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Region"/> class.
@@ -60,10 +54,10 @@ namespace PuppetMasterKit.Terrain.Map
     public void AddTile(int row, int col)
     {
       tiles.Add(HashFunc(row, col), new GridCoord(row, col));
-      minRow = Math.Min(MinRow, row);
-      maxRow = Math.Max(MaxRow, row);
-      minCol = Math.Min(MinCol, col);
-      maxCol = Math.Max(MaxCol, col);
+      MinRow = Math.Min(MinRow, row);
+      MaxRow = Math.Max(MaxRow, row);
+      MinCol = Math.Min(MinCol, col);
+      MaxCol = Math.Max(MaxCol, col);
     }
 
     /// <summary>
@@ -73,8 +67,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// <param name="col">Col.</param>
     public GridCoord this[int row, int col] {
       get {
-        GridCoord value = null;
-        tiles.TryGetValue(HashFunc(row, col), out value);
+        tiles.TryGetValue(HashFunc(row, col), out GridCoord value);
         return value;
       }
     }

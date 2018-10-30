@@ -86,6 +86,61 @@ namespace PuppetMasterKit.UnitTest.UnitTests
                  .SaveImage($"{basePath}/noise.png");
     }
 
+    [Test]
+    public void PaintCorners()
+    {
+      Container.GetContainer().Register<ICoordinateMapper>(factory => new IsometricMapper(null));
+      var painter = new TilePainter(tileSize, tileSize, tileSize / 2);
+
+      painter.SetTileContext(0, 0)
+             .PaintBottomLeftJointAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/blj.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintBottomRightJointAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/brj.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintTopRightJointAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/trj.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintTopLeftJointAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/tlj.png");
+        
+      painter.SetTileContext(0, 0)
+             .PaintRightSideAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/rs.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintLeftSideAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/ls.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintTopSideAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/ts.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintBottomSideAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/bs.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintBottomRightCornerAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/brc.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintTopRightCornerAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/trc.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintTopLeftCornerAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/tlc.png");
+
+      painter.SetTileContext(0, 0)
+             .PaintBottomLeftCornerAlpha()
+             .ToTexture().CGImage.SaveImage($"{basePath}/map/blc.png");
+    }
+
     /// <summary>
     /// Generates the gradient.
     /// </summary>
