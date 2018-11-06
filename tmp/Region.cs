@@ -1,54 +1,27 @@
+
+using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-//using Pair = System.Tuple<int, int>;
 
-namespace PuppetMasterKit.AI
+namespace PuppetMasterKit.Terrain.Map
 {
-
-  public class GridCoord
-  {
-    public int Row { get; private set; }
-    public int Col { get; private set; }
-    public GridCoord(int row, int col) {
-      Row = row;
-      Col = col;
-    }
-    public static bool operator==(GridCoord lhs, GridCoord rhs){ 
-      if(Object.ReferenceEquals(lhs,null) && Object.ReferenceEquals(rhs,null) ){ 
-        return true;
-        }
-     if(Object.ReferenceEquals(lhs,null) || Object.ReferenceEquals(rhs,null) )
-        return false;
-      return lhs.Row == rhs.Row && lhs.Col == rhs.Col;
-    }
-    public static bool operator!=(GridCoord lhs, GridCoord rhs){ 
-      return !(lhs==rhs);
-    }
-  }
-
   public class Region
   {
     public int RegionFill { get; }
-
+    public int MinRow { get; private set; } = int.MaxValue;
+    public int MaxRow { get; private set; } = int.MinValue;
+    public int MinCol { get; private set; } = int.MaxValue;
+    public int MaxCol { get; private set; } = int.MinValue;
     public IReadOnlyCollection<GridCoord> Tiles {
       get {
         return new ReadOnlyCollection<GridCoord>(tiles.Values.ToList());
       }
     }
 
-    public int MinRow { get => minRow; }
-    public int MaxRow { get => maxRow; }
-    public int MinCol { get => minCol; }
-    public int MaxCol { get => maxCol; }
-
     private Dictionary<int, GridCoord> tiles = new Dictionary<int, GridCoord>();
-    private int minRow = int.MaxValue;
-    private int maxRow = int.MinValue;
-    private int minCol = int.MaxValue;
-    private int maxCol = int.MinValue;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Region"/> class.
@@ -60,13 +33,17 @@ namespace PuppetMasterKit.AI
     }
 
     /// <summary>
-    /// https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function
+    /// Hashs the func.
     /// </summary>
-    /// <returns></returns>
-    /// <param name="">.</param>
+    /// <returns>The func.</returns>
+    /// <param name="a">The alpha component.</param>
+    /// <param name="b">The blue component.</param>
     private int HashFunc(int a, int b)
     {
-      return $"{a}{b}".GetHashCode();
+      var hashCode = 1084646500;
+      hashCode = hashCode * -1521134295 + a.GetHashCode();
+      hashCode = hashCode * -1521134295 + b.GetHashCode();
+      return hashCode;
     }
 
     /// <summary>
@@ -76,11 +53,28 @@ namespace PuppetMasterKit.AI
     /// <param name="col">Col.</param>
     public void AddTile(int row, int col)
     {
-      tiles.Add(HashFunc(row, col), new GridCoord(row, col));
-      minRow = Math.Min(MinRow, row);
-      maxRow = Math.Max(MaxRow, row);
-      minCol = Math.Min(MinCol, col);
-      maxCol = Math.Max(MaxCol, col);
+      var key = HashFunc(row, col);
+      if(tiles.ContainsKey(key))
+        return;
+
+      tiles.Add(key, new GridCoord(row, col));
+      MinRow = Math.Min(MinRow, row);
+      MaxRow = Math.Max(MaxRow, row);
+      MinCol = Math.Min(MinCol, col);
+      MaxCol = Math.Max(MaxCol, col);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="region"></param>
+    public void Merge(Region region)
+    {
+      if(region==null)
+        return;
+      foreach (var item in region.Tiles) {
+        AddTile(item.Row, item.Col);
+      }
     }
 
     /// <summary>
@@ -90,8 +84,7 @@ namespace PuppetMasterKit.AI
     /// <param name="col">Col.</param>
     public GridCoord this[int row, int col] {
       get {
-        GridCoord value = null;
-        tiles.TryGetValue(HashFunc(row, col), out value);
+        tiles.TryGetValue(HashFunc(row, col), out GridCoord value);
         return value;
       }
     }
@@ -105,68 +98,123 @@ namespace PuppetMasterKit.AI
     {
       var rows = geography.GetLength(0);
       var cols = geography.GetLength(1);
+      var regions = new List<Region>();
+      var pr = new Region[cols];
 
-      var dictRegions = new Dictionary<int, Region>();
       for (int row = 0; row < rows; row++) {
+        var cr = new Region[cols];
         for (int col = 0; col < cols; col++) {
+          Region reg = null;
           var val = geography[row, col];
-          Region region = null;
-          if (dictRegions.ContainsKey(val)) {
-            region = dictRegions[val];
-          } else {
-            region = new Region(val);
-            dictRegions.Add(val, region);
+          var toMerge = pr.Where((x,i)=>i>=col-1 
+                              && i<=col+1 
+                              && x!=null && x.RegionFill==val);
+          if(col>0 && cr[col-1] != null && cr[col-1].RegionFill==val){ 
+            toMerge = toMerge.Concat(Enumerable.Repeat(cr[col-1],1));
           }
-          region.AddTile(row, col);
+
+          toMerge = toMerge.Distinct();
+          if(toMerge.Count()==0){ 
+            reg = new Region(val);
+            regions.Add(reg);
+          } else {
+            reg = toMerge.First();
+            toMerge.ForEach(x=>{
+              if(!Object.ReferenceEquals(x,reg)){ 
+                reg.Merge(x);
+                regions.Remove(x);
+              }
+              for (int index = 0; index < cols; index++) {
+                if(Object.ReferenceEquals(x,pr[index])){ 
+                  pr[index] = reg;
+                }
+                if(Object.ReferenceEquals(x,cr[index])){ 
+                  cr[index] = reg;
+                }
+              }
+            });
+          }
+          cr[col]= reg;
+          reg.AddTile(row,col);
         }
+        pr = cr;
       }
-      return dictRegions.Values.ToList();
+      return regions;
     }
 
-
-    static int E = 0, S = 1, W = 2, N = 3;
-    //(row,col) coords of the neighbors to be visited fro m this position
-    int[,,] step = new int[4,3,2] { 
-        { { 1, 1}, { 0, 1}, {-1, 1} },
-        { {-1, 1}, {-1, 0}, {-1,-1} },
-        { {-1,-1}, { 0,-1}, { 1,-1} },
-        { { 1,-1}, { 1, 0}, { 1, 1} }
-      };
-
-    public List<GridCoord> TraceContour(){ 
-      var dir = N;
+    /// <summary>
+    /// Returns a list of tiles wrapping the current region
+    /// The algorithm consists in walking around the tiles always
+    /// touching the wall with your right hand. If there is no tile on
+    /// your right, turn right. If there is a tile in front, turn left.
+    /// Repeat until you reach the first tile
+    /// </summary>
+    /// <returns>The contour.</returns>
+    public List<GridCoord> TraceContour()
+    {
+      int dir = N;//North
       var result = new List<GridCoord>();
-      var min = this.Tiles.MinBy(x=>x.Col);
-      var start = new GridCoord(min.Row, min.Col-1);
+      var min = this.Tiles.MinBy(x => x.Col);
+      var start = new GridCoord(min.Row, min.Col - 1);
       result.Add(start);
       var next = GetNext(start, ref dir);
-      while(next != start){ 
-        result.Add(next);
+      while (next != start) {
+        if (result.Last() != next) {
+          result.Add(next);
+        }
         next = GetNext(next, ref dir);
       }
       return result;
     }
 
-    private GridCoord GetNext(GridCoord current, ref int dir) {
-      var i = 0;
-      var spin = 0;
-      int prevRow = 0, prevCol = 0;
-      // if all "next" positions turn out to be null, rotate right (dir++)
-      //to prevent spinning around indefinitly, limit the number of turns to 4 (N,E,S,W)
-      while(spin<4){ 
-        for (i = 0; i < 3; i++) {
-          var row = current.Row+step[dir,i,0];
-          var col = current.Col+step[dir,i,1];
-          var tile = this[row, col];
-          if(tile!=null)
-            return new GridCoord(prevRow, prevCol);
-          prevCol = col;
-          prevRow = row;
-        }
-        dir = (dir+1)%4; 
-        spin++;
+    /// <summary>
+    /// Directions
+    /// </summary>
+    static readonly int N = 0, E = 1, S = 2, W = 3;
+    //(row,col) coords of the neighbors to be visited from this position
+    readonly int[,,] step = new int[4, 3, 2] {
+        { { 1, 0}, { 0,-1}, { 1, 1} }, //n - Fwd, Left, Right
+        { { 0, 1}, { 1, 0}, {-1, 1} }, //e
+        { {-1, 0}, { 0, 1}, {-1,-1} }, //s
+        { { 0,-1}, {-1, 0}, { 1,-1} }  //w
+    };
+
+    /// <summary>
+    /// Gets the next tile in the direction specified
+    /// </summary>
+    /// <returns>The next.</returns>
+    /// <param name="current">Current.</param>
+    /// <param name="dir">Dir.</param>
+    private GridCoord GetNext(GridCoord current, ref int dir)
+    {
+      var fwdRow = current.Row + step[dir, 0, 0];
+      var fwdCol = current.Col + step[dir, 0, 1];
+      var leftRow = current.Row + step[dir, 1, 0];
+      var leftCol = current.Col + step[dir, 1, 1];
+      var rightRow = current.Row + step[dir, 2, 0];
+      var rightCol = current.Col + step[dir, 2, 1];
+
+      var fwd = this[fwdRow, fwdCol];
+      var left = this[leftRow, leftCol];
+      var right = this[rightRow, rightCol];
+
+      if(fwd == null && right != null){ // we have the wall on out right
+        return new GridCoord(fwdRow, fwdCol);
       }
-      return null;
+      if(fwd == null && right == null) { //turn right
+        dir = (dir + 1) % 4; // change direction
+        return new GridCoord(fwdRow, fwdCol);
+      }
+
+      if(fwd != null && left == null){ //change direction - turn left
+        dir = dir - 1 >= 0 ? dir - 1 : W;
+        return current;
+      }
+      if (fwd != null && left != null && right != null) { //change direction - turn back
+        dir = (dir + 2) % 4;
+        return current;
+      }
+      throw new Exception("Region.TraceContour: Get next should not return null");
     }
   }
 }
