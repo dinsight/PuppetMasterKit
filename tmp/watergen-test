@@ -1,0 +1,73 @@
+static void Main(string[] args) 
+    { 
+      int[,] map = {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 1, 0, 1, 0, 0, 0, 0, 0},
+        {0, 0, 1, 1, 1, 1, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 1, 1, 0, 0, 0},
+        {0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
+        {0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      };
+
+      float[][] gradient = { 
+          new float[]{0   , 0    , 0    , 0    , 0},
+          new float[]{0   , 0.3f , 0.4f , 0.3f , 0},
+          new float[]{0   , 0.6f , 0.9f , 0.7f , 0},
+          new float[]{0   , 0.2f , 0,4f , 0.3f , 0},
+          new float[]{0   , 0    , 0    , 0    , 0},
+        };
+      
+      float N = map.GetLength(0);
+      float M = gradient.GetLength(0)-1;
+      var perlin = new Perlin(gradient);
+
+      var output= map.Clone() as int[,];
+      Init(output);
+      
+      var regs = Region.ExtractRegions(map);
+      var reg1 = regs.First(x=>x.RegionFill==1);
+      var contour = reg1.TraceContour();
+
+      foreach (var item in reg1.Tiles) {
+          var scol = item.Col * (M/N) ;
+          var srow = item.Row * (M/N) ;
+          if(map[item.Row,item.Col]==1){ 
+            var n =  perlin.Noise(scol, srow) * 7 ;
+            SetTile(output, item.Row, item.Col, n);
+          }
+      }
+
+      foreach (var item in contour) {
+        output[item.Row, item.Col] = '.';
+      }
+
+      ///RegionDebug.Print(reg1, 'A');
+      RegionDebug.Print(output);
+    }
+
+    static void SetTile(int[,] output, int row, int col, float n){ 
+      if(n>=-1 && n<-0.5 || n < -1){
+        output[row,col] = '@'; 
+      }
+      if(n>=-0.5 && n<0){
+        output[row,col] = '+'; 
+      }
+      if(n>=0 && n<0.5){
+        output[row,col] = '-'; 
+      }
+      if(n>=0.5 && n<=1 || n>1){
+        output[row,col] = '.'; 
+      }
+    }
+
+    static void Init(int[,] output){
+      for (int row = 0; row < output.GetLength(0); row++) {
+        for (int col = 0; col < output.GetLength(1); col++) { 
+          output[row,col] = ' '; 
+        } 
+      }
+    }
