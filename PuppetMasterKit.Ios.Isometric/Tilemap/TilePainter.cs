@@ -232,20 +232,36 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
                                    int[] endColor  )
     {
 
-      ScanPixels((x,y)=>{
-        int index = GetBitmapIndex(x, y);
-        //the niose's coordinates are on the top left
-        //the tile grid's coord are bottom left
-        var px = (x + row * tileSize) * scaleY;
-        var py = (y + col * tileSize) * scaleX;
-        var value = noise.Noise(px, py);
-        value = value < -1 ? -1 : (value > 1 ? 1 : value);
-        data[index]     = (byte)(endColor[0] - (endColor[0] - startColor[0]) * (1 - value) / 2);
-        data[index + 1] = (byte)(endColor[1] - (endColor[1] - startColor[1]) * (1 - value) / 2);
-        data[index + 2] = (byte)(endColor[2] - (endColor[2] - startColor[2]) * (1 - value) / 2);
-        //bytes[index + 3] = (byte)(e[3] - (e[3] - s[3]) * (1 - noise) / 2);
-        data[index + 3] = 0xFF;
-      });
+      for (int y = 0; y < tileSize; y++) {
+        for (int x = 0; x < tileSize; x++) {
+          int index = GetBitmapIndex(x, y);
+          //the niose's coordinates are on the top left
+          //the tile grid's coord are bottom left
+          var px = (x + row * tileSize) * scaleY;
+          var py = (y + col * tileSize) * scaleX;
+          var value = noise.Noise(px, py);
+          value = value < -1 ? -1 : (value > 1 ? 1 : value);
+          data[index] = (byte)(endColor[0] - (endColor[0] - startColor[0]) * (1 - value) / 2);
+          data[index + 1] = (byte)(endColor[1] - (endColor[1] - startColor[1]) * (1 - value) / 2);
+          data[index + 2] = (byte)(endColor[2] - (endColor[2] - startColor[2]) * (1 - value) / 2);
+          //bytes[index + 3] = (byte)(e[3] - (e[3] - s[3]) * (1 - noise) / 2);
+          data[index + 3] = 0xFF;
+        }
+      }
+      //ScanPixels((x,y)=>{
+      //  int index = GetBitmapIndex(x, y);
+      //  //the niose's coordinates are on the top left
+      //  //the tile grid's coord are bottom left
+      //  var px = (x + row * tileSize) * scaleY;
+      //  var py = (y + col * tileSize) * scaleX;
+      //  var value = noise.Noise(px, py);
+      //  value = value < -1 ? -1 : (value > 1 ? 1 : value);
+      //  data[index]     = (byte)(endColor[0] - (endColor[0] - startColor[0]) * (1 - value) / 2);
+      //  data[index + 1] = (byte)(endColor[1] - (endColor[1] - startColor[1]) * (1 - value) / 2);
+      //  data[index + 2] = (byte)(endColor[2] - (endColor[2] - startColor[2]) * (1 - value) / 2);
+      //  //bytes[index + 3] = (byte)(e[3] - (e[3] - s[3]) * (1 - noise) / 2);
+      //  data[index + 3] = 0xFF;
+      //});
       return this;
     }
 

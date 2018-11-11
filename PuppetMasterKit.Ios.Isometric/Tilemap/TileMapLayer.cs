@@ -74,7 +74,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// Gets the map.
     /// </summary>
     /// <returns>The map.</returns>
-    private TileMap GetMap(){
+    public TileMap GetMap(){
       if (!map.TryGetTarget(out TileMap tileMap)) {
         throw new ArgumentException("TileMapLayer: Invalid map reference");
       }

@@ -99,11 +99,22 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
-    /// Flattens the layer.
+    /// Sets the remove layers.
     /// </summary>
-    /// <returns>The layer.</returns>
-    /// <param name="index">Index.</param>
-    public SKSpriteNode FlattenLayer(int index, Action<CGImage> debug = null)
+    /// <value>The remove layers.</value>
+    public void RemoveLayers() {
+      foreach (var item in layers) {
+        item.RemoveFromParent();
+      }
+      layers.Clear();
+    }
+
+  /// <summary>
+  /// Flattens the layer.
+  /// </summary>
+  /// <returns>The layer.</returns>
+  /// <param name="index">Index.</param>
+  public SKSpriteNode FlattenLayer(int index, Action<CGImage> debug = null)
     {
       if (index >= 0 && index < layers.Count) {
         return layers[index].FlattenLayer(debug);

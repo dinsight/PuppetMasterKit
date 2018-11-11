@@ -18,13 +18,12 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     private readonly int[] startRGBA;
     private readonly int[] endRGBA;
     private readonly int gradientDimension;
-    private readonly Dictionary<MarginType, SKTexture> marginTextures;
-    private readonly Random random = new Random(Guid.NewGuid().GetHashCode());
+    private readonly Dictionary<TileType, SKTexture> marginTextures;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Ios.Isometric.Tilemap.BicubicRegionPainter"/> class.
     /// </summary>
-    public BicubicRegionPainter(int tileSize, int[] startRGBA, int[] endRGBA, int gradientDimension = 30)
+    public BicubicRegionPainter(int tileSize, int[] startRGBA, int[] endRGBA, int gradientDimension = 5)
     {
       marginTextures = PrepareMarginTextures(tileSize);
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
@@ -41,6 +40,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="layer">Layer.</param>
     public void Paint(Region region, TileMapLayer layer)
     {
+      var start = DateTime.Now;
       //generate a gradient
       var gradient = GenerateGradient(gradientDimension);
       //trace the region's contour
@@ -56,15 +56,16 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var maxCol = all.Max(x => x.Col);
       //so we can calculate the scale size necessary to fit the gradient
       //into the tile surface
-      var width = (maxCol - minCol + 1) * tileSize;
-      var height = (maxRow - minRow + 1) * tileSize;
+      var width = layer.GetMap().Cols * tileSize;
+      var height = layer.GetMap().Rows * tileSize;
       var bicubic = new Bicubic(gradient);
       var scaleX = (float)gradientDimension / width;
       var scaleY = (float)gradientDimension / height;
 
+      //pass the size and buffer to the painter
+      var painter = new TilePainter(tileSize, tileSize, tileSize / 2);
+
       foreach (var item in tiles) {
-        //pass the size and buffer to the painter
-        var painter = new TilePainter(tileSize, tileSize, tileSize / 2);
         //Paint with noise
         painter.SetTileContext(item.Row, item.Col)
                .PaintNoise(bicubic, scaleX, scaleY, startRGBA, endRGBA);
@@ -81,72 +82,73 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
         var p = index == 0 ? contour[contour.Count - 1] : contour[index - 1];
         var n = index == contour.Count - 1 ? contour[0] : contour[index + 1];
 
-        var painter = new TilePainter(tileSize, tileSize, tileSize / 2);
-
         painter.SetTileContext(c.Row, c.Col)
                .PaintNoise(bicubic, scaleX, scaleY, startRGBA, endRGBA);
 
         if (p.Col==c.Col && c.Col==n.Col && p.Row < c.Row && c.Row < n.Row) { //l
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.BottomSide]),
+                        .BlendWithAlpha(marginTextures[TileType.BottomSide]),
                         c.Row, c.Col);
         }
         if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.TopSide]),
+                        .BlendWithAlpha(marginTextures[TileType.TopSide]),
                         c.Row, c.Col);
         }
         if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.RightSide]),
+                        .BlendWithAlpha(marginTextures[TileType.RightSide]),
                         c.Row, c.Col);
         }
         if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.LeftSide]),
+                        .BlendWithAlpha(marginTextures[TileType.LeftSide]),
                         c.Row, c.Col);
         }
         if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col > c.Col) { //tlc
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.BottomRightCorner]),
+                        .BlendWithAlpha(marginTextures[TileType.BottomRightCorner]),
                         c.Row, c.Col);
         }
         if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row < c.Row) { //trc
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.TopRightCorner]),
+                        .BlendWithAlpha(marginTextures[TileType.TopRightCorner]),
                         c.Row, c.Col);
         }
         if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row > c.Row) { //blc *
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.BottomLeftCorner]),
+                        .BlendWithAlpha(marginTextures[TileType.BottomLeftCorner]),
                         c.Row, c.Col);
         }
         if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col < c.Col) { //brc
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.TopLeftCorner]),
+                        .BlendWithAlpha(marginTextures[TileType.TopLeftCorner]),
                         c.Row, c.Col);
         }
         if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col < c.Col) { //blj
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.BottomLeftJoint]),
+                        .BlendWithAlpha(marginTextures[TileType.BottomLeftJoint]),
                         c.Row, c.Col);
         }
         if (p.Row==c.Row && p.Col > c.Col && n.Col == c.Col && n.Row < c.Row) { //brj
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.TopLeftJoint]),
+                        .BlendWithAlpha(marginTextures[TileType.TopLeftJoint]),
                         c.Row, c.Col);
         }
         if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col > c.Col) { //trj
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.TopRightJoint]),
+                        .BlendWithAlpha(marginTextures[TileType.TopRightJoint]),
                         c.Row, c.Col);
         }
         if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
           layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[MarginType.BottomRightJoint]),
+                        .BlendWithAlpha(marginTextures[TileType.BottomRightJoint]),
                         c.Row, c.Col);
         }
       }
+
+      var end = DateTime.Now;
+      System.Diagnostics.Debug.WriteLine($"Bicubic painter:{(end-start).TotalMilliseconds} ms");
     }
 
     /// <summary>
@@ -154,24 +156,24 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The margin textures.</returns>
     /// <param name="tileSize">Tile size.</param>
-    private static Dictionary<MarginType, SKTexture> PrepareMarginTextures(int tileSize)
+    private static Dictionary<TileType, SKTexture> PrepareMarginTextures(int tileSize)
     {
-      var dictionary = new Dictionary<MarginType, SKTexture>();
+      var dictionary = new Dictionary<TileType, SKTexture>();
       var margin = new TilePainter(tileSize, tileSize, tileSize / 2);
       //fill with white color
       margin.PaintSolid(new int[] { 0xff, 0xff, 0xff, 0xff });
-      dictionary.Add(MarginType.BottomLeftCorner, margin.PaintBottomLeftCornerAlpha().ToTexture());
-      dictionary.Add(MarginType.BottomRightCorner, margin.PaintBottomRightCornerAlpha().ToTexture());
-      dictionary.Add(MarginType.TopLeftCorner, margin.PaintTopLeftCornerAlpha().ToTexture());
-      dictionary.Add(MarginType.TopRightCorner, margin.PaintTopRightCornerAlpha().ToTexture());
-      dictionary.Add(MarginType.TopSide, margin.PaintTopSideAlpha().ToTexture());
-      dictionary.Add(MarginType.BottomSide, margin.PaintBottomSideAlpha().ToTexture());
-      dictionary.Add(MarginType.LeftSide, margin.PaintLeftSideAlpha().ToTexture());
-      dictionary.Add(MarginType.RightSide, margin.PaintRightSideAlpha().ToTexture());
-      dictionary.Add(MarginType.TopLeftJoint, margin.PaintTopLeftJointAlpha().ToTexture());
-      dictionary.Add(MarginType.TopRightJoint, margin.PaintTopRightJointAlpha().ToTexture());
-      dictionary.Add(MarginType.BottomLeftJoint, margin.PaintBottomLeftJointAlpha().ToTexture());
-      dictionary.Add(MarginType.BottomRightJoint, margin.PaintBottomRightJointAlpha().ToTexture());
+      dictionary.Add(TileType.BottomLeftCorner, margin.PaintBottomLeftCornerAlpha().ToTexture());
+      dictionary.Add(TileType.BottomRightCorner, margin.PaintBottomRightCornerAlpha().ToTexture());
+      dictionary.Add(TileType.TopLeftCorner, margin.PaintTopLeftCornerAlpha().ToTexture());
+      dictionary.Add(TileType.TopRightCorner, margin.PaintTopRightCornerAlpha().ToTexture());
+      dictionary.Add(TileType.TopSide, margin.PaintTopSideAlpha().ToTexture());
+      dictionary.Add(TileType.BottomSide, margin.PaintBottomSideAlpha().ToTexture());
+      dictionary.Add(TileType.LeftSide, margin.PaintLeftSideAlpha().ToTexture());
+      dictionary.Add(TileType.RightSide, margin.PaintRightSideAlpha().ToTexture());
+      dictionary.Add(TileType.TopLeftJoint, margin.PaintTopLeftJointAlpha().ToTexture());
+      dictionary.Add(TileType.TopRightJoint, margin.PaintTopRightJointAlpha().ToTexture());
+      dictionary.Add(TileType.BottomLeftJoint, margin.PaintBottomLeftJointAlpha().ToTexture());
+      dictionary.Add(TileType.BottomRightJoint, margin.PaintBottomRightJointAlpha().ToTexture());
       return dictionary;
     }
 
@@ -182,6 +184,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="dim">Dim.</param>
     private float[][] GenerateGradient(int dim)
     {
+      var random = new Random(Guid.NewGuid().GetHashCode());
       var gradient = new float[dim][];
       for (int i = 0; i < dim; i++) {
         gradient[i] = new float[dim];
@@ -191,7 +194,5 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       }
       return gradient;
     }
-
-
   }
 }

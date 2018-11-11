@@ -246,23 +246,35 @@ namespace PuppetMasterKit.Template.Game.Level
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
       //var map = new int[,]{
-      //  {'W','W','W','W','W','W'},
-      //  {'W','W','W','W','W','W'},
-      //  {'W','W','A','W','W','W'},
-      //  {'W','W','W','W','W','W'},
-      //  {'W','W','W','W','W','W'},
-      //  {'W','W','W','W','W','W'}
+      //  {'-','A','-','W','A','A','A'},
+      //  {'A','A','A','W','A','A','A'},
+      //  {'A','A','A','W','A','A','A'},
+      //  {'A','A','A','W','A','A','A'},
+      //  {'A','A','A','W','A','A','A'},
+      //  {'A','A','A','W','A','A','A'},
+      //  {'A','A','A','W','A','A','A'},
       //};
 
       var map = new int[,]{
-        {'-','A','-','W','W','W','W'},
-        {'A','A','A','W','W','W','W'},
-        {'W','A','W','W','W','W','W'},
-        {'W','W','W','W','A','A','W'},
-        {'W','W','W','W','A','A','W'},
-        {'W','W','W','W','W','W','W'},
-        {'W','W','W','W','W','W','W'},
+        {'-','W','W','W','A','A','+'},
+        {'W','W','W','W','A','A','A'},
+        {'W','W','W','W','A','A','A'},
+        {'W','W','W','W','A','A','A'},
+        {'W','W','W','W','A','A','A'},
+        {'W','W','W','W','A','A','A'},
+        {'W','W','W','W','A','A','+'},
       };
+
+      //var map = new int[,]{
+      //  {'A','A','A','W','W','W','W',},
+      //  {'A','A','A','W','W','W','W',},
+      //  {'A','A','A','W','W','W','W',},
+      //  {'A','A','A','W','W','W','W',},
+      //  {'A','A','A','W','W','W','W',},
+      //  {'A','A','A','W','W','W','W',},
+      //  {'A','A','A','W','W','W','W',},
+      //};
+
       var mapping = new Dictionary<int, string> {
         { '-', "Dirt"},
         { '+', "Sand"},
@@ -277,15 +289,16 @@ namespace PuppetMasterKit.Template.Game.Level
       var cols = map.GetLength(1);
 
       var regions = Region.ExtractRegions(map);
+
       var tileSet = SKTileSet.FromName("Template Tile Set");
 
-      var defaultPainter = new TiledRegionPainter(mapping, tileSet, map);
+      var defaultPainter = new TiledRegionPainter(mapping, tileSet);
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
 
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      tileMap.AddPainter('A', bicubicPainter);
+      //tileMap.AddPainter('A', bicubicPainter);
 
-      tileMap.Build(regions, '-','+', 'W', 1);
+      tileMap.Build(regions, '-', '+', 'W', 'A');
       tileMap.Position = new CGPoint(0, 0);
       scene.AddChild(tileMap);
       var layer = tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map.png"));
@@ -307,8 +320,11 @@ namespace PuppetMasterKit.Template.Game.Level
       }, '+');
 
       var module1 = new Module(new int[,] {
-                { 1,1},
-                { 1,1}
+                { 1,1,1,1,1},
+                { 1,1,1,1,1},
+                { 1,1,1,1,1},
+                { 1,1,1,1,1},
+                { 1,1,1,1,1},
       }, 1){ IsAccessible = false };
 
       var module2 = new Module(new int[,] {
@@ -325,7 +341,7 @@ namespace PuppetMasterKit.Template.Game.Level
       modules.Add(module1);
       modules.Add(module2);
 
-      var builder = new MapBuilder(65, 65, 5, new PathFinder());
+      var builder = new MapBuilder(100, 100, 5, new PathFinder());
       builder.Create(120, modules);
 
 
@@ -343,26 +359,28 @@ namespace PuppetMasterKit.Template.Game.Level
       var tileSet = SKTileSet.FromName("Template Tile Set");
 
       var regions = Region.ExtractRegions(builder.Map);
-      var defaultPainter = new TiledRegionPainter(mapping, tileSet, builder.Map);
+      var defaultPainter = new TiledRegionPainter(mapping, tileSet);
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var tileMap = new TileMap(defaultPainter, builder.Rows, builder.Cols, tileSize);
-      tileMap.AddPainter(1, bicubicPainter);
-      tileMap.Build(builder.Regions, '+', 'W','|',MapCodes.PATH,'-',1);
+      //tileMap.AddPainter(1, bicubicPainter);
+      //tileMap.AddPainter(1, new LayeredRegionPainter());
       tileMap.Position = new CGPoint(0, 0);
 
+      tileMap.Build(regions, '+', 'W','|',MapCodes.PATH,'-',1);
       var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
       var water = tileSet.TileGroups.First(x => x.Name == "Water"); 
       RegionFill.Fill(regions, tileSize, 'W', woods, 0.8f, tileMap.GetLayer(0));
-      //RegionFill.Blend(tileMap.Regions, tileSize, 1, water, tileMap.GetLayer(2));
+
       scene.AddChild(tileMap);
-      var start = DateTime.Now;
-      var layer0 = tileMap.FlattenLayer(0, x=> x.SaveImage($"{baseFolder}/map0.png"));
-      var layer2 = tileMap.FlattenLayer(2, x => x.SaveImage($"{baseFolder}/map2.png"));
+      tileMap.FlattenLayer(0, x=> x.SaveImage($"{baseFolder}/map0.png"));
+
+      ////////////////////////////////////////////////////////////////////////////////
+      //tileMap.RemoveLayers();
+      //tileMap.Build(builder.Regions, '+', 'W', '|', MapCodes.PATH, '-', 1);
+      //tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map1.png"));
+
       //var layer0 = tileMap.FlattenLayer(0, x=> {});
       //var layer2 = tileMap.FlattenLayer(2, x => {});
-
-      var end = DateTime.Now;
-      Debug.WriteLine($"Took: {(end-start).TotalMilliseconds} ms");
     }
   }
 }

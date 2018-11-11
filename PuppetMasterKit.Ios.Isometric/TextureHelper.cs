@@ -60,7 +60,11 @@ namespace PuppetMasterKit.Ios.Isometric
     /// <param name="textureAlpha">Texture alpha.</param>
     public static SKTexture BlendWithAlpha(this SKTexture texture, SKTexture textureAlpha)
     {
-      var blend = new CIBlendWithAlphaMask() {
+      //hack - mono won't link if I do not create a CIBlendWithMask instance
+      //It probably helps the linker figure out where the definiton is.
+      //Also, the CoreImage namespace has to be explicitly specified.
+      var tm = new CoreImage.CIBlendWithMask();
+      var blend = new CoreImage.CIBlendWithAlphaMask() {
         BackgroundImage = null,
         Image = texture.CGImage,
         Mask = textureAlpha.CGImage
@@ -70,6 +74,7 @@ namespace PuppetMasterKit.Ios.Isometric
       var cgimage = context.CreateCGImage(output, output.Extent);
       var blendedTexture = SKTexture.FromImage(cgimage);
       return blendedTexture;
+      //return texture;
     }
 
     /// <summary>

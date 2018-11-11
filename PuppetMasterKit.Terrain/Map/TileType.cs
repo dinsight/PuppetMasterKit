@@ -1,8 +1,9 @@
 ﻿using System;
 namespace PuppetMasterKit.Terrain.Map
 {
-  public enum MarginType
+  public enum TileType
   {
+    Plain,
     BottomLeftCorner,
     BottomRightCorner,
     TopLeftCorner,

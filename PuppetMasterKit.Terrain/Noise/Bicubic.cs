@@ -52,6 +52,13 @@ namespace PuppetMasterKit.Terrain.Noise
     private int currXc = -1;
     private int currYc = -1;
     private float[][] p = null;
+
+    /// <summary>
+    /// Noise the specified x and y.
+    /// </summary>
+    /// <returns>The noise.</returns>
+    /// <param name="x">The x coordinate.</param>
+    /// <param name="y">The y coordinate.</param>
     public float Noise(float x, float y)
     {
       int xc = (int)x;
@@ -79,6 +86,7 @@ namespace PuppetMasterKit.Terrain.Noise
                       gradient[Clamp(yc+2)][Clamp(xc+2)] },
         };
       }
+
 
       return BicubicInterpolate(p, x - xc, y - yc);
     }

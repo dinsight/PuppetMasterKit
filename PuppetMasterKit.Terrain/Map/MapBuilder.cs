@@ -192,7 +192,8 @@ namespace PuppetMasterKit.Terrain.Map
       var regionMap = new Dictionary<Room, Region>();
       Apply((r, c, v) => {
         if (v == Blank) {
-          var closestRoom = rooms.MinBy(x => Point.Distance(r, c, x.Row, x.Col));
+          //var closestRoom = rooms.MinBy(x => Point.Distance(r, c, x.Row, x.Col));
+          var closestRoom = rooms.MinBy(x => Math.Abs(r-x.Row) + Math.Abs(c - x.Col) );
           Region region = null;
           if (!regionMap.ContainsKey(closestRoom)) {
             region = new Region(closestRoom.Module.RegionFill);
