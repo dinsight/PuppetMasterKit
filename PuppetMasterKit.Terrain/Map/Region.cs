@@ -228,9 +228,7 @@ namespace PuppetMasterKit.Terrain.Map
       Tiles.ForEach(a => action(a.Row, a.Col, TileType.Plain));
 
       for (int index = 0; index < contour.Count; index++) {
-        if (contour[index].Row < 0 || contour[index].Col < 0 || 
-            contour[index].Col > MaxCol || contour[index].Row > MaxRow)
-          continue;
+
         var tileType = TileType.Plain;
         var c = contour[index];
         //get the prev and next tiles. Make sure to wrap around when the 

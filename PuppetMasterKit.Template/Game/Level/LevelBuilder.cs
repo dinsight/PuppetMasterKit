@@ -240,7 +240,7 @@ namespace PuppetMasterKit.Template.Game.Level
       return flightMap;
     }
 
-    private void GenerateMap1()
+    private void GenerateMap()
     {
       var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
       var existing = scene.Children.OfType<SKTileMapNode>();
@@ -256,13 +256,13 @@ namespace PuppetMasterKit.Template.Game.Level
       //};
 
       var map = new int[,]{
-        {'-','W','W','W','A','A','+'},
-        {'W','W','W','W','A','A','A'},
-        {'W','W','W','W','A','A','A'},
-        {'W','W','W','W','A','A','A'},
-        {'W','W','W','W','A','A','A'},
-        {'W','W','W','W','A','A','A'},
-        {'W','W','W','W','A','A','+'},
+        {'-','W','W','W','W'},
+        {'W','W','W','W','W'},
+        {'W','W','W','W','W'},
+        {'W','W','A','W','W'},
+        {'W','W','W','W','W'},
+        {'W','W','W','W','W'},
+        {'W','W','W','W','-'},
       };
 
       //var map = new int[,]{
@@ -296,7 +296,7 @@ namespace PuppetMasterKit.Template.Game.Level
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
 
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      //tileMap.AddPainter('A', bicubicPainter);
+      tileMap.AddPainter('A', bicubicPainter);
 
       tileMap.Build(regions, '-', '+', 'W', 'A');
       tileMap.Position = new CGPoint(0, 0);
@@ -304,7 +304,7 @@ namespace PuppetMasterKit.Template.Game.Level
       var layer = tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map.png"));
     }
 
-    private void GenerateMap()
+    private void GenerateMap1()
     {
       var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
       var existing = scene.Children.OfType<SKTileMapNode>();

@@ -65,87 +65,22 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       //pass the size and buffer to the painter
       var painter = new TilePainter(tileSize, tileSize, tileSize / 2);
 
-      foreach (var item in tiles) {
+      region.TraverseRegion((row, col, type) => {
         //Paint with noise
-        painter.SetTileContext(item.Row, item.Col)
-               .PaintNoise(bicubic, scaleX, scaleY, startRGBA, endRGBA);
-        //set the tile's texture
-        layer.SetTile(painter.ToTexture(), item.Row, item.Col);
-      }
-
-      for (int index = 0; index < contour.Count; index++) {
-        if (contour[index].Row < 0 || contour[index].Col < 0)
-          continue;
-        var c = contour[index];
-        //get the prev and next tiles. Make sure to wrap around when the 
-        //one of the ends of the list is reached
-        var p = index == 0 ? contour[contour.Count - 1] : contour[index - 1];
-        var n = index == contour.Count - 1 ? contour[0] : contour[index + 1];
-
-        painter.SetTileContext(c.Row, c.Col)
+        painter.SetTileContext(row, col)
                .PaintNoise(bicubic, scaleX, scaleY, startRGBA, endRGBA);
 
-        if (p.Col==c.Col && c.Col==n.Col && p.Row < c.Row && c.Row < n.Row) { //l
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.BottomSide]),
-                        c.Row, c.Col);
+        if (type == TileType.Plain) {
+          //set the tile's texture
+          layer.SetTile(painter.ToTexture(), row, col);
+        } else {
+          if (marginTextures.ContainsKey(type)) {
+            layer.SetTile(painter.ToTexture()
+                            .BlendWithAlpha(marginTextures[type]),
+                            row, col);
+          }
         }
-        if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.TopSide]),
-                        c.Row, c.Col);
-        }
-        if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.RightSide]),
-                        c.Row, c.Col);
-        }
-        if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.LeftSide]),
-                        c.Row, c.Col);
-        }
-        if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col > c.Col) { //tlc
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.BottomRightCorner]),
-                        c.Row, c.Col);
-        }
-        if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row < c.Row) { //trc
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.TopRightCorner]),
-                        c.Row, c.Col);
-        }
-        if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row > c.Row) { //blc *
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.BottomLeftCorner]),
-                        c.Row, c.Col);
-        }
-        if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col < c.Col) { //brc
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.TopLeftCorner]),
-                        c.Row, c.Col);
-        }
-        if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col < c.Col) { //blj
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.BottomLeftJoint]),
-                        c.Row, c.Col);
-        }
-        if (p.Row==c.Row && p.Col > c.Col && n.Col == c.Col && n.Row < c.Row) { //brj
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.TopLeftJoint]),
-                        c.Row, c.Col);
-        }
-        if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col > c.Col) { //trj
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.TopRightJoint]),
-                        c.Row, c.Col);
-        }
-        if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
-          layer.SetTile(painter.ToTexture()
-                        .BlendWithAlpha(marginTextures[TileType.BottomRightJoint]),
-                        c.Row, c.Col);
-        }
-      }
+      });
 
       var end = DateTime.Now;
       System.Diagnostics.Debug.WriteLine($"Bicubic painter:{(end-start).TotalMilliseconds} ms");
@@ -167,13 +102,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       dictionary.Add(TileType.TopLeftCorner, margin.PaintTopLeftCornerAlpha().ToTexture());
       dictionary.Add(TileType.TopRightCorner, margin.PaintTopRightCornerAlpha().ToTexture());
       dictionary.Add(TileType.TopSide, margin.PaintTopSideAlpha().ToTexture());
+      dictionary.Add(TileType.RightSide, margin.PaintRightSideAlpha().ToTexture());
       dictionary.Add(TileType.BottomSide, margin.PaintBottomSideAlpha().ToTexture());
       dictionary.Add(TileType.LeftSide, margin.PaintLeftSideAlpha().ToTexture());
-      dictionary.Add(TileType.RightSide, margin.PaintRightSideAlpha().ToTexture());
       dictionary.Add(TileType.TopLeftJoint, margin.PaintTopLeftJointAlpha().ToTexture());
+      dictionary.Add(TileType.BottomRightJoint, margin.PaintBottomRightJointAlpha().ToTexture());
       dictionary.Add(TileType.TopRightJoint, margin.PaintTopRightJointAlpha().ToTexture());
       dictionary.Add(TileType.BottomLeftJoint, margin.PaintBottomLeftJointAlpha().ToTexture());
-      dictionary.Add(TileType.BottomRightJoint, margin.PaintBottomRightJointAlpha().ToTexture());
       return dictionary;
     }
 

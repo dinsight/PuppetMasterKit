@@ -133,7 +133,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
              .ToTexture().CGImage.SaveImage($"{basePath}/map/trc.png");
 
       painter.SetTileContext(0, 0)
-             .PaintTopLeftCornerAlpha()
+             .PaintBottomRightCornerAlpha()
              .ToTexture().CGImage.SaveImage($"{basePath}/map/tlc.png");
 
       painter.SetTileContext(0, 0)

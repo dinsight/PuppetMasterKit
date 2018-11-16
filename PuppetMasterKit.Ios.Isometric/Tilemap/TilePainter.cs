@@ -77,23 +77,23 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <summary>
     /// Paints the left side alpha.
     /// </summary>
-    public TilePainter PaintLeftSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(tileSize, 0, x, 0));
+    public TilePainter PaintBottomSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(tileSize, 0, x, 0));
     /// <summary>
     /// Paints the right side alpha.
     /// </summary>
-    public TilePainter PaintRightSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(0, 0, x, 0));
+    public TilePainter PaintTopSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(0, 0, x, 0));
     /// <summary>
     /// Paints the top side alpha.
     /// </summary>
-    public TilePainter PaintTopSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(0, 0, 0, y));
+    public TilePainter PaintRightSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(0, 0, 0, y));
     /// <summary>
     /// Paints the bottom side alpha.
     /// </summary>
-    public TilePainter PaintBottomSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(0, tileSize, 0, y));
+    public TilePainter PaintLeftSideAlpha() => PaintSideAlpha((x, y) => Point.Distance(0, tileSize, 0, y));
     /// <summary>
     /// Paints the top left joint alpha.
     /// </summary>
-    public TilePainter PaintTopLeftJointAlpha() => PaintJointAlpha((x, y) => Point.Distance(0, tileSize, x, y));
+    public TilePainter PaintBottomRightJointAlpha() => PaintJointAlpha((x, y) => Point.Distance(0, tileSize, x, y));
     /// <summary>
     /// Paints the top right joint alpha.
     /// </summary>
@@ -105,12 +105,12 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <summary>
     /// Paints the bottom right joint alpha.
     /// </summary>
-    public TilePainter PaintBottomRightJointAlpha() => PaintJointAlpha((x, y) => Point.Distance(tileSize, 0, x, y));
+    public TilePainter PaintTopLeftJointAlpha() => PaintJointAlpha((x, y) => Point.Distance(tileSize, 0, x, y));
     /// <summary>
     /// Paints the top left corner alpha.
     /// </summary>
     /// <returns>The top left corner alpha.</returns>
-    public TilePainter PaintTopLeftCornerAlpha() => PaintCornerAlpha(new Point(1, 0));
+    public TilePainter PaintBottomRightCornerAlpha() => PaintCornerAlpha(new Point(1, 0));
     /// <summary>
     /// Paints the top right corner alpha.
     /// </summary>
@@ -124,8 +124,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <summary>
     /// Paints the bottom right corner alpha.
     /// </summary>
-    /// <returns>The bottom right corner alpha.</returns>
-    public TilePainter PaintBottomRightCornerAlpha() => PaintCornerAlpha(new Point(0,1));
+    /// <returns>The bottom left right alpha.</returns>
+    public TilePainter PaintTopLeftCornerAlpha() => PaintCornerAlpha(new Point(0,1));
 
     /// <summary>
     /// 2D to ISO to bitmap coordinate conversion
