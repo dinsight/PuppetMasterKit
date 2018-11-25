@@ -36,6 +36,7 @@
     <Compile Include="StringValueAttribute.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Color.cs" />
+    <Compile Include="Measure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

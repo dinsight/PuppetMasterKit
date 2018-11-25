@@ -206,6 +206,8 @@
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_UpperLeftCorner2.imageset\" />
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_UpperRightCorner2.imageset\" />
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_UpperRightCorner2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L2.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -214,9 +216,10 @@
     <BundleResource Include="spark.png" />
     <BundleResource Include="Water.fsh" />
     <BundleResource Include="Shadow.fsh" />
-    <BundleResource Include="TileSet.sks" />
     <BundleResource Include="GameScene.bak.sks" />
     <BundleResource Include="GameScene.sks" />
+    <BundleResource Include="Resources\en.lproj\TileSet.sks" />
+    <BundleResource Include="TileSet.sks" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -438,6 +441,10 @@
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_LowerLeftCorner2.imageset\tile-corner-right0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_UpperLeftCorner2.imageset\tile-corner-bottom0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_UpperRightCorner2.imageset\tile-corner-left0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L1.imageset\water-l1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L2.imageset\water-l2.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

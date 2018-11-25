@@ -66,7 +66,15 @@
     },
     {
       "idiom" : "watch",
+      "screen-width" : ">161"
+    },
+    {
+      "idiom" : "watch",
       "screen-width" : ">145"
+    },
+    {
+      "idiom" : "watch",
+      "screen-width" : ">183"
     },
     {
       "idiom" : "watch",
@@ -80,7 +88,17 @@
     {
       "idiom" : "watch",
       "scale" : "2x",
+      "screen-width" : ">161"
+    },
+    {
+      "idiom" : "watch",
+      "scale" : "2x",
       "screen-width" : ">145"
+    },
+    {
+      "idiom" : "watch",
+      "scale" : "2x",
+      "screen-width" : ">183"
     },
     {
       "idiom" : "mac"

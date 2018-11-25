@@ -8,7 +8,18 @@ using System.Linq;
 
 namespace PuppetMasterKit.Terrain.Map
 {
-  public class Region
+  /// <summary>
+  /// interface for consuming 2D data
+  /// </summary>
+  interface I2DSubscript<T>
+  {
+    T this[int row, int col] { get; }
+  }
+
+  /// <summary>
+  /// Region.
+  /// </summary>
+  public class Region : I2DSubscript<int?>
   {
     public int RegionFill { get; }
     public int MinRow { get; private set; } = int.MaxValue;
@@ -18,11 +29,39 @@ namespace PuppetMasterKit.Terrain.Map
 
     public IReadOnlyCollection<GridCoord> Tiles {
       get {
-        return new ReadOnlyCollection<GridCoord>(tiles.Values.ToList());
+        return new ReadOnlyCollection<GridCoord>(tiles.Keys.ToList());
       }
     }
 
-    private Dictionary<int, GridCoord> tiles = new Dictionary<int, GridCoord>();
+    private Dictionary<GridCoord,int?> tiles = new Dictionary<GridCoord, int?>();
+
+    /// <summary>
+    /// Helper for consuming 2D arrays
+    /// </summary>
+    class ArraySubscript : I2DSubscript<int?>
+    {
+      readonly int[,] array;
+      readonly int rows;
+      readonly int cols;
+      /// <summary>
+      /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Terrain.Map.ArraySubscript"/> class.
+      /// </summary>
+      /// <param name="array">Array.</param>
+      public ArraySubscript(int[,] array)
+      {
+        this.array = array;
+        rows = array.GetLength(0);
+        cols = array.GetLength(1);
+      }
+      public int? this[int row, int col] {
+        get {
+          if (row >= 0 && col >= 0 && row < rows && col < cols) {
+            return array[row, col];
+          }
+          return null;
+        }
+      }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Region"/> class.
@@ -54,11 +93,11 @@ namespace PuppetMasterKit.Terrain.Map
     /// <param name="col">Col.</param>
     public void AddTile(int row, int col)
     {
-      var key = HashFunc(row, col);
+      var key = new GridCoord(row, col);
       if (tiles.ContainsKey(key))
         return;
 
-      tiles.Add(key, new GridCoord(row, col));
+      tiles.Add(key, RegionFill);
       MinRow = Math.Min(MinRow, row);
       MaxRow = Math.Max(MaxRow, row);
       MinCol = Math.Min(MinCol, col);
@@ -78,15 +117,22 @@ namespace PuppetMasterKit.Terrain.Map
       }
     }
 
+
     /// <summary>
     /// Gets the <see cref="T:PuppetMasterKit.AI.Region"/> with the specified row col.
     /// </summary>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public GridCoord this[int row, int col] {
+    public int? this[int row, int col] {
       get {
-        tiles.TryGetValue(HashFunc(row, col), out GridCoord value);
+        tiles.TryGetValue(new GridCoord(row, col), out int? value);
         return value;
+      }
+      set {
+        var key = new GridCoord(row, col);
+        if (tiles.ContainsKey(key)) {
+          tiles[key] = value;
+        }
       }
     }
 
@@ -95,10 +141,32 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <returns>The regions.</returns>
     /// <param name="geography">Geography.</param>
-    public static List<Region> ExtractRegions(int[,] geography)
+    public static List<Region> ExtractRegions(int[,] geography) 
     {
       var rows = geography.GetLength(0);
       var cols = geography.GetLength(1);
+      return ExtractRegions(new ArraySubscript(geography), rows, cols);
+    }
+
+    /// <summary>
+    /// Extracts the regions.
+    /// </summary>
+    /// <returns>The regions.</returns>
+    /// <param name="geography">Geography.</param>
+    public static List<Region> ExtractRegions(Region geography)
+    {
+      var rows = geography.MaxRow + 1;
+      var cols = geography.MaxCol + 1;
+      return ExtractRegions(geography, rows, cols);
+    }
+
+    /// <summary>
+    /// Extracts the regions.
+    /// </summary>
+    /// <returns>The regions.</returns>
+    /// <param name="geography">Geography.</param>
+    private static List<Region> ExtractRegions(I2DSubscript<int?> geography, int rows, int cols)
+    {
       var regions = new List<Region>();
       var pr = new Region[cols];
 
@@ -107,6 +175,8 @@ namespace PuppetMasterKit.Terrain.Map
         for (int col = 0; col < cols; col++) {
           Region reg = null;
           var val = geography[row, col];
+          if (!val.HasValue)
+            continue;
           var toMerge = pr.Where((x, i) => i >= col - 1
                               && i <= col + 1
                               && x != null && x.RegionFill == val);
@@ -116,7 +186,7 @@ namespace PuppetMasterKit.Terrain.Map
 
           toMerge = toMerge.Distinct();
           if (toMerge.Count() == 0) {
-            reg = new Region(val);
+            reg = new Region(val.Value);
             regions.Add(reg);
           } else {
             reg = toMerge.First();
@@ -211,7 +281,8 @@ namespace PuppetMasterKit.Terrain.Map
         dir = dir - 1 >= 0 ? dir - 1 : W;
         return current;
       }
-      if (fwd != null && left != null && right != null) { //change direction - turn back
+      if ((fwd != null && left != null && right != null) ||
+          (fwd != null && left !=null && right == null)) { //change direction - turn back
         dir = (dir + 2) % 4;
         return current;
       }

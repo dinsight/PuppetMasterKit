@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Terrain;
 using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Terrain.Noise;
 
 namespace PuppetMasterKit.UnitTest.UnitTests
 {
@@ -83,6 +85,80 @@ namespace PuppetMasterKit.UnitTest.UnitTests
       }
       foreach (var item in contour) {
         System.Diagnostics.Debug.WriteLine($"({item.Row},{item.Col})");
+      }
+    }
+
+    [Test]
+    public void Subregion() {
+      int[,] map = {
+        {0, 0,  0,   0,   0,   0,   0,  0, 0, 0},
+        {0, 0,  0,   0,   0,   0,   0,  0, 0, 0},
+        {0, 0, 'A', 'A', 'A',  0,   0,  0, 0, 0},
+        {0, 0, 'A', 'A', 'A', 'A',  0,  0, 0, 0},
+        {0, 0, 'A', 'A', 'A', 'A',  0,  0, 0, 0},
+        {0, 0, 'A', 'A', 'A', 'A', 'A', 0, 0, 0},
+        {0, 0,  0,  'A', 'A', 'A', 'A', 0, 0, 0},
+        {0, 0,  0,   0,   0,  'A', 'A', 0, 0, 0},
+        {0, 0,  0,   0,   0,   0,   0,  0, 0, 0},
+        {0, 0,  0,   0,   0,   0,   0,  0, 0, 0},
+      };
+      float[][] gradient = {
+          new float[]{0.1f   , 0.2f , 0.1f , 0.1f , 0.1f},
+          new float[]{0.2f   , 0.8f , 1.0f , 0.3f , 0.1f},
+          new float[]{0.4f   , 0.6f , 0.9f , 0.7f , 0.1f},
+          new float[]{0.1f   , 0.2f , 0.4f , 1.0f , 0.1f},
+          new float[]{0.1f   , 0.1f , 0.1f , 0.4f , 0.1f},
+        };
+
+      float GRAD = gradient.GetLength(0);
+      float M = map.GetLength(0)-1;
+      var noiseAmplitude = 7.0f;
+      var regions = Region.ExtractRegions(map);
+      var region1 = regions.First(x => x.RegionFill == 'A');
+      //Print(region1, map.GetLength(0),map.GetLength(0));
+
+      var perlin = new Perlin(gradient);
+
+      foreach (var item in region1.Tiles) {
+        var scol = (item.Col - region1.MinCol) * (GRAD / M);
+        var srow = (item.Row - region1.MinRow) * (GRAD / M);
+        var n = perlin.Noise(scol, srow) * noiseAmplitude;
+        if (n >= -1 && n < -0.5 || n < -1) {
+          region1[item.Row, item.Col] = '@';
+        }
+        if (n >= -0.5 && n < 0) {
+          region1[item.Row, item.Col] = '+';
+        }
+        if (n >= 0 && n < 0.5) {
+          region1[item.Row, item.Col] = '-';
+        }
+        if (n >= 0.5 && n <= 1 || n > 1) {
+          region1[item.Row, item.Col] = '~';
+        }
+      }
+
+      Print(region1, map.GetLength(0), map.GetLength(0));
+
+      var inner = Region.ExtractRegions(region1);
+      var high = inner.First(x => x.RegionFill == '@');
+
+      System.Diagnostics.Debug.WriteLine("");
+      System.Diagnostics.Debug.WriteLine("");
+
+      Print(high, map.GetLength(0), map.GetLength(0));
+    }
+
+    private void Print(Region region, int rows, int cols) {
+      for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < cols; col++) {
+          if (region[row, col] != null) {
+            System.Diagnostics.Debug.Write((char)region[row, col]);
+          } else {
+            System.Diagnostics.Debug.Write('.');
+          }
+
+        }
+        System.Diagnostics.Debug.WriteLine("");
       }
     }
   }

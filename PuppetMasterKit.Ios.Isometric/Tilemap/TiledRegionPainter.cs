@@ -11,6 +11,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
   {
     private Dictionary<int, string> tileMapping;
     private SKTileSet tileSet;
+    private static readonly Dictionary<SKTileGroup, Dictionary<TileType, SKTexture>> cornersCache 
+        = new Dictionary<SKTileGroup, Dictionary<TileType, SKTexture>>();
 
     private const string CENTER = "Center";
     private const string UP_EDGE = "Up Edge";
@@ -68,10 +70,12 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The corners.</returns>
     /// <param name="tileGroup">Tile group.</param>
-    private Dictionary<TileType, SKTexture> GetCorners(SKTileGroup tileGroup)
+    private static Dictionary<TileType, SKTexture> GetCorners(SKTileGroup tileGroup)
     {
+      if (cornersCache.ContainsKey(tileGroup)) {
+        return cornersCache[tileGroup];
+      }
       var dictionary = new Dictionary<TileType, SKTexture>();
-
       var mainTile = tileGroup.GetTexture(CENTER);
 
       dictionary.Add(TileType.BottomRightJoint, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_CORNER)));
@@ -87,6 +91,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       dictionary.Add(TileType.TopRightCorner, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_EDGE)));
       dictionary.Add(TileType.TopLeftCorner, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_EDGE)));
 
+      cornersCache.Add(tileGroup, dictionary);
       return dictionary;
     }
   }
