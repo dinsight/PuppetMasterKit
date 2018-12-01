@@ -21,6 +21,12 @@ namespace PuppetMasterKit.Terrain.Map
   /// </summary>
   public class Region : I2DSubscript<int?>
   {
+    public enum RegionType { 
+      REGION,
+      PATH
+    }
+
+    public RegionType Type { get; set; }
     public int RegionFill { get; }
     public int MinRow { get; private set; } = int.MaxValue;
     public int MaxRow { get; private set; } = int.MinValue;
@@ -70,6 +76,18 @@ namespace PuppetMasterKit.Terrain.Map
     public Region(int regionFill)
     {
       this.RegionFill = regionFill;
+      this.Type = RegionType.REGION;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Terrain.Map.Region"/> class.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="regionFill">Region fill.</param>
+    public Region(RegionType type, int regionFill=0) 
+    {
+      this.RegionFill = regionFill;
+      this.Type = type;
     }
 
     /// <summary>
@@ -265,24 +283,24 @@ namespace PuppetMasterKit.Terrain.Map
       var rightRow = current.Row + step[dir, 2, 0];
       var rightCol = current.Col + step[dir, 2, 1];
 
-      var fwd = this[fwdRow, fwdCol];
-      var left = this[leftRow, leftCol];
-      var right = this[rightRow, rightCol];
+      var fwd = this[fwdRow, fwdCol] != null ;
+      var left = this[leftRow, leftCol] != null;
+      var right = this[rightRow, rightCol] != null;
 
-      if (fwd == null && right != null) { // we have the wall on out right
+      if (!fwd && right) { // we have the wall on out right
         return new GridCoord(fwdRow, fwdCol);
       }
-      if (fwd == null && right == null) { //turn right
+      if (!fwd && !right) { //turn right
         dir = (dir + 1) % 4; // change direction
         return new GridCoord(fwdRow, fwdCol);
       }
 
-      if (fwd != null && left == null) { //change direction - turn left
+      if (fwd && !left) { //change direction - turn left
         dir = dir - 1 >= 0 ? dir - 1 : W;
         return current;
       }
-      if ((fwd != null && left != null && right != null) ||
-          (fwd != null && left !=null && right == null)) { //change direction - turn back
+      if ((fwd && left && right) ||
+          (fwd && left && !right)) { //change direction - turn back
         dir = (dir + 2) % 4;
         return current;
       }

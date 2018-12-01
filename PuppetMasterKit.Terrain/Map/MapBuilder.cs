@@ -11,8 +11,8 @@ namespace PuppetMasterKit.Terrain.Map
   {
     public static readonly int Blank = int.MinValue;
 
-    private int[,] map;
-    private int roomPadding;
+    private readonly int[,] map;
+    private readonly int roomPadding;
     private int pathCount;
     private IPathFinder pathFinder;
     private List<Room> rooms = new List<Room>();
@@ -130,8 +130,8 @@ namespace PuppetMasterKit.Terrain.Map
           actual++;
         }
       }
-      CreatePaths();
       regions = CreateRegions();
+      CreatePaths();
       return actual;
     }
 
@@ -153,7 +153,9 @@ namespace PuppetMasterKit.Terrain.Map
       //get the closest pair of rooms and build a path between them
       var closest = GetClosestPair(connected, unconnected, RoomDistance);
       while (closest != null) {
-        if (CreatePath(closest.Item1, closest.Item2)) {
+        var path = CreatePath(closest.Item1, closest.Item2);
+        if (path!=null) {
+          regions.Add(path);
           pathCount++;
           connected.Add(closest.Item2);
           unconnected.Remove(closest.Item2);
@@ -173,10 +175,12 @@ namespace PuppetMasterKit.Terrain.Map
       var deadends = rooms.Where(x => x.Module.IsAccessible && x.PathCount <= 1).ToList();
       var pairs = GetClosestPair(deadends, deadends, RoomDistance);
       while (pairs != null) {
-        if (pairs.Item1.PathCount == 1
-            && pairs.Item2.PathCount == 1
-            && CreatePath(pairs.Item1, pairs.Item2, false, false)) {
-          pathCount++;
+        if (pairs.Item1.PathCount == 1 && pairs.Item2.PathCount == 1 ) {
+          var path = CreatePath(pairs.Item1, pairs.Item2, false, false);
+          if (path != null) {
+            regions.Add(path);
+            pathCount++;
+          }
         }
         deadends.Remove(pairs.Item1);
         deadends.Remove(pairs.Item2);
@@ -189,23 +193,14 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     public List<Region> CreateRegions()
     {
-      var regionMap = new Dictionary<Room, Region>();
       Apply((r, c, v) => {
         if (v == Blank) {
           //var closestRoom = rooms.MinBy(x => Point.Distance(r, c, x.Row, x.Col));
-          var closestRoom = rooms.MinBy(x => Math.Abs(r-x.Row) + Math.Abs(c - x.Col) );
-          Region region = null;
-          if (!regionMap.ContainsKey(closestRoom)) {
-            region = new Region(closestRoom.Module.RegionFill);
-            regionMap.Add(closestRoom, region);
-          } else {
-            region = regionMap[closestRoom];
-          }
+          var closestRoom = rooms.MinBy(x => Math.Abs(r - x.Row) + Math.Abs(c - x.Col));
           map[r, c] = closestRoom.Module.RegionFill;
-          region.AddTile(r, c);
         }
       });
-      return regionMap.Values.ToList();
+      return Region.ExtractRegions(map);
     }
 
     /// <summary>
@@ -214,23 +209,24 @@ namespace PuppetMasterKit.Terrain.Map
     /// <returns><c>true</c>, if path was created, <c>false</c> otherwise.</returns>
     /// <param name="room">Room.</param>
     /// <param name="nextRoom">Next room.</param>
-    public bool CreatePath(Room room, Room nextRoom,
+    public Region CreatePath(Room room, Room nextRoom,
                            bool canCrossOtherPaths = true,
                            bool crossOtherRooms = true)
     {
+      var result = new List<GridCoord>();
       var path = pathFinder.Find(map, room.Row, room.Col, nextRoom.Row, nextRoom.Col);
       if (!canCrossOtherPaths) {
         var isCrossingOtherPaths = path.Any(x => map[x.Item1, x.Item2] == MapCodes.PATH);
         if (isCrossingOtherPaths)
-          return false;
+          return null;
       }
       if (!crossOtherRooms) {
-        var countCrossingOtherRooms = path.Where(x =>
+        var countCrossingOtherRooms = path.Count(x =>
             map[x.Item1, x.Item2] == MapCodes.X &&
             !room.IsInside(x.Item1, x.Item2) &&
-            !nextRoom.IsInside(x.Item1, x.Item2)).Count();
+            !nextRoom.IsInside(x.Item1, x.Item2));
         if (countCrossingOtherRooms > 0)
-          return false;
+          return null;
       }
       if (path.Count > 0) {
         path.ForEach(x => {
@@ -240,9 +236,14 @@ namespace PuppetMasterKit.Terrain.Map
         });
         room.PathCount++;
         nextRoom.PathCount++;
-        return true;
+        var pathRegion = new Region(Region.RegionType.PATH);
+        path.ForEach(x => {
+          pathRegion.AddTile(x.Item1, x.Item2);
+          pathRegion[x.Item1, x.Item2] = map[x.Item2, x.Item1];
+        });
+        return pathRegion;
       }
-      return false;
+      return null;
     }
 
     /// <summary>

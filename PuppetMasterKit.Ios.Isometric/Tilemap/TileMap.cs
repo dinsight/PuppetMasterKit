@@ -8,6 +8,7 @@ using PuppetMasterKit.Utility;
 using Pair = System.Tuple;
 using CoreImage;
 using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Terrain;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
@@ -46,8 +47,10 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     }
 
     /// <summary>
-    /// Build this instance.
+    /// Build the specified regions, paths and order.
     /// </summary>
+    /// <param name="regions">Regions.</param>
+    /// <param name="order">Order.</param>
     public void Build(IReadOnlyCollection<Region> regions, params int[] order)
     {
       var baseTileLayer = CreateLayer(-1);
@@ -58,16 +61,18 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       if (order != null) {
         var orderedList = order.ToList();
         //Sort the regions based on the list provided
-        regions = regions.OrderBy(reg => {
+        //Sort the path regions at the end
+        regions = regions.OrderBy(reg=>reg.Type)
+        .ThenBy(reg => {
           var index = orderedList.IndexOf(reg.RegionFill);
           return index < 0 ? int.MaxValue : index;
         }).ToList();
       }
-      //var painter = new TiledRegionPainter(tileMapping, tileSet, map);
       //Select the tiles for each region and apply the corresponding texture
       regions.ForEach(reg => {
         IRegionPainter painter = defaultPainter;
-        if (regionPainter.ContainsKey(reg.RegionFill)) {
+        if (reg.Type == Region.RegionType.REGION && 
+            regionPainter.ContainsKey(reg.RegionFill)) {
           painter = regionPainter[reg.RegionFill];
         }
         painter.Paint(reg, baseTileLayer);

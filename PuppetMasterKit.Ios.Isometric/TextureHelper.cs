@@ -7,6 +7,7 @@ using SpriteKit;
 using PuppetMasterKit.AI.Configuration;
 using LightInject;
 using PuppetMasterKit.Graphics.Geometry;
+using System.Collections.Generic;
 
 namespace PuppetMasterKit.Ios.Isometric
 {
@@ -27,7 +28,7 @@ namespace PuppetMasterKit.Ios.Isometric
     /// <returns>The texture.</returns>
     /// <param name="group">Group.</param>
     /// <param name="ruleName">Rule name.</param>
-    public static SKTexture GetTexture(this SKTileGroup group, string ruleName){
+    public static SKTexture GetRandomTexture(this SKTileGroup group, string ruleName){
       if (group.Rules.Count() == 1) {
         return group.Rules
                     .First()
@@ -50,6 +51,21 @@ namespace PuppetMasterKit.Ios.Isometric
 
       var index = randomTexture.Next(0, tileDefs.Count());
       return tileDefs[index].Textures.First();
+    }
+
+    /// <summary>
+    /// Gets the textures.
+    /// </summary>
+    /// <returns>The textures.</returns>
+    /// <param name="group">Group.</param>
+    /// <param name="ruleName">Rule name.</param>
+    public static List<SKTexture> GetTextures(this SKTileGroup group, string ruleName) 
+    {
+      var tileDefs = group.Rules
+                          .Where(r => r.Name == ruleName && r.TileDefinitions != null)
+                          .SelectMany(x => x.TileDefinitions);
+
+      return tileDefs.SelectMany(x => x.Textures).ToList();
     }
 
     /// <summary>

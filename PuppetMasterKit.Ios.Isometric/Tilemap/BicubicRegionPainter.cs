@@ -40,6 +40,9 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="layer">Layer.</param>
     public void Paint(Region region, TileMapLayer layer)
     {
+      if(region.Type != Region.RegionType.REGION) {
+        throw new ArgumentException("BicubicRegionPainter: Unsupported region");
+      }
       var start = DateTime.Now;
       //generate a gradient
       var gradient = GenerateGradient(gradientDimension);

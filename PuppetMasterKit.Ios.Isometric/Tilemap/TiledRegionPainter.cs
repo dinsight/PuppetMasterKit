@@ -11,8 +11,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
   {
     private Dictionary<int, string> tileMapping;
     private SKTileSet tileSet;
-    private static readonly Dictionary<SKTileGroup, Dictionary<TileType, SKTexture>> cornersCache 
-        = new Dictionary<SKTileGroup, Dictionary<TileType, SKTexture>>();
+    private static readonly Dictionary<SKTileGroup, Dictionary<TileType, List<SKTexture>>> cornersCache 
+        = new Dictionary<SKTileGroup, Dictionary<TileType, List<SKTexture>>>();
 
     private const string CENTER = "Center";
     private const string UP_EDGE = "Up Edge";
@@ -46,6 +46,23 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="layer">Layer.</param>
     public void Paint(Region region, TileMapLayer layer)
     {
+      if(region.Type == Region.RegionType.REGION) {
+        PaintRegion(region, layer);
+      } else if (region.Type == Region.RegionType.PATH) {
+        PaintPath(region, layer);
+      } else {
+        throw new ArgumentException($"Cannot paint region of type {region.Type}");
+      }
+    }
+
+    /// <summary>
+    /// Paints the region.
+    /// </summary>
+    /// <param name="region">Region.</param>
+    /// <param name="layer">Layer.</param>
+    private void PaintRegion(Region region, TileMapLayer layer)
+    {
+      var random = new Random(Guid.NewGuid().GetHashCode());
       var tileGroup = tileMapping
           .Where(k => k.Key == region.RegionFill)
           .Select(x => tileSet
@@ -56,11 +73,41 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var corners = GetCorners(tileGroup);
       region.TraverseRegion((row, col, type) => {
         if (type == TileType.Plain) {
-          layer.SetTile(tileGroup.GetTexture(CENTER),
+          layer.SetTile(tileGroup.GetRandomTexture(CENTER),
                                 row,
                                 col);
         } else {
-          layer.SetTile(corners[type], row, col, null);
+          var index = random.Next(0, corners[type].Count);
+          layer.SetTile(corners[type][index], row, col, null);
+        }
+      });
+    }
+
+    /// <summary>
+    /// Paints the path.
+    /// </summary>
+    /// <param name="path">Path.</param>
+    /// <param name="layer">Layer.</param>
+    private void PaintPath(Region path, TileMapLayer layer)
+    {
+      path.TraverseRegion((row, col, type) => {
+
+          var tileGroup = tileMapping
+        .Where(k => k.Key == MapCodes.PATH)
+          //.Where(k => k.Key == path[row, col])
+          .Select(x => tileSet
+                  .TileGroups
+                  .FirstOrDefault(t => t.Name == x.Value))
+          .FirstOrDefault();
+
+        //var corners = GetCorners(tileGroup);
+
+        if (type == TileType.Plain) {
+          layer.SetTile(tileGroup.GetRandomTexture(CENTER),
+                                row,
+                                col);
+        } else {
+          //layer.SetTile(corners[type], row, col, null);
         }
       });
     }
@@ -70,26 +117,39 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The corners.</returns>
     /// <param name="tileGroup">Tile group.</param>
-    private static Dictionary<TileType, SKTexture> GetCorners(SKTileGroup tileGroup)
+    private static Dictionary<TileType, List<SKTexture>> GetCorners(SKTileGroup tileGroup)
     {
       if (cornersCache.ContainsKey(tileGroup)) {
         return cornersCache[tileGroup];
       }
-      var dictionary = new Dictionary<TileType, SKTexture>();
-      var mainTile = tileGroup.GetTexture(CENTER);
+      var dictionary = new Dictionary<TileType, List<SKTexture>>();
+      var mainTile = tileGroup.GetRandomTexture(CENTER);
 
-      dictionary.Add(TileType.BottomRightJoint, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_CORNER)));
-      dictionary.Add(TileType.BottomLeftJoint, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_CORNER)));
-      dictionary.Add(TileType.BottomSide, mainTile.BlendWithAlpha(tileGroup.GetTexture(UP_EDGE)));
-      dictionary.Add(TileType.TopRightJoint, mainTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_CORNER)));
-      dictionary.Add(TileType.RightSide, mainTile.BlendWithAlpha(tileGroup.GetTexture(RIGHT_EDGE)));
-      dictionary.Add(TileType.TopLeftJoint, mainTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_RIGHT_CORNER)));
-      dictionary.Add(TileType.TopSide, mainTile.BlendWithAlpha(tileGroup.GetTexture(DOWN_EDGE)));
-      dictionary.Add(TileType.LeftSide, mainTile.BlendWithAlpha(tileGroup.GetTexture(LEFT_EDGE)));
-      dictionary.Add(TileType.BottomLeftCorner, mainTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_LEFT_EDGE)));
-      dictionary.Add(TileType.BottomRightCorner, mainTile.BlendWithAlpha(tileGroup.GetTexture(UPPER_RIGHT_EDGE)));
-      dictionary.Add(TileType.TopRightCorner, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_RIGHT_EDGE)));
-      dictionary.Add(TileType.TopLeftCorner, mainTile.BlendWithAlpha(tileGroup.GetTexture(LOWER_LEFT_EDGE)));
+      dictionary.Add(TileType.BottomRightJoint, tileGroup.GetTextures(LOWER_LEFT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.BottomLeftJoint, tileGroup.GetTextures(LOWER_RIGHT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.BottomSide, tileGroup.GetTextures(UP_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.TopRightJoint, tileGroup.GetTextures(UPPER_LEFT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.RightSide, tileGroup.GetTextures(RIGHT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.TopLeftJoint, tileGroup.GetTextures(UPPER_RIGHT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.TopSide, tileGroup.GetTextures(DOWN_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.LeftSide, tileGroup.GetTextures(LEFT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.BottomLeftCorner, tileGroup.GetTextures(UPPER_LEFT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.BottomRightCorner, tileGroup.GetTextures(UPPER_RIGHT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.TopRightCorner, tileGroup.GetTextures(LOWER_RIGHT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.TopLeftCorner, tileGroup.GetTextures(LOWER_LEFT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+
+      //dictionary.Add(TileType.BottomRightJoint, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(LOWER_LEFT_CORNER)));
+      //dictionary.Add(TileType.BottomLeftJoint, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(LOWER_RIGHT_CORNER)));
+      //dictionary.Add(TileType.BottomSide, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(UP_EDGE)));
+      //dictionary.Add(TileType.TopRightJoint, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(UPPER_LEFT_CORNER)));
+      //dictionary.Add(TileType.RightSide, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(RIGHT_EDGE)));
+      //dictionary.Add(TileType.TopLeftJoint, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(UPPER_RIGHT_CORNER)));
+      //dictionary.Add(TileType.TopSide, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(DOWN_EDGE)));
+      //dictionary.Add(TileType.LeftSide, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(LEFT_EDGE)));
+      //dictionary.Add(TileType.BottomLeftCorner, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(UPPER_LEFT_EDGE)));
+      //dictionary.Add(TileType.BottomRightCorner, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(UPPER_RIGHT_EDGE)));
+      //dictionary.Add(TileType.TopRightCorner, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(LOWER_RIGHT_EDGE)));
+      //dictionary.Add(TileType.TopLeftCorner, mainTile.BlendWithAlpha(tileGroup.GetRandomTexture(LOWER_LEFT_EDGE)));
 
       cornersCache.Add(tileGroup, dictionary);
       return dictionary;

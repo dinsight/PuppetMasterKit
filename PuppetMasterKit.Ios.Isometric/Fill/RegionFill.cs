@@ -91,24 +91,45 @@ namespace PuppetMasterKit.Ios.Isometric.Fill
                       .SelectMany(a => a.TileDefinitions)
                       .SelectMany(b => b.Textures).ToList();
 
-      regionsToFill.ForEach(x => {
-        var density = densityFactor * x.MaxCol;
-        var filler = FillUniform(0, 0, x.MaxCol + 1, x.MaxRow + 1, density);
+      //regionsToFill.ForEach(x => {
+      //  var density = densityFactor * x.MaxCol;
+      //  var filler = FillUniform(0.5f, 0.5f, x.MaxCol + 0.5f, x.MaxRow + 0.5f, density);
 
-        //var texture = defs[random.Next(0, defs.Count())];
-        //layer.SetTexture(texture, 4 * tileSize, 0 * tileSize);
-
-        foreach (var item in filler) {
-          var col = (int)item.X;
-          var row = (int)item.Y;
-          if (x[row, col] != null) {
-            //the point is inside the region
+      //  foreach (var item in filler) {
+      //    var col = (int)item.X;
+      //    var row = (int)item.Y;
+      //    if (x[row, col] != null) {
+      //      //the point is inside the region
+      //      if (defs.Any()) {
+      //        var texture = defs[randomFill.Next(0, defs.Count())];
+      //        texture.SetTexture(layer, item.Y * tileSize, item.X * tileSize);
+      //      }
+      //    }
+      //  }
+      //});
+      //local fn
+      float GetRandom(float a, float b)
+      {
+        var f = (float)randomDist.NextDouble();
+        return f * (b - a) + a;
+      }
+      var randOcc = new Random(Guid.NewGuid().GetHashCode());
+      regionsToFill.ForEach(reg=> {
+        reg.TraverseRegion((row, col, type) => { 
+          if(type == TileType.Plain) {
             if (defs.Any()) {
               var texture = defs[randomFill.Next(0, defs.Count())];
-              texture.SetTexture(layer, item.Y * tileSize, item.X * tileSize);
+              var r = GetRandom(-0.4f, 0.4f);
+              densityFactor = densityFactor >= 1 ? 0 : densityFactor;
+              var occ = randOcc.Next(0, 1 + (int)(densityFactor * 100));
+              if (occ == 0) {
+                texture.SetTexture(layer, 
+                  row * tileSize + tileSize / 2f + tileSize * r, 
+                  col * tileSize + tileSize / 2f + tileSize * r);
+              }
             }
           }
-        }
+        });
       });
     }
   }
