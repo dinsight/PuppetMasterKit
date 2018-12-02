@@ -3,6 +3,7 @@ namespace PuppetMasterKit.Terrain.Map
 {
   public enum TileType
   {
+    Unknown,
     Plain,
     BottomLeftCorner,
     BottomRightCorner,
@@ -15,6 +16,10 @@ namespace PuppetMasterKit.Terrain.Map
     TopLeftJoint,
     TopRightJoint,
     BottomLeftJoint,
-    BottomRightJoint
+    BottomRightJoint,
+    CulDeSacTop,
+    CulDeSacBottom,
+    CulDeSacLeft,
+    CulDeSacRight,
   }
 }

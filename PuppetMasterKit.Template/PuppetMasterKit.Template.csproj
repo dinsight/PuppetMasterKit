@@ -216,6 +216,10 @@
     <Folder Include="Resources\Media.xcassets\Water.spriteatlas\Water_2.imageset\" />
     <Folder Include="Resources\Media.xcassets\Rocks.spriteatlas\" />
     <Folder Include="Resources\Media.xcassets\Rocks.spriteatlas\Rock1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Left.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Right.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Top.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Bottom.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -468,6 +472,14 @@
     <ImageAsset Include="Resources\Media.xcassets\Rocks.spriteatlas\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Rocks.spriteatlas\Rock1.imageset\0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Rocks.spriteatlas\Rock1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Left.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Left.imageset\cds2.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Right.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Right.imageset\cds1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Top.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Top.imageset\cds3.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Bottom.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Bottom.imageset\cds4.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

@@ -116,7 +116,8 @@ namespace PuppetMasterKit.Ios.Isometric.Fill
       var randOcc = new Random(Guid.NewGuid().GetHashCode());
       regionsToFill.ForEach(reg=> {
         reg.TraverseRegion((row, col, type) => { 
-          if(type == TileType.Plain) {
+          if(type == TileType.Plain) 
+          {
             if (defs.Any()) {
               var texture = defs[randomFill.Next(0, defs.Count())];
               var r = GetRandom(-0.4f, 0.4f);
@@ -129,7 +130,7 @@ namespace PuppetMasterKit.Ios.Isometric.Fill
               }
             }
           }
-        });
+        }, false);
       });
     }
   }

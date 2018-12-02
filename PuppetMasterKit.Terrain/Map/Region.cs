@@ -234,24 +234,25 @@ namespace PuppetMasterKit.Terrain.Map
     /// <summary>
     /// Returns a list of tiles wrapping the current region
     /// The algorithm consists in walking around the tiles always
-    /// touching the wall with your right hand. If there is no tile on
-    /// your right, turn right. If there is a tile in front, turn left.
+    /// touching the wall with your right hand (or left hand if we trace the inside contour). 
+    /// If there is no tile on your right (left), turn right (left). If there is a tile in front, turn left (right).
     /// Repeat until you reach the first tile
     /// </summary>
     /// <returns>The contour.</returns>
-    public List<GridCoord> TraceContour()
+    public List<GridCoord> TraceContour(bool traceOutsideContour = true)
     {
       int dir = N;//North
       var result = new List<GridCoord>();
       var min = this.Tiles.MinBy(x => x.Col);
-      var start = new GridCoord(min.Row, min.Col - 1);
+      var start = traceOutsideContour ? new GridCoord(min.Row, min.Col - 1) : 
+                                        new GridCoord(min.Row, min.Col);
       result.Add(start);
-      var next = GetNext(start, ref dir);
+      var next = GetNext(start, traceOutsideContour, ref dir);
       while (next != start) {
         if (result.Last() != next) {
           result.Add(next);
         }
-        next = GetNext(next, ref dir);
+        next = GetNext(next, traceOutsideContour, ref dir);
       }
       return result;
     }
@@ -262,10 +263,10 @@ namespace PuppetMasterKit.Terrain.Map
     static readonly int N = 0, E = 1, S = 2, W = 3;
     //(row,col) coords of the neighbors to be visited from this position
     readonly int[,,] step = new int[4, 3, 2] {
-        { { 1, 0}, { 0,-1}, { 1, 1} }, //n - Fwd, Left, Right
-        { { 0, 1}, { 1, 0}, {-1, 1} }, //e
-        { {-1, 0}, { 0, 1}, {-1,-1} }, //s
-        { { 0,-1}, {-1, 0}, { 1,-1} }  //w
+        { { 1, 0}, { 0,-1}, { 0, 1} }, //n - Fwd, Left, Right
+        { { 0, 1}, { 1, 0}, {-1, 0} }, //e
+        { {-1, 0}, { 0, 1}, { 0,-1} }, //s
+        { { 0,-1}, {-1, 0}, { 1, 0} }  //w
     };
 
     /// <summary>
@@ -274,7 +275,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// <returns>The next.</returns>
     /// <param name="current">Current.</param>
     /// <param name="dir">Dir.</param>
-    private GridCoord GetNext(GridCoord current, ref int dir)
+    private GridCoord GetNext(GridCoord current, bool traceOutsideContour, ref int dir)
     {
       var fwdRow = current.Row + step[dir, 0, 0];
       var fwdCol = current.Col + step[dir, 0, 1];
@@ -287,23 +288,43 @@ namespace PuppetMasterKit.Terrain.Map
       var left = this[leftRow, leftCol] != null;
       var right = this[rightRow, rightCol] != null;
 
-      if (!fwd && right) { // we have the wall on out right
-        return new GridCoord(fwdRow, fwdCol);
-      }
-      if (!fwd && !right) { //turn right
-        dir = (dir + 1) % 4; // change direction
-        return new GridCoord(fwdRow, fwdCol);
+      if (traceOutsideContour) { // OUT SIDE CONTOUR
+        if (!fwd && right) { // we have the wall on out right
+          return new GridCoord(fwdRow, fwdCol);
+        }
+        if (!right) { //turn right
+          dir = (dir + 1) % 4; // change direction
+          return new GridCoord(rightRow, rightCol);
+        }
+
+        if (fwd && !left) { //change direction - turn left
+          dir = dir - 1 >= 0 ? dir - 1 : W;
+          return new GridCoord(leftRow, leftCol);
+        }
+        if (fwd && left) { //cul de sac -change direction - turn back
+          dir = (dir + 2) % 4;
+          return current;
+        }
+      } else { //INSIDE CONTOUR
+        if (fwd && !left) { // we have the wall on our left
+          return new GridCoord(fwdRow, fwdCol);
+        }
+
+        if (left) { //turn left
+          dir = dir - 1 >= 0 ? dir - 1 : W;
+          return new GridCoord(leftRow, leftCol);
+        }
+
+        if (!fwd && right) { //change direction - turn right
+          dir = (dir + 1) % 4; // change direction
+          return new GridCoord(rightRow, rightCol);
+        }
+        if (!fwd && !right) { //cul de sac -change direction - turn back
+          dir = (dir + 2) % 4;
+          return current;
+        }
       }
 
-      if (fwd && !left) { //change direction - turn left
-        dir = dir - 1 >= 0 ? dir - 1 : W;
-        return current;
-      }
-      if ((fwd && left && right) ||
-          (fwd && left && !right)) { //change direction - turn back
-        dir = (dir + 2) % 4;
-        return current;
-      }
       throw new Exception("Region.TraceContour: Get next should not return null");
     }
 
@@ -311,14 +332,21 @@ namespace PuppetMasterKit.Terrain.Map
     /// Traverses the region.
     /// </summary>
     /// <param name="action">Action.</param>
-    public void TraverseRegion(Action<int,int, TileType> action) 
+    public void TraverseRegion(Action<int,int, TileType> action, bool traceOutsideContour = true) 
     {
-      var contour = TraceContour();
-      Tiles.ForEach(a => action(a.Row, a.Col, TileType.Plain));
+      var contour = TraceContour(traceOutsideContour);
+
+      if (traceOutsideContour) {
+        Tiles.ForEach(a => action(a.Row, a.Col, TileType.Plain));
+      } else {
+        Tiles.Except(contour)
+        .ForEach(a => action(a.Row, a.Col, TileType.Plain));
+      }
+
 
       for (int index = 0; index < contour.Count; index++) {
 
-        var tileType = TileType.Plain;
+        var tileType = TileType.Unknown;
         var c = contour[index];
         //get the prev and next tiles. Make sure to wrap around when the 
         //one of the ends of the list is reached
@@ -360,6 +388,18 @@ namespace PuppetMasterKit.Terrain.Map
         }
         if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
           tileType = TileType.TopLeftJoint;
+        }
+        if (p.Row == n.Row && p.Col == n.Col && c.Col > p.Col && c.Row == p.Row) { //cdsl
+          tileType = TileType.CulDeSacLeft;
+        }
+        if (p.Row == n.Row && p.Col == n.Col && c.Col < p.Col && c.Row == p.Row) { //cdsr
+          tileType = TileType.CulDeSacRight;
+        }
+        if (p.Row == n.Row && p.Col == n.Col && c.Row < p.Row && c.Col == p.Col) { //cdst
+          tileType = TileType.CulDeSacTop;
+        }
+        if (p.Row == n.Row && p.Col == n.Col && c.Row > p.Row && c.Col == p.Col) { //cdsb
+          tileType = TileType.CulDeSacBottom;
         }
         action(c.Row, c.Col, tileType);
       }
