@@ -9,14 +9,6 @@ using System.Linq;
 namespace PuppetMasterKit.Terrain.Map
 {
   /// <summary>
-  /// interface for consuming 2D data
-  /// </summary>
-  interface I2DSubscript<T>
-  {
-    T this[int row, int col] { get; }
-  }
-
-  /// <summary>
   /// Region.
   /// </summary>
   public class Region : I2DSubscript<int?>
@@ -40,34 +32,6 @@ namespace PuppetMasterKit.Terrain.Map
     }
 
     private Dictionary<GridCoord,int?> tiles = new Dictionary<GridCoord, int?>();
-
-    /// <summary>
-    /// Helper for consuming 2D arrays
-    /// </summary>
-    class ArraySubscript : I2DSubscript<int?>
-    {
-      readonly int[,] array;
-      readonly int rows;
-      readonly int cols;
-      /// <summary>
-      /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Terrain.Map.ArraySubscript"/> class.
-      /// </summary>
-      /// <param name="array">Array.</param>
-      public ArraySubscript(int[,] array)
-      {
-        this.array = array;
-        rows = array.GetLength(0);
-        cols = array.GetLength(1);
-      }
-      public int? this[int row, int col] {
-        get {
-          if (row >= 0 && col >= 0 && row < rows && col < cols) {
-            return array[row, col];
-          }
-          return null;
-        }
-      }
-    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Region"/> class.
@@ -163,7 +127,7 @@ namespace PuppetMasterKit.Terrain.Map
     {
       var rows = geography.GetLength(0);
       var cols = geography.GetLength(1);
-      return ExtractRegions(new ArraySubscript(geography), rows, cols);
+      return ExtractRegions(new IntArraySubscript(geography), rows, cols);
     }
 
     /// <summary>

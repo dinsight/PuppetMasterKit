@@ -97,6 +97,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="layer">Layer.</param>
     private void PaintPath(Region path, TileMapLayer layer)
     {
+      /*
       path.TraverseRegion((row, col, type) => {
 
         var tileGroup = tileMapping
@@ -116,7 +117,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
         } else {
           //layer.SetTile(corners[type], row, col, null);
         }
-      });
+      });*/
     }
 
     /// <summary>

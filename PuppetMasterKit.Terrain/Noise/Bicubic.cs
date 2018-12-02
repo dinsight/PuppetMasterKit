@@ -8,7 +8,7 @@ namespace PuppetMasterKit.Terrain.Noise
     /// <summary>
     /// 
     /// </summary>
-    public float[][] Gradient { get => gradient; set => gradient = value; }
+    private float[][] Gradient { get => gradient; set => gradient = value; }
 
     public int XDim => Gradient[0].GetLength(0);
 
