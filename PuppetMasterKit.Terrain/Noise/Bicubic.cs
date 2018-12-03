@@ -1,26 +1,28 @@
 ﻿using System;
+using PuppetMasterKit.Utility;
+
 namespace PuppetMasterKit.Terrain.Noise
 {
   public class Bicubic : INoiseGenerator
   {
-    private float[][] gradient;
+    private ArraySubscript<float> gradient;
 
     /// <summary>
     /// 
     /// </summary>
-    private float[][] Gradient { get => gradient; set => gradient = value; }
+    private ArraySubscript<float> Gradient { get => gradient; set => gradient = value; }
 
-    public int XDim => Gradient[0].GetLength(0);
+    public int XDim => Gradient.Cols;
 
-    public int YDim => Gradient.GetLength(0);
+    public int YDim => Gradient.Rows;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="gradient"></param>
-    public Bicubic(float[][] gradient)
+    public Bicubic(float[,] gradient)
     {
-      this.Gradient = gradient;
+      this.Gradient = new ArraySubscript<float>(gradient);
     }
 
     private float CubicInterpolate(float[] p, float x)
@@ -44,8 +46,8 @@ namespace PuppetMasterKit.Terrain.Noise
     {
       if (x < 0)
         return 0;
-      else if (x > gradient[0].Length - 1)
-        return gradient.Length - 1;
+      else if (x > gradient.Rows - 1)
+        return gradient.Cols - 1;
       return x;
     }
 
@@ -68,22 +70,22 @@ namespace PuppetMasterKit.Terrain.Noise
         currXc = xc;
         currYc = yc;
         p = new float[][]{
-          new float[]{gradient[Clamp(yc-1)][Clamp(xc-1)],
-                      gradient[Clamp(yc-1)][Clamp(xc)],
-                      gradient[Clamp(yc-1)][Clamp(xc+1)],
-                      gradient[Clamp(yc-1)][Clamp(xc+2)] },
-          new float[]{gradient[Clamp(yc)][Clamp(xc-1)],
-                      gradient[Clamp(yc)][Clamp(xc)],
-                      gradient[Clamp(yc)][Clamp(xc+1)],
-                      gradient[Clamp(yc)][Clamp(xc+2)] },
-          new float[]{gradient[Clamp(yc+1)][Clamp(xc-1)],
-                      gradient[Clamp(yc+1)][Clamp(xc)],
-                      gradient[Clamp(yc+1)][Clamp(xc+1)],
-                      gradient[Clamp(yc+1)][Clamp(xc+2)] },
-          new float[]{gradient[Clamp(yc+2)][Clamp(xc-1)],
-                      gradient[Clamp(yc+2)][Clamp(xc)],
-                      gradient[Clamp(yc+2)][Clamp(xc+1)],
-                      gradient[Clamp(yc+2)][Clamp(xc+2)] },
+          new float[]{gradient[Clamp(yc-1),Clamp(xc-1)].Value,
+                      gradient[Clamp(yc-1),Clamp(xc)].Value,
+                      gradient[Clamp(yc-1),Clamp(xc+1)].Value,
+                      gradient[Clamp(yc-1),Clamp(xc+2)].Value },
+          new float[]{gradient[Clamp(yc),Clamp(xc-1)].Value,
+                      gradient[Clamp(yc),Clamp(xc)].Value,
+                      gradient[Clamp(yc),Clamp(xc+1)].Value,
+                      gradient[Clamp(yc),Clamp(xc+2)].Value },
+          new float[]{gradient[Clamp(yc+1),Clamp(xc-1)].Value,
+                      gradient[Clamp(yc+1),Clamp(xc)].Value,
+                      gradient[Clamp(yc+1),Clamp(xc+1)].Value,
+                      gradient[Clamp(yc+1),Clamp(xc+2)].Value },
+          new float[]{gradient[Clamp(yc+2),Clamp(xc-1)].Value,
+                      gradient[Clamp(yc+2),Clamp(xc)].Value,
+                      gradient[Clamp(yc+2),Clamp(xc+1)].Value,
+                      gradient[Clamp(yc+2),Clamp(xc+2)].Value },
         };
       }
 

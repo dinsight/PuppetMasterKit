@@ -120,14 +120,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// </summary>
     /// <returns>The gradient.</returns>
     /// <param name="dim">Dim.</param>
-    private float[][] GenerateGradient(int dim)
+    private float[,] GenerateGradient(int dim)
     {
       var random = new Random(Guid.NewGuid().GetHashCode());
-      var gradient = new float[dim][];
+      var gradient = new float[dim,dim];
       for (int i = 0; i < dim; i++) {
-        gradient[i] = new float[dim];
         for (int j = 0; j < dim; j++) {
-          gradient[i][j] = random.Next(-100, 100) / 256f;
+          gradient[i,j] = random.Next(-100, 100) / 256f;
         }
       }
       return gradient;

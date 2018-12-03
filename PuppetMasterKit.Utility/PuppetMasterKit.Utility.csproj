@@ -38,7 +38,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="Measure.cs" />
     <Compile Include="I2DSubscript.cs" />
-    <Compile Include="IntArraySubscript.cs" />
+    <Compile Include="ArraySubscript.cs" />
     <Compile Include="FuncSubscript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

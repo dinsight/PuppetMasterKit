@@ -1,26 +1,28 @@
 ﻿using System;
+using PuppetMasterKit.Utility;
+
 namespace PuppetMasterKit.Terrain.Noise
 {
   public class Perlin : INoiseGenerator
   {
-    private float[][] gradient;
+    private ArraySubscript<float> gradient;
 
     /// <summary>
     /// 
     /// </summary>
-    public float[][] Gradient { get => gradient; set => gradient = value; }
+    private ArraySubscript<float> Gradient { get => gradient; set => gradient = value; }
 
-    public int XDim => Gradient[0].GetLength(0);
+    public int XDim => Gradient.Cols;
 
-    public int YDim => Gradient.GetLength(0);
+    public int YDim => Gradient.Rows;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="gradient"></param>
-    public Perlin(float[][] gradient)
+    public Perlin(float[,] gradient)
     {
-      this.Gradient = gradient;
+      this.Gradient = new ArraySubscript<float>(gradient);
     }
 
     private double Lerp(float a0, float a1, float w)
@@ -40,7 +42,7 @@ namespace PuppetMasterKit.Terrain.Noise
       float dy = y - (float)iy;
 
       // Compute the dot-product
-      return (dx * Gradient[iy][ix] + dy * Gradient[iy][ix]);
+      return (dx * Gradient[iy,ix].Value + dy * Gradient[iy,ix].Value);
     }
 
     public float Noise(float x, float y)

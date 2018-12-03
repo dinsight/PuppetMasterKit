@@ -127,7 +127,7 @@ namespace PuppetMasterKit.Terrain.Map
     {
       var rows = geography.GetLength(0);
       var cols = geography.GetLength(1);
-      return ExtractRegions(new IntArraySubscript(geography), rows, cols);
+      return ExtractRegions(new ArraySubscript<int>(geography), rows, cols);
     }
 
     /// <summary>

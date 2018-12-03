@@ -20,8 +20,8 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="noiseAmplitude">Noise amplitude.</param>
     /// <param name="layers">Layers.</param>
     /// <param name="tileSet">Tile set.</param>
-    public LayeredRegionPainter(int noiseAmplitude, 
-          List<string> layers, 
+    public LayeredRegionPainter(int noiseAmplitude,
+          List<string> layers,
           SKTileSet tileSet)
     {
       this.noiseAmplitude = noiseAmplitude;
@@ -61,13 +61,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var regions = Region.ExtractRegions(region);
       var tileMapping = new Dictionary<int, string>();
       var tiledRegionPainter = new TiledRegionPainter(tileMapping, tileSet);
-      regions.Insert(0,contourRegion);
+      regions.Insert(0, contourRegion);
 
       foreach (var item in regions) {
         tileMapping.TryAdd(item.RegionFill, layers[item.RegionFill]);
       }
 
-      regions.OrderBy(r=>r.RegionFill).ToList()
+      regions.OrderBy(r => r.RegionFill).ToList()
              .ForEach(x => tiledRegionPainter.Paint(x, layer));
     }
 
@@ -86,8 +86,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
         index = count - 1;
       } else if (n < 0) {
         index = 0;
-      } else 
-      {
+      } else {
         index = (int)((n) / step);
       }
       region[row, col] = index;
@@ -96,7 +95,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// 
     /// </summary>
     /// <returns>The gradient.</returns>
-    private float[][] CreateGradient(int dim) {
+    protected float[,] CreateGradient(int dim) {
       /*
       var random = new Random(Guid.NewGuid().GetHashCode());
       var gradient = new float[dim][];
@@ -106,14 +105,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
           gradient[i][j] = random.Next(0, 250) / 256f;
         }
       }*/
-      var gradient = new float[dim][];
-      gradient[0] = new float[] { 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f };
-      gradient[1] = new float[] { 0.3f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f };
-      gradient[2] = new float[] { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f };
-      gradient[3] = new float[] { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f };
-      gradient[4] = new float[] { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f };
-      gradient[5] = new float[] { 0.3f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f };
-      gradient[6] = new float[] { 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f };
+      var gradient = new float[,] {{ 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f },
+                                   { 0.3f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f },
+                                   { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f },
+                                   { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f },
+                                   { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f },
+                                   { 0.3f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f },
+                                   { 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f }};
 
       return gradient;
     }

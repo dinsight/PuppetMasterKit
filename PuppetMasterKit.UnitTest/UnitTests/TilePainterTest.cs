@@ -146,23 +146,14 @@ namespace PuppetMasterKit.UnitTest.UnitTests
     /// </summary>
     /// <returns>The gradient.</returns>
     /// <param name="dim">Dim.</param>
-    float[][] GenerateGradient(int dim)
+    float[,] GenerateGradient(int dim)
     {
-      var gradient = new float[dim][];
+      var gradient = new float[dim,dim];
       for (int i = 0; i < dim; i++) {
-        gradient[i] = new float[dim];
         for (int j = 0; j < dim; j++) {
-          gradient[i][j] = random.Next(-100, 100) / 256f;
+          gradient[i,j] = random.Next(-100, 100) / 256f;
         }
       }
-
-      //for (int i = 0; i < dim; i++) {
-      //  gradient[0][i] = 1;
-      //  gradient[dim - 1][i] = 1;
-      //  gradient[i][0] = 1;
-      //  gradient[i][dim - 1] = 1;
-      //}
-
       return gradient;
     }
   }
