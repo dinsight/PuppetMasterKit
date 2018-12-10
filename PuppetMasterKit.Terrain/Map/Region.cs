@@ -24,6 +24,8 @@ namespace PuppetMasterKit.Terrain.Map
     public int MaxRow { get; private set; } = int.MinValue;
     public int MinCol { get; private set; } = int.MaxValue;
     public int MaxCol { get; private set; } = int.MinValue;
+    public int Rows => this.MaxRow - this.MinRow + 1;
+    public int Cols => this.MaxCol - this.MinCol + 1;
 
     public IReadOnlyCollection<GridCoord> Tiles {
       get {

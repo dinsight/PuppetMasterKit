@@ -5,26 +5,36 @@ namespace PuppetMasterKit.Terrain.Noise
 {
   public class Bicubic : INoiseGenerator
   {
-    private ArraySubscript<float> gradient;
+    private I2DSubscript<float?> gradient;
+
+    public int XDim => gradient.Cols;
+
+    public int YDim => gradient.Rows;
 
     /// <summary>
-    /// 
-    /// </summary>
-    private ArraySubscript<float> Gradient { get => gradient; set => gradient = value; }
-
-    public int XDim => Gradient.Cols;
-
-    public int YDim => Gradient.Rows;
-
-    /// <summary>
-    /// 
+    /// Array initialization
     /// </summary>
     /// <param name="gradient"></param>
     public Bicubic(float[,] gradient)
     {
-      this.Gradient = new ArraySubscript<float>(gradient);
+      this.gradient = new ArraySubscript<float>(gradient);
     }
 
+    /// <summary>
+    /// Subscript function initialization
+    /// </summary>
+    /// <param name="gradient">Gradient.</param>
+    public Bicubic(I2DSubscript<float?> gradient)
+    {
+      this.gradient = gradient;
+    }
+
+    /// <summary>
+    /// Cubics the interpolate.
+    /// </summary>
+    /// <returns>The interpolate.</returns>
+    /// <param name="p">P.</param>
+    /// <param name="x">The x coordinate.</param>
     private float CubicInterpolate(float[] p, float x)
     {
       return (float)(p[1] + 0.5 * x * (p[2] - p[0] 
@@ -32,6 +42,13 @@ namespace PuppetMasterKit.Terrain.Noise
                           + x * (3.0 * (p[1] - p[2]) + p[3] - p[0]))));
     }
 
+    /// <summary>
+    /// Interpolate.
+    /// </summary>
+    /// <returns>The interpolate.</returns>
+    /// <param name="p">P.</param>
+    /// <param name="x">The x coordinate.</param>
+    /// <param name="y">The y coordinate.</param>
     private float BicubicInterpolate(float[][] p, float x, float y)
     {
       var arr = new float[4];
@@ -42,6 +59,11 @@ namespace PuppetMasterKit.Terrain.Noise
       return CubicInterpolate(arr, y);
     }
 
+    /// <summary>
+    /// Clamp
+    /// </summary>
+    /// <returns>The clamp.</returns>
+    /// <param name="x">The x coordinate.</param>
     int Clamp(int x)
     {
       if (x < 0)
@@ -88,8 +110,6 @@ namespace PuppetMasterKit.Terrain.Noise
                       gradient[Clamp(yc+2),Clamp(xc+2)].Value },
         };
       }
-
-
       return BicubicInterpolate(p, x - xc, y - yc);
     }
   }

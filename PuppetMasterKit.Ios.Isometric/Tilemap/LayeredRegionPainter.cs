@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using PuppetMasterKit.Terrain;
 using PuppetMasterKit.Terrain.Map;
-using PuppetMasterKit.Terrain.Noise;
+using PuppetMasterKit.Utility;
 using SpriteKit;
 
 namespace PuppetMasterKit.Ios.Isometric.Tilemap
 {
   public class LayeredRegionPainter : IRegionPainter
   {
-    private const float GRAD = 7f;
     private readonly int noiseAmplitude;
     private readonly SKTileSet tileSet;
     private readonly List<string> layers;
@@ -39,81 +39,75 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       if (region.Type != Region.RegionType.REGION) {
         throw new ArgumentException("LayeredRegionPainter: Unsupported region");
       }
-      var generator = new Bicubic(CreateGradient((int)GRAD));
 
-      foreach (var item in region.Tiles) {
-        var maxCol = region.Tiles.Where(c => c.Row == item.Row).Max(x => x.Col);
-        var minCol = region.Tiles.Where(c => c.Row == item.Row).Min(x => x.Col);
-        var maxRow = region.Tiles.Where(c => c.Col == item.Col).Max(x => x.Row);
-        var minRow = region.Tiles.Where(c => c.Col == item.Col).Min(x => x.Row);
+      var layersCount = layers.Count;
+      var partitions = PartitionRegion(region, layer.GetMap());
 
-        var M = (maxCol - minCol) + 1;
-        var N = (maxRow - minRow) + 1;
+      partitions.ForEach((p,index) => {
+        p.ForEach(x => 
+          region[x.Row, x.Col] = index < layersCount ? index : layersCount-1 );
+      });
 
-        var scol = (item.Col - minCol) * ((GRAD - 1) / M);
-        var srow = (item.Row - minRow) * ((GRAD - 1) / N);
-        var n = generator.Noise(scol, srow) * noiseAmplitude;
-        SetTileValue(region, n, item.Row, item.Col);
-      }
-      var contour = region.TraceContour();
-      var contourRegion = new Region(0);
-      contour.ForEach(c => contourRegion.AddTile(c.Row, c.Col));
       var regions = Region.ExtractRegions(region);
       var tileMapping = new Dictionary<int, string>();
       var tiledRegionPainter = new TiledRegionPainter(tileMapping, tileSet);
-      regions.Insert(0, contourRegion);
-
-      foreach (var item in regions) {
-        tileMapping.TryAdd(item.RegionFill, layers[item.RegionFill]);
-      }
-
+      regions.ForEach(r => tileMapping.TryAdd(r.RegionFill, layers[r.RegionFill]));
       regions.OrderBy(r => r.RegionFill).ToList()
              .ForEach(x => tiledRegionPainter.Paint(x, layer));
     }
 
     /// <summary>
-    /// Sets the tile value.
+    /// Partitions the region.
     /// </summary>
     /// <param name="region">Region.</param>
-    /// <param name="n">N.</param>
-    /// <param name="row">Row.</param>
-    /// <param name="col">Col.</param>
-    private void SetTileValue(Region region, float n, int row, int col) {
-      var count = layers.Count;
-      var step = 1f / count;
-      var index = 0;
-      if (n >= 1) {
-        index = count - 1;
-      } else if (n < 0) {
-        index = 0;
-      } else {
-        index = (int)((n) / step);
+    private List<List<GridCoord>> PartitionRegion(Region region, TileMap map)
+    {
+      var contour = region.TraceContour(false);
+      var s = new HashSet<GridCoord>(contour);
+      var v = new List<GridCoord>(region.Tiles.Except(contour));
+      var a = new List<List<GridCoord>> { contour };
+
+      while (v.Count > 0) {
+        var r = v.Where(x => IsInVicinity( x, s)).ToList();
+        if (!r.Any())
+          break;
+        s.UnionWith(r);
+        v = v.Except(r).ToList();
+        a.Add(r.ToList());
       }
-      region[row, col] = index;
+      /*
+      var tmp = a[0].Where(x => x.Row == 0 
+                  || x.Col == 0 
+                  || x.Row == map.Rows - 1 
+                  || x.Col == map.Cols - 1).ToList();
+
+      tmp.ForEach(x => a[0].Remove(x));
+      a[1].AddRange(tmp);*/
+      return a;
     }
+
     /// <summary>
     /// 
     /// </summary>
-    /// <returns>The gradient.</returns>
-    protected float[,] CreateGradient(int dim) {
-      /*
-      var random = new Random(Guid.NewGuid().GetHashCode());
-      var gradient = new float[dim][];
-      for (int i = 0; i < dim; i++) {
-        gradient[i] = new float[dim];
-        for (int j = 0; j < dim; j++) {
-          gradient[i][j] = random.Next(0, 250) / 256f;
-        }
-      }*/
-      var gradient = new float[,] {{ 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f },
-                                   { 0.3f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f },
-                                   { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f },
-                                   { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f },
-                                   { 0.3f, 0.5f, 0.8f, 0.8f, 0.8f, 0.5f, 0.3f },
-                                   { 0.3f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.3f },
-                                   { 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f }};
+    /// <returns><c>true</c>, if neighbor was ised, <c>false</c> otherwise.</returns>
+    /// <param name="elem">Element.</param>
+    /// <param name="set">Set.</param>
+    private bool IsInVicinity(GridCoord elem, HashSet<GridCoord> set)
+    {
+      IEnumerable<GridCoord> GetNeighbours(GridCoord e)
+      {
+        yield return new GridCoord(e.Row + 1, e.Col - 1);
+        yield return new GridCoord(e.Row, e.Col - 1);
+        yield return new GridCoord(e.Row - 1, e.Col - 1);
+        yield return new GridCoord(e.Row + 1, e.Col);
+        yield return new GridCoord(e.Row - 1, e.Col);
+        yield return new GridCoord(e.Row + 1, e.Col + 1);
+        yield return new GridCoord(e.Row, e.Col + 1);
+        yield return new GridCoord(e.Row - 1, e.Col + 1);
+      }
 
-      return gradient;
+      var neighbours = GetNeighbours(elem);
+      return neighbours.Any(x=>set.Any(s=>s.Row==x.Row && s.Col == x.Col));
     }
   }
 }

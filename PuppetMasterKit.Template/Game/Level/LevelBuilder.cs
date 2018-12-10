@@ -182,8 +182,10 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 1.2f;
-      cameraNode.YScale = 1.2f;
+      //cameraNode.XScale = 1.2f;
+      //cameraNode.YScale = 1.2f;
+      cameraNode.XScale = 5f;
+      cameraNode.YScale = 5f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -247,28 +249,27 @@ namespace PuppetMasterKit.Template.Game.Level
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 
-      var map = new int[,]{
-        {'-','A','A','A','A','A','A'},
-        {'A','A','A','A','A','A','A'},
-        {'A','A','W','W','W','A','A'},
-        {'A','A','W','A','W','A','A'},
-        {'A','A','W','A','W','A','A'},
-        {'A','A','W','A','W','A','A'},
-        {'A','A','A','A','A','A','-'},
-      };
-
       //var map = new int[,]{
-      //  {'-','A','A','A','A','A','A','A','A','A'},
-      //  {'A','W','W','A','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','W','W','W','W','A'},
-      //  {'A','A','A','A','A','A','A','A','A','-'},
+      //  {'-','A','A','A','A','A','A'},
+      //  {'A','A','A','A','W','A','A'},
+      //  {'A','A','W','W','W','A','A'},
+      //  {'A','W','W','W','W','W','A'},
+      //  {'A','W','W','W','W','A','A'},
+      //  {'A','A','W','A','W','A','A'},
+      //  {'A','A','A','A','A','A','-'},
       //};
+
+      var map = new int[,]{
+        {'-','A','A','A','A','A','A','A','A'},
+        {'A','A','A','A','A','A','A','A','A'},
+        {'A','A','W','W','W','W','W','W','W'},
+        {'A','A','W','W','W','W','W','W','W'},
+        {'A','A','W','W','W','W','W','W','W'},
+        {'A','A','W','W','W','W','W','W','W'},
+        {'A','A','W','W','W','W','W','W','W'},
+        {'A','A','W','W','W','W','W','W','W'},
+        {'A','A','W','W','W','W','W','W','W'},
+      };
 
       var mapping = new Dictionary<int, string> {
         { '-', "Dirt"},
@@ -289,12 +290,12 @@ namespace PuppetMasterKit.Template.Game.Level
 
       var defaultPainter = new TiledRegionPainter(mapping, tileSet);
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
-      var layeredPainter = new LayeredRegionPainter(3, new List<string>()
+      var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       //{ "Water_L2", "Water", "Water_L1" }, tileSet);
-      { "Sand", "Water_L2", "Water", "Water", "Water_L1" }, tileSet);
+      { "Sand", "Water_L2", "Water", "Water_L1" }, tileSet);
 
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      //tileMap.AddPainter('W', layeredPainter);
+      tileMap.AddPainter('W', layeredPainter);
 
       tileMap.Build(regions, '-', '+', 'A', 'W');
       var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
@@ -365,7 +366,7 @@ namespace PuppetMasterKit.Template.Game.Level
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       //{ "Water_L2", "Water", "Water"}, tileSet);
-      { "Sand", "Water_L2", "Water", "Water", "Water_L1" }, tileSet);
+      { "Sand", "Water_L2", "Water", "Water_L1" }, tileSet);
       var tileMap = new TileMap(defaultPainter, builder.Rows, builder.Cols, tileSize);
       //tileMap.AddPainter(1, bicubicPainter);
       tileMap.AddPainter(1, layeredPainter);
@@ -375,7 +376,7 @@ namespace PuppetMasterKit.Template.Game.Level
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
         var rocks = tileSet.TileGroups.First(x => x.Name == "Rocks");
         //var water = tileSet.TileGroups.First(x => x.Name == "Water");
-        RegionFill.Fill(regions, tileSize, 'W', woods, 1.00f, tileMap.GetLayer(0));
+        RegionFill.Fill(regions, tileSize, 'W', woods, 0.70f, tileMap.GetLayer(0));
         RegionFill.Fill(regions, tileSize, '+', rocks, 0.19f, tileMap.GetLayer(0));
       });
 
@@ -383,6 +384,23 @@ namespace PuppetMasterKit.Template.Game.Level
         scene.AddChild(tileMap);
         tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map0.png"));
       });
+
+      DumpMap(builder.Map);
+    }
+
+    private void DumpMap(int[,] map) {
+
+      for (int row = 0; row < map.GetLength(0); row++) {
+        System.Diagnostics.Debug.WriteLine($"");
+        for (int col = 0; col < map.GetLength(1); col++) {
+          var c = (char)map[row, col];
+          if (char.IsSymbol(c) || char.IsLetter(c)) {
+            System.Diagnostics.Debug.Write($" {(char)map[row, col]}");
+          } else {
+            System.Diagnostics.Debug.Write($" {map[row, col]}");
+          }
+        }
+      }
     }
   }
 }
