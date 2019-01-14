@@ -254,7 +254,7 @@ namespace PuppetMasterKit.Terrain.Map
       var left = this[leftRow, leftCol] != null;
       var right = this[rightRow, rightCol] != null;
 
-      if (traceOutsideContour) { // OUT SIDE CONTOUR
+      if (traceOutsideContour) { // OUT SIDE CONTOUR 
         if (!fwd && right) { // we have the wall on out right
           return new GridCoord(fwdRow, fwdCol);
         }
@@ -271,7 +271,7 @@ namespace PuppetMasterKit.Terrain.Map
           dir = (dir + 2) % 4;
           return current;
         }
-      } else { //INSIDE CONTOUR
+      } else { //INSIDE CONTOUR (the "wall" in this case are the *EMPTY* tiles)
         if (fwd && !left) { // we have the wall on our left
           return new GridCoord(fwdRow, fwdCol);
         }

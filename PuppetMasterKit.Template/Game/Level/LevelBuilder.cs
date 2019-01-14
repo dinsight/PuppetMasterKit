@@ -182,10 +182,10 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      //cameraNode.XScale = 1.2f;
-      //cameraNode.YScale = 1.2f;
-      cameraNode.XScale = 5f;
-      cameraNode.YScale = 5f;
+      cameraNode.XScale = 1.2f;
+      cameraNode.YScale = 1.2f;
+      //cameraNode.XScale = 5f;
+      //cameraNode.YScale = 5f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -243,7 +243,7 @@ namespace PuppetMasterKit.Template.Game.Level
       return flightMap;
     }
 
-    private void GenerateMap1()
+    private void GenerateMap2()
     {
       var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
       var existing = scene.Children.OfType<SKTileMapNode>();
@@ -260,11 +260,11 @@ namespace PuppetMasterKit.Template.Game.Level
       //};
 
       var map = new int[,]{
-        {'-','A','A','A','A','A','A','A','A'},
-        {'A','A','A','A','A','A','A','A','A'},
-        {'A','A','W','W','W','W','W','W','W'},
-        {'A','A','W','W','W','W','W','W','W'},
-        {'A','A','W','W','W','W','W','W','W'},
+        {'W','W','W','A','A','A','A','A','A'},
+        {'W','W','W','A','A','A','A','A','A'},
+        {'W','W','W','A','A','W','W','W','W'},
+        {'A','A','A','A','A','W','W','W','W'},
+        {'A','A','A','A','A','W','W','W','W'},
         {'A','A','W','W','W','W','W','W','W'},
         {'A','A','W','W','W','W','W','W','W'},
         {'A','A','W','W','W','W','W','W','W'},
@@ -353,7 +353,7 @@ namespace PuppetMasterKit.Template.Game.Level
         { '+', "Sand" },
         { MapCodes.PATH, "Dirt" },
         { 1, "Water" },
-        { 'W', "Grass"},
+        { 'W', "WoodSoil"},
       };
 
       var tileSize = 128;
@@ -365,8 +365,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var defaultPainter = new TiledRegionPainter(mapping, tileSet);
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
-      //{ "Water_L2", "Water", "Water"}, tileSet);
-      { "Sand", "Water_L2", "Water", "Water_L1" }, tileSet);
+      { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet);
+      //{ "Sand", "Water_L2", "Water" }, tileSet);
       var tileMap = new TileMap(defaultPainter, builder.Rows, builder.Cols, tileSize);
       //tileMap.AddPainter(1, bicubicPainter);
       tileMap.AddPainter(1, layeredPainter);
@@ -376,8 +376,8 @@ namespace PuppetMasterKit.Template.Game.Level
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
         var rocks = tileSet.TileGroups.First(x => x.Name == "Rocks");
         //var water = tileSet.TileGroups.First(x => x.Name == "Water");
-        RegionFill.Fill(regions, tileSize, 'W', woods, 0.70f, tileMap.GetLayer(0));
-        RegionFill.Fill(regions, tileSize, '+', rocks, 0.19f, tileMap.GetLayer(0));
+        RegionFill.Fill(regions, tileSize, 'W', woods, 0.01f, tileMap.GetLayer(0));
+        //RegionFill.Fill(regions, tileSize, '+', rocks, 0.19f, tileMap.GetLayer(0));
       });
 
       Measure.Timed("Dump image", () => {
