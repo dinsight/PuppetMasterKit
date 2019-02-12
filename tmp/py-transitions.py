@@ -152,6 +152,10 @@ def make_seamless_internal(img, layer, tileName, tileW, tileH, dir):
     pdb.gimp_selection_invert(img)
     pdb.gimp_edit_cut(combined_layer)
 
+###########################################################
+#
+#
+###########################################################
 def make_seamless(img, layer, tileW, tileH):
     make_seamless_internal(img, layer, "le" , tileW, tileH, "")
     make_seamless_internal(img, layer, "ue" , tileW, tileH, "tldr")
@@ -170,31 +174,44 @@ def select_transition(img, layer, tileName, tileW, tileH):
 #
 #
 ###########################################################
+def get_slice(img, layer, tileName, sliceType, tileW, tileH, grow=2):
+    dx=tileW/2*0.8
+    dy=tileH/2*0.8
+    sel = eval("get_" + tileName+ "_selection(tileW, tileH)")
+    if sliceType == "nw":
+        sel[4] -= dx; sel[6] -= dx
+        sel[5] -= dy; sel[7] -= dy
+    if sliceType == "ne":
+        sel[0] += dx; sel[6] += dx
+        sel[1] -= dy; sel[7] -= dy
+    if sliceType == "sw":
+        sel[2] -= dx; sel[4] -= dx
+        sel[3] += dy; sel[5] += dy
+    if sliceType == "se":
+        sel[0] += dx; sel[2] += dx
+        sel[1] += dy; sel[3] += dy
+    pdb.gimp_image_select_polygon(img, CHANNEL_OP_REPLACE,len(sel),sel)
+    pdb.gimp_selection_grow(img,grow)
 
 def create_outside_corner(img, layer, cornerType, tileW, tileH):
     dx=tileW/2*0.8
     dy=tileH/2*0.8
-    if cornerType=="lle":
-        select_transition(img, layer, "lle", tileW, tileH)
-        pdb.gimp_selection_grow(img,1)
-        pdb.gimp_edit_cut(layer)
-        sel1 = get_le_selection(tileW, tileH)
-        sel2 = get_de_selection(tileW, tileH)
-        sel1[0]+=dx
-        sel1[1]-=dy
-        sel1[6]+=dx
-        sel1[7]-=dy
-        pdb.gimp_image_select_polygon(img, CHANNEL_OP_REPLACE,len(sel1),sel1)
-        pdb.gimp_selection_grow(img,1)
-        pdb.gimp_edit_copy(layer)
-        select_transition(img, layer, "lle", tileW, tileH)
-        pdb.gimp_edit_paste(layer, True)
-#pdb.gimp_floating_sel_to_layer(layer)
+    if cornerType=="lle": edges=["le","de"]; sliceType=["ne","sw"]
 
-        #pdb.gimp_edit_copy(layer)
-        #fsel = pdb.gimp_edit_paste(layer, False)
-        #new = pdb.gimp_floating_sel_to_layer(fsel)
-        #select_transition(img, layer, "le", tileW, tileH)
+    #Hide the tile where the corner is supposed to be created
+    select_transition(img, layer, cornerType, tileW, tileH)
+    pdb.gimp_edit_cut(layer)
+
+    for index in range(len(edges)):
+        #select and copy slice
+        get_slice(img, layer, edges[index], sliceType[index], tileW, tileH)
+        pdb.gimp_edit_copy(layer)
+        #select and paste slice
+        get_slice(img, layer,cornerType, sliceType[index], tileW, tileH)
+        pdb.gimp_edit_paste(layer, True)
+    
+        
+
 
 # execfile('/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/tiles/scripts/gimp-grid.py')
 #image= gimp.image_list()[0]
