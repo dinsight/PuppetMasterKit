@@ -134,25 +134,41 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       var dictionary = new Dictionary<TileType, List<SKTexture>>();
       var mainTile = tileGroup.GetRandomTexture(CENTER);
 
-      dictionary.Add(TileType.BottomRightJoint, masks.GetTextures(LOWER_LEFT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.BottomLeftJoint, masks.GetTextures(LOWER_RIGHT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.BottomSide, masks.GetTextures(UP_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.TopRightJoint, masks.GetTextures(UPPER_LEFT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.RightSide, masks.GetTextures(RIGHT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.TopLeftJoint, masks.GetTextures(UPPER_RIGHT_CORNER).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.TopSide, masks.GetTextures(DOWN_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.LeftSide, masks.GetTextures(LEFT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.BottomLeftCorner, masks.GetTextures(UPPER_LEFT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.BottomRightCorner, masks.GetTextures(UPPER_RIGHT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.TopRightCorner, masks.GetTextures(LOWER_RIGHT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.TopLeftCorner, masks.GetTextures(LOWER_LEFT_EDGE).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.CulDeSacTop, masks.GetTextures(CUL_DE_SAC_TOP).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.CulDeSacBottom, masks.GetTextures(CUL_DE_SAC_BOTTOM).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.CulDeSacLeft, masks.GetTextures(CUL_DE_SAC_LEFT).Select(x => mainTile.BlendWithAlpha(x)).ToList());
-      dictionary.Add(TileType.CulDeSacRight, masks.GetTextures(CUL_DE_SAC_RIGHT).Select(x => mainTile.BlendWithAlpha(x)).ToList());
+      dictionary.Add(TileType.BottomRightJoint, GetCornerTextures(LOWER_LEFT_CORNER, tileGroup, masks));
+      dictionary.Add(TileType.BottomLeftJoint, GetCornerTextures(LOWER_RIGHT_CORNER, tileGroup, masks));
+      dictionary.Add(TileType.BottomSide, GetCornerTextures(UP_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.TopRightJoint, GetCornerTextures(UPPER_LEFT_CORNER, tileGroup, masks));
+      dictionary.Add(TileType.RightSide, GetCornerTextures(RIGHT_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.TopLeftJoint, GetCornerTextures(UPPER_RIGHT_CORNER, tileGroup, masks));
+      dictionary.Add(TileType.TopSide, GetCornerTextures(DOWN_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.LeftSide, GetCornerTextures(LEFT_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.BottomLeftCorner, GetCornerTextures(UPPER_LEFT_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.BottomRightCorner, GetCornerTextures(UPPER_RIGHT_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.TopRightCorner, GetCornerTextures(LOWER_RIGHT_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.TopLeftCorner, GetCornerTextures(LOWER_LEFT_EDGE, tileGroup, masks));
+      dictionary.Add(TileType.CulDeSacTop, GetCornerTextures(CUL_DE_SAC_TOP, tileGroup, masks));
+      dictionary.Add(TileType.CulDeSacBottom, GetCornerTextures(CUL_DE_SAC_BOTTOM, tileGroup, masks));
+      dictionary.Add(TileType.CulDeSacLeft, GetCornerTextures(CUL_DE_SAC_LEFT, tileGroup, masks));
+      dictionary.Add(TileType.CulDeSacRight, GetCornerTextures(CUL_DE_SAC_RIGHT, tileGroup, masks));
 
       cornersCache.Add(tileGroup, dictionary);
       return dictionary;
+    }
+
+    /// <summary>
+    /// Gets the corner textures.
+    /// </summary>
+    /// <returns>The corner textures.</returns>
+    /// <param name="ruleName">Rule name.</param>
+    /// <param name="tileGroup">Tile group.</param>
+    /// <param name="masks">Masks.</param>
+    private static List<SKTexture> GetCornerTextures(string ruleName, SKTileGroup tileGroup, SKTileGroup masks) {
+      var tiles = tileGroup.GetTextures(ruleName);
+      if (tiles.Count>0) {
+        return tiles;
+      }
+      var mainTile = tileGroup.GetRandomTexture(CENTER);
+      return masks.GetTextures(ruleName).Select(x => mainTile.BlendWithAlpha(x)).ToList();
     }
   }
 }

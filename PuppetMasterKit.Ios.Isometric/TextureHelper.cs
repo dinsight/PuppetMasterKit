@@ -93,6 +93,25 @@ namespace PuppetMasterKit.Ios.Isometric
       //return texture;
     }
 
+    public static SKTexture BlendWithAlpha(this SKTexture texture1, SKTexture texture2, SKTexture textureAlpha)
+    {
+      //hack - mono won't link if I do not create a CIBlendWithMask instance
+      //It probably helps the linker figure out where the definiton is.
+      //Also, the CoreImage namespace has to be explicitly specified.
+      var tm = new CoreImage.CIBlendWithMask();
+      var blend = new CoreImage.CIBlendWithAlphaMask() {
+        BackgroundImage = texture1?.CGImage,
+        Image = texture2?.CGImage,
+        Mask = textureAlpha?.CGImage
+      };
+      var output = blend.OutputImage;
+      var context = CIContext.FromOptions(null);
+      var cgimage = context.CreateCGImage(output, output.Extent);
+      var blendedTexture = SKTexture.FromImage(cgimage);
+      return blendedTexture;
+      //return texture;
+    }
+
     /// <summary>
     /// Gets the bytes from texture.
     /// </summary>

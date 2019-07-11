@@ -153,6 +153,9 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="cols">Cols.</param>
     public static CGImage FlattenNode(SKNode node, int tileSize, int rows, int cols)
     {
+      //var texture = node.Scene.View.TextureFromNode(node);
+      //return texture.CGImage;
+
       CGImage image = null;
       var width = cols * tileSize;
       var height = rows * (tileSize / 2);
@@ -164,12 +167,13 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
                                                  0,
                                                  colourSpace,
                                                  (CGImageAlphaInfo)mask)) {
-
+          var count = 0;
           foreach (SKSpriteNode item in node.Children) {
             context.DrawImage(new CGRect(item.Position.X + width / 2 - tileSize / 2,
                                          height + item.Position.Y,
                                          item.Size.Width,
                                          item.Size.Height), item.Texture.CGImage);
+            count++;
           }
           image = context.ToImage();
         }

@@ -353,7 +353,7 @@ namespace PuppetMasterKit.Template.Game.Level
         { '+', "Sand" },
         { MapCodes.PATH, "Dirt" },
         { 1, "Water" },
-        { 'W', "WoodSoil"},
+        { 'W', "Grass"},
       };
 
       var tileSize = 128;
@@ -366,13 +366,12 @@ namespace PuppetMasterKit.Template.Game.Level
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet);
-      //{ "Sand", "Water_L2", "Water" }, tileSet);
       var tileMap = new TileMap(defaultPainter, builder.Rows, builder.Cols, tileSize);
-      //tileMap.AddPainter(1, bicubicPainter);
       tileMap.AddPainter(1, layeredPainter);
 
       Measure.Timed("Map building", () => {
-        tileMap.Build(regions, '+', 'W', '|', MapCodes.PATH, 1);
+        //tileMap.Build(regions, 'W', '|', MapCodes.PATH, '+', 1);
+        tileMap.Build(regions, '+', MapCodes.PATH, 'W', 1 );
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
         var rocks = tileSet.TileGroups.First(x => x.Name == "Rocks");
         //var water = tileSet.TileGroups.First(x => x.Name == "Water");
