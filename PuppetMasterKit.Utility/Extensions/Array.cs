@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PuppetMasterKit.Utility
+namespace PuppetMasterKit.Utility.Extensions
 {
   public static class ArrayExtension
   {

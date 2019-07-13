@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.AI.Components

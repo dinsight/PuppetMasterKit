@@ -2,12 +2,12 @@
 using SpriteKit;
 using System.Linq;
 using System.Collections.Generic;
-using PuppetMasterKit.AI;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Utility.Map;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 
-namespace PuppetMasterKit.Ios.Isometric.Fill
+namespace PuppetMasterKit.Ios.Tiles.Tilemap
 {
   public class RegionFill
   {

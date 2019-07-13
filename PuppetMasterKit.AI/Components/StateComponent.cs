@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Attributes;
 
 namespace PuppetMasterKit.AI.Components
 {

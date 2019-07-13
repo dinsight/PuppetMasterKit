@@ -4,10 +4,11 @@ using CoreGraphics;
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Ios.Isometric.Tilemap;
+using PuppetMasterKit.Ios.Tiles.Tilemap;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
-using PuppetMasterKit.Terrain.Map;
-using PuppetMasterKit.Terrain.Noise;
+using PuppetMasterKit.Utility.Map;
+using PuppetMasterKit.Utility.Noise;
 using SpriteKit;
 
 namespace PuppetMasterKit.UnitTest.UnitTests
@@ -22,7 +23,8 @@ namespace PuppetMasterKit.UnitTest.UnitTests
     const uint mask = (uint)CGImageAlphaInfo.PremultipliedLast | (uint)CGBitmapFlags.ByteOrder32Big;
 
     [Test]
-    public void GenerateFromTile(){
+    public void GenerateFromTile()
+    {
       var region = new Region(0);
       region.AddTile(0, 0);
       region.AddTile(0, 1);
@@ -44,8 +46,8 @@ namespace PuppetMasterKit.UnitTest.UnitTests
       region.AddTile(0, 3);
 
       var tileSize = 128;
-      var width = (region.MaxCol - region.MinCol+1) * tileSize + tileSize;
-      var height = (region.MaxRow - region.MinRow+1) * tileSize;
+      var width = (region.MaxCol - region.MinCol + 1) * tileSize + tileSize;
+      var height = (region.MaxRow - region.MinRow + 1) * tileSize;
       var data = GenerateFromRegion(region, tileSize);
       ImageFromBytes(data, width, height, $"/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/region.png");
     }
@@ -104,7 +106,8 @@ namespace PuppetMasterKit.UnitTest.UnitTests
     /// <param name="width">Width.</param>
     /// <param name="height">Height.</param>
     /// <param name="outputFile">Output file.</param>
-    private void ImageFromBytes(byte[] bytes, int width, int height, String outputFile){
+    private void ImageFromBytes(byte[] bytes, int width, int height, String outputFile)
+    {
       CGImage image;
       using (var colourSpace = CGColorSpace.CreateDeviceRGB()) {
         using (var context = new CGBitmapContext(bytes,
@@ -128,18 +131,18 @@ namespace PuppetMasterKit.UnitTest.UnitTests
     /// <param name="dim">Dim.</param>
     float[,] GenerateWaterGradient(int dim)
     {
-      var gradient = new float[dim,dim];
+      var gradient = new float[dim, dim];
       for (int i = 0; i < dim; i++) {
         for (int j = 0; j < dim; j++) {
-          gradient[i,j] = random.Next(-100, 100) / 256f;
+          gradient[i, j] = random.Next(-100, 100) / 256f;
         }
       }
 
       for (int i = 0; i < dim; i++) {
-        gradient[0,i] = 1;
-        gradient[dim - 1,i] = 1;
-        gradient[i,0] = 1;
-        gradient[i,dim - 1] = 1;
+        gradient[0, i] = 1;
+        gradient[dim - 1, i] = 1;
+        gradient[i, 0] = 1;
+        gradient[i, dim - 1] = 1;
       }
 
       return gradient;
@@ -147,10 +150,10 @@ namespace PuppetMasterKit.UnitTest.UnitTests
 
     float[,] GeneratePerlinGradient(int dim)
     {
-      var gradient = new float[dim,dim];
+      var gradient = new float[dim, dim];
       for (int i = 0; i < dim; i++) {
         for (int j = 0; j < dim; j++) {
-          gradient[i,j] = random.Next(-255, 255) / 256f;
+          gradient[i, j] = random.Next(-255, 255) / 256f;
         }
       }
       return gradient;
@@ -179,8 +182,8 @@ namespace PuppetMasterKit.UnitTest.UnitTests
           for (int j = 0; j < height; j += tileSize) {
             for (int i = 0; i < width; i += tileSize) {
               var iso = im.ToScene(new Point(i, j));
-              var ii = (int)iso.X + width / 2 - tileSize/2;
-              var ij = (int)iso.Y + height - tileSize/2;
+              var ii = (int)iso.X + width / 2 - tileSize / 2;
+              var ij = (int)iso.Y + height - tileSize / 2;
               var rect = new CGRect(ii, ij, tileSize, tileSize / 2);
               context.DrawImage(rect, background);
             }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using System.Collections.Generic;
 using PuppetMasterKit.AI;
 using ClusterMap = System.Collections.Generic.Dictionary<System.Tuple<int, int>, PuppetMasterKit.AI.PolygonalObstacle>;

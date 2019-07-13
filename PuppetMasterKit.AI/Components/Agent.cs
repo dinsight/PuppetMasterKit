@@ -3,7 +3,7 @@ using LightInject;
 using System.Collections.Generic;
 using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using System;
 using PuppetMasterKit.AI.Configuration;
 

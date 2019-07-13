@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using Pair = System.Tuple<int, int>;
 
-namespace PuppetMasterKit.Terrain.Map
+namespace PuppetMasterKit.Utility.Map
 {
-public class Module
+  public class Module
   {
     private int[,] pattern;
     private Pair patternCenter;
@@ -22,7 +21,8 @@ public class Module
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Map.Module"/> class.
     /// </summary>
     /// <param name="pattern">Pattern.</param>
-    public Module(int[,] pattern, int regionFill) {
+    public Module(int[,] pattern, int regionFill)
+    {
       this.pattern = pattern;
       this.RegionFill = regionFill;
       this.IsAccessible = true;
@@ -58,7 +58,8 @@ public class Module
     /// Gets the pattern center.
     /// </summary>
     /// <returns>The pattern center.</returns>
-    private Pair GetPatternCenter() {
+    private Pair GetPatternCenter()
+    {
       return Tuple.Create(Rows / 2, Cols / 2);
     }
     /// <summary>
@@ -66,7 +67,8 @@ public class Module
     /// </summary>
     /// <returns>The pattern.</returns>
     /// <param name="filter">Filter.</param>
-    private IEnumerable<Pair> FilterPattern(Func<int, bool> filter) {
+    private IEnumerable<Pair> FilterPattern(Func<int, bool> filter)
+    {
       for (int r = 0; r < Rows; r++) {
         for (int c = 0; c < Cols; c++) {
           if (filter(pattern[r, c])) {
@@ -80,7 +82,8 @@ public class Module
     /// Apply the specified action.
     /// </summary>
     /// <param name="action">Action.</param>
-    private void Apply(Action<int, int, int> action) {
+    private void Apply(Action<int, int, int> action)
+    {
       for (int r = 0; r < Rows; r++) {
         for (int c = 0; c < Cols; c++) {
           action(r, c, pattern[r, c]);
@@ -95,7 +98,8 @@ public class Module
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
     /// <param name="ignoreIfSet">If set to <c>true</c> ignore if set.</param>
-    private void Set(int val, int row, int col, bool ignoreIfSet) {
+    private void Set(int val, int row, int col, bool ignoreIfSet)
+    {
       if (row >= 0 && row < Rows &&
           col >= 0 && col < Cols) {
         var isSet = pattern[row, col] != 0;
@@ -110,8 +114,7 @@ public class Module
     /// </summary>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    private int this[int row, int col]
-    {
+    private int this[int row, int col] {
       get {
         return pattern[row, col];
       }
@@ -122,7 +125,8 @@ public class Module
     /// </summary>
     /// <returns>The pad.</returns>
     /// <param name="padding">Padding.</param>
-    public Module Pad(int padding) {
+    public Module Pad(int padding)
+    {
       var newPattern = new int[Rows + 2 * padding, Cols + 2 * padding];
       Stamp(newPattern, patternCenter.Item1 + padding, patternCenter.Item2 + padding);
       var module = new Module(newPattern, this.RegionFill);
@@ -155,7 +159,8 @@ public class Module
     /// <param name="map">Map.</param>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public void Stamp(int[,] map, int row, int col) {
+    public void Stamp(int[,] map, int row, int col)
+    {
       var rows = map.GetLength(0);
       var cols = map.GetLength(1);
       FilterPattern(v => v != 0)
@@ -177,7 +182,8 @@ public class Module
     /// <param name="map">Map.</param>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public bool CanFit(int[,] map, int row, int col) {
+    public bool CanFit(int[,] map, int row, int col)
+    {
       var rows = map.GetLength(0);
       var cols = map.GetLength(1);
       var overlap = FilterPattern(v => v != 0)
@@ -198,7 +204,8 @@ public class Module
       return overlap == null;
     }
 
-    public IEnumerable<Pair> GetTilesFromPositions(int[,] map, int row, int col) {
+    public IEnumerable<Pair> GetTilesFromPositions(int[,] map, int row, int col)
+    {
       var tiles = GetPatternTiles();
       foreach (var exit in tiles) {
         var dr = exit.Item1 - patternCenter.Item1;
@@ -208,5 +215,5 @@ public class Module
         }
       }
     }
-  }  
+  }
 }

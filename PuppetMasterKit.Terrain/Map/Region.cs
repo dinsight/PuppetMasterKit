@@ -1,19 +1,20 @@
 
-using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Subscript;
+using PuppetMasterKit.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace PuppetMasterKit.Terrain.Map
+namespace PuppetMasterKit.Utility.Map
 {
   /// <summary>
   /// Region.
   /// </summary>
   public class Region : I2DSubscript<int?>
   {
-    public enum RegionType { 
+    public enum RegionType
+    {
       REGION,
       PATH
     }
@@ -33,7 +34,7 @@ namespace PuppetMasterKit.Terrain.Map
       }
     }
 
-    private Dictionary<GridCoord,int?> tiles = new Dictionary<GridCoord, int?>();
+    private Dictionary<GridCoord, int?> tiles = new Dictionary<GridCoord, int?>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Region"/> class.
@@ -50,7 +51,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="regionFill">Region fill.</param>
-    public Region(RegionType type, int regionFill=0) 
+    public Region(RegionType type, int regionFill = 0)
     {
       this.RegionFill = regionFill;
       this.Type = type;
@@ -125,7 +126,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <returns>The regions.</returns>
     /// <param name="geography">Geography.</param>
-    public static List<Region> ExtractRegions(int[,] geography) 
+    public static List<Region> ExtractRegions(int[,] geography)
     {
       var rows = geography.GetLength(0);
       var cols = geography.GetLength(1);
@@ -210,7 +211,7 @@ namespace PuppetMasterKit.Terrain.Map
       int dir = N;//North
       var result = new List<GridCoord>();
       var min = this.Tiles.MinBy(x => x.Col);
-      var start = traceOutsideContour ? new GridCoord(min.Row, min.Col - 1) : 
+      var start = traceOutsideContour ? new GridCoord(min.Row, min.Col - 1) :
                                         new GridCoord(min.Row, min.Col);
       result.Add(start);
       var next = GetNext(start, traceOutsideContour, ref dir);
@@ -250,7 +251,7 @@ namespace PuppetMasterKit.Terrain.Map
       var rightRow = current.Row + step[dir, 2, 0];
       var rightCol = current.Col + step[dir, 2, 1];
 
-      var fwd = this[fwdRow, fwdCol] != null ;
+      var fwd = this[fwdRow, fwdCol] != null;
       var left = this[leftRow, leftCol] != null;
       var right = this[rightRow, rightCol] != null;
 
@@ -298,7 +299,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// Traverses the region.
     /// </summary>
     /// <param name="action">Action.</param>
-    public void TraverseRegion(Action<int,int, TileType> action, bool traceOutsideContour = true) 
+    public void TraverseRegion(Action<int, int, TileType> action, bool traceOutsideContour = true)
     {
       var contour = TraceContour(traceOutsideContour);
 
@@ -325,7 +326,7 @@ namespace PuppetMasterKit.Terrain.Map
         if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
           tileType = TileType.RightSide;
         }
-        if(p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
+        if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
           tileType = TileType.TopSide;
         }
         if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b

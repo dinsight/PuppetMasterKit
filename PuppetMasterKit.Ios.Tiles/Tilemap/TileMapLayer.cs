@@ -7,10 +7,11 @@ using LightInject;
 using PuppetMasterKit.AI.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using SpriteKit;
 using UIKit;
 
-namespace PuppetMasterKit.Ios.Isometric.Tilemap
+namespace PuppetMasterKit.Ios.Tiles.Tilemap
 {
   public class TileMapLayer : SKNode
   {

@@ -29,17 +29,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Array.cs" />
-    <Compile Include="Float.cs" />
-    <Compile Include="List.cs" />
-    <Compile Include="Enumerable.cs" />
-    <Compile Include="StringValueAttribute.cs" />
-    <Compile Include="Collection.cs" />
     <Compile Include="Color.cs" />
-    <Compile Include="Measure.cs" />
-    <Compile Include="I2DSubscript.cs" />
-    <Compile Include="ArraySubscript.cs" />
-    <Compile Include="FuncSubscript.cs" />
+    <Compile Include="Extensions\Array.cs" />
+    <Compile Include="Extensions\Collection.cs" />
+    <Compile Include="Extensions\Enumerable.cs" />
+    <Compile Include="Extensions\Float.cs" />
+    <Compile Include="Extensions\List.cs" />
+    <Compile Include="Subscript\I2DSubscript.cs" />
+    <Compile Include="Subscript\FuncSubscript.cs" />
+    <Compile Include="Subscript\ArraySubscript.cs" />
+    <Compile Include="Diagnostics\Measure.cs" />
+    <Compile Include="Attributes\StringValueAttribute.cs" />
+    <Compile Include="GridCoord.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="Subscript\" />
+    <Folder Include="Diagnostics\" />
+    <Folder Include="Attributes\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

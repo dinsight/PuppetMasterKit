@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.AI.Components;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 
 namespace PuppetMasterKit.AI
 {

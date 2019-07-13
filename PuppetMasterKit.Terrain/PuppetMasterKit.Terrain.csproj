@@ -38,7 +38,6 @@
     <Compile Include="Noise\Bicubic.cs" />
     <Compile Include="Noise\INoiseGenerator.cs" />
     <Compile Include="Noise\Perlin.cs" />
-    <Compile Include="GridCoord.cs" />
     <Compile Include="Map\TileType.cs" />
   </ItemGroup>
   <ItemGroup>

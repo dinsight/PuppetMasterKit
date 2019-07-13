@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Terrain.Map
+namespace PuppetMasterKit.Utility.Map
 {
   public class MapCodes
   {

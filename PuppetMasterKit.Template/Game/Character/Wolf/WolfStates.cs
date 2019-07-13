@@ -1,5 +1,5 @@
 ﻿using System;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Attributes;
 
 namespace PuppetMasterKit.Template.Game.Character.Wolf
 {

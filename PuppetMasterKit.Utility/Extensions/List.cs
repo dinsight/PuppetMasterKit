@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PuppetMasterKit.Utility
+namespace PuppetMasterKit.Utility.Extensions
 {
   public static class ListExtension
   {

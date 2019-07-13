@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Utility
+namespace PuppetMasterKit.Utility.Subscript
 {
   /// <summary>
   /// Helper for consuming 2D arrays

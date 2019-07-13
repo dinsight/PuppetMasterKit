@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.AI;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Template.Game

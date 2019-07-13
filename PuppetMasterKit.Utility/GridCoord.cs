@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Terrain
+namespace PuppetMasterKit.Utility
 {
   public class GridCoord
   {

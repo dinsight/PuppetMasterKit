@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using CoreGraphics;
 using SpriteKit;
 using PuppetMasterKit.AI;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using Pair = System.Tuple;
 using CoreImage;
-using PuppetMasterKit.Terrain.Map;
-using PuppetMasterKit.Terrain;
+using PuppetMasterKit.Utility.Map;
+using PuppetMasterKit.Utility;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
 
-namespace PuppetMasterKit.Ios.Isometric.Tilemap
+namespace PuppetMasterKit.Ios.Tiles.Tilemap
 {
   public class TileMap : SKNode
   {
@@ -62,7 +63,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
         var orderedList = order.ToList();
         //Sort the regions based on the list provided
         //Sort the path regions at the end
-        regions = regions.OrderBy(reg=>reg.Type)
+        regions = regions.OrderBy(reg => reg.Type)
         .ThenBy(reg => {
           var index = orderedList.IndexOf(reg.RegionFill);
           return index < 0 ? int.MaxValue : index;
@@ -71,7 +72,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
       //Select the tiles for each region and apply the corresponding texture
       regions.ForEach(reg => {
         IRegionPainter painter = defaultPainter;
-        if (reg.Type == Region.RegionType.REGION && 
+        if (reg.Type == Region.RegionType.REGION &&
             regionPainter.ContainsKey(reg.RegionFill)) {
           painter = regionPainter[reg.RegionFill];
         }
@@ -86,7 +87,7 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// <param name="painter">Painter.</param>
     public void AddPainter(int regionFill, IRegionPainter painter)
     {
-      if (regionPainter.ContainsKey(regionFill)){
+      if (regionPainter.ContainsKey(regionFill)) {
         regionPainter[regionFill] = painter;
       } else {
         regionPainter.Add(regionFill, painter);
@@ -107,19 +108,20 @@ namespace PuppetMasterKit.Ios.Isometric.Tilemap
     /// Sets the remove layers.
     /// </summary>
     /// <value>The remove layers.</value>
-    public void RemoveLayers() {
+    public void RemoveLayers()
+    {
       foreach (var item in layers) {
         item.RemoveFromParent();
       }
       layers.Clear();
     }
 
-  /// <summary>
-  /// Flattens the layer.
-  /// </summary>
-  /// <returns>The layer.</returns>
-  /// <param name="index">Index.</param>
-  public SKSpriteNode FlattenLayer(int index, Action<CGImage> debug = null)
+    /// <summary>
+    /// Flattens the layer.
+    /// </summary>
+    /// <returns>The layer.</returns>
+    /// <param name="index">Index.</param>
+    public SKSpriteNode FlattenLayer(int index, Action<CGImage> debug = null)
     {
       if (index >= 0 && index < layers.Count) {
         return layers[index].FlattenLayer(debug);

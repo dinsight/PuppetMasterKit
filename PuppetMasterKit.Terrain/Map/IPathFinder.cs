@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Pair = System.Tuple<int, int>;
 
-namespace PuppetMasterKit.Terrain.Map
+namespace PuppetMasterKit.Utility.Map
 {
   public interface IPathFinder
   {

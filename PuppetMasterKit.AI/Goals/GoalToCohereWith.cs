@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 
 namespace PuppetMasterKit.AI.Goals
 {

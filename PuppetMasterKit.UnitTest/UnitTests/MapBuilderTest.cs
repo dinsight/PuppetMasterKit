@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Utility.Map;
 
 namespace PuppetMasterKit.UnitTest
 {
@@ -33,7 +33,7 @@ namespace PuppetMasterKit.UnitTest
       builder.Apply((i, j, x) => {
         if (x == MapBuilder.Blank) {
           line.Append("∙");
-        } else if (x == MapCodes.X) { 
+        } else if (x == MapCodes.X) {
           line.Append("@");
         } else if (x == MapCodes.PATH) {
           line.Append(' ');
@@ -59,11 +59,11 @@ namespace PuppetMasterKit.UnitTest
       var builder = new MapBuilder(rows, cols, 5, new PathFinder());
       var modules = new List<Module>();
 
-      var module0 = new Module( new int[,] { 
+      var module0 = new Module(new int[,] {
                 { 1,1,1,1,1,},
                 { 1,1,1,1,1,},
                 { 1,1,1,1,1,},
-                
+
       }, '-');
       var module1 = new Module(new int[,] {
                 { 1,1,1,1,1,1,1,},
@@ -86,7 +86,7 @@ namespace PuppetMasterKit.UnitTest
       modules.Add(module0);
       modules.Add(module1);
       modules.Add(module2);
-      
+
       var roomCount = 100;
       var actual = 0;
       var start = DateTime.Now;
@@ -135,7 +135,7 @@ namespace PuppetMasterKit.UnitTest
 
       var end = DateTime.Now;
       PrintMap(builder, modules);
-      Console.WriteLine($"Created {actual} out of {roomCount} in {(end-start).TotalMilliseconds} ms");
+      Console.WriteLine($"Created {actual} out of {roomCount} in {(end - start).TotalMilliseconds} ms");
 
     }
 

@@ -1,7 +1,7 @@
 ﻿using System;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Subscript;
 
-namespace PuppetMasterKit.Terrain.Noise
+namespace PuppetMasterKit.Utility.Noise
 {
   public class Bicubic : INoiseGenerator
   {

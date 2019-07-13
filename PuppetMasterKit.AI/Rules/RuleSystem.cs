@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 
 namespace PuppetMasterKit.AI.Rules
 {

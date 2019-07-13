@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Utility
+namespace PuppetMasterKit.Utility.Subscript
 {
   public interface I2DSubscript<T>
   {

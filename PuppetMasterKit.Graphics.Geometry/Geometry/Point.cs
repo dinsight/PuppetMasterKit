@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PuppetMasterKit.Graphics;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 
 namespace PuppetMasterKit.Graphics.Geometry
 {

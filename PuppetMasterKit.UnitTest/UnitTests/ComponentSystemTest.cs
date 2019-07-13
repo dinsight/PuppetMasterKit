@@ -3,7 +3,7 @@ using PuppetMasterKit.AI.Components;
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Template.Test.Bindings;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Attributes;
 
 namespace PuppetMasterKit.UnitTest
 {

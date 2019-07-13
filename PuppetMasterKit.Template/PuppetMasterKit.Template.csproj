@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
@@ -305,13 +305,14 @@
       <Project>{F3270C94-52FB-4C33-9640-93F991A67BB0}</Project>
       <Name>PuppetMasterKit.Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PuppetMasterKit.Ios.Isometric\PuppetMasterKit.Ios.Isometric.csproj">
-      <Project>{34896846-E1E4-47CB-AC4B-8B28A8057292}</Project>
-      <Name>PuppetMasterKit.Ios.Isometric</Name>
-    </ProjectReference>
+    
     <ProjectReference Include="..\PuppetMasterKit.Terrain\PuppetMasterKit.Terrain.csproj">
       <Project>{015A9DC7-97F3-4C58-8E18-C1C6C48B48E1}</Project>
       <Name>PuppetMasterKit.Terrain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuppetMasterKit.Ios.Tiles\PuppetMasterKit.Ios.Tiles.csproj">
+      <Project>{34896846-E1E4-47CB-AC4B-8B28A8057292}</Project>
+      <Name>PuppetMasterKit.Ios.Tiles</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

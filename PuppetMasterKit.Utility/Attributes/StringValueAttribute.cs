@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace PuppetMasterKit.Utility
+namespace PuppetMasterKit.Utility.Attributes
 {
 	public class StringValueAttribute : Attribute
 	{

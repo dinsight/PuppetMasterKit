@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Utility
+namespace PuppetMasterKit.Utility.Diagnostics
 {
   public static class Measure
   {

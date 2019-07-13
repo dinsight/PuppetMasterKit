@@ -10,12 +10,12 @@ using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
-using PuppetMasterKit.Ios.Isometric.Tilemap;
 using SpriteKit;
-using PuppetMasterKit.Ios.Isometric.Fill;
-using System.Diagnostics;
-using PuppetMasterKit.Terrain.Map;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Map;
+using PuppetMasterKit.Utility.Diagnostics;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
+using PuppetMasterKit.Ios.Tiles.Tilemap;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 
 namespace PuppetMasterKit.Template.Game.Level
 {

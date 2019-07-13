@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Pair = System.Tuple<int, int>;
-using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Graphics.Geometry;
 
-namespace PuppetMasterKit.Terrain.Map
+namespace PuppetMasterKit.Utility.Map
 {
   public class PathFinder : IPathFinder
   {

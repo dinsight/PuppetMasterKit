@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Utility;
 using System.Collections.ObjectModel;
+using PuppetMasterKit.Utility.Extensions;
 
-namespace PuppetMasterKit.Terrain.Map
+namespace PuppetMasterKit.Utility.Map
 {
   public class MapBuilder
   {
@@ -154,7 +155,7 @@ namespace PuppetMasterKit.Terrain.Map
       var closest = GetClosestPair(connected, unconnected, RoomDistance);
       while (closest != null) {
         var path = CreatePath(closest.Item1, closest.Item2);
-        if (path!=null) {
+        if (path != null) {
           regions.Add(path);
           pathCount++;
           connected.Add(closest.Item2);
@@ -175,7 +176,7 @@ namespace PuppetMasterKit.Terrain.Map
       var deadends = rooms.Where(x => x.Module.IsAccessible && x.PathCount <= 1).ToList();
       var pairs = GetClosestPair(deadends, deadends, RoomDistance);
       while (pairs != null) {
-        if (pairs.Item1.PathCount == 1 && pairs.Item2.PathCount == 1 ) {
+        if (pairs.Item1.PathCount == 1 && pairs.Item2.PathCount == 1) {
           var path = CreatePath(pairs.Item1, pairs.Item2, false, false);
           if (path != null) {
             regions.Add(path);

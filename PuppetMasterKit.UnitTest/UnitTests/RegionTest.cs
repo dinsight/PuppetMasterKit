@@ -3,9 +3,9 @@ using System.Linq;
 using NUnit.Framework;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Terrain;
-using PuppetMasterKit.Terrain.Map;
-using PuppetMasterKit.Terrain.Noise;
+using PuppetMasterKit.Utility;
+using PuppetMasterKit.Utility.Map;
+using PuppetMasterKit.Utility.Noise;
 
 namespace PuppetMasterKit.UnitTest.UnitTests
 {
