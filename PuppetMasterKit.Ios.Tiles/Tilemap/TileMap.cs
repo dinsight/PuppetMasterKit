@@ -3,13 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using CoreGraphics;
 using SpriteKit;
-using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility.Extensions;
-using Pair = System.Tuple;
-using CoreImage;
-using PuppetMasterKit.Utility.Map;
-using PuppetMasterKit.Utility;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
+using PuppetMasterKit.Terrain.Map;
 
 namespace PuppetMasterKit.Ios.Tiles.Tilemap
 {

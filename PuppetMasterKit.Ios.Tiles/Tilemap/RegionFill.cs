@@ -1,11 +1,11 @@
 ﻿using System;
-using SpriteKit;
-using System.Linq;
 using System.Collections.Generic;
-using PuppetMasterKit.Utility.Extensions;
+using System.Linq;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Utility.Map;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
+using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Utility.Extensions;
+using SpriteKit;
 
 namespace PuppetMasterKit.Ios.Tiles.Tilemap
 {

@@ -2,12 +2,10 @@
 using System;
 using CoreGraphics;
 using NUnit.Framework;
-using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Template.Game.Ios.Bindings;
-using PuppetMasterKit.Utility.Map;
+using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility.Noise;
 using SpriteKit;
 

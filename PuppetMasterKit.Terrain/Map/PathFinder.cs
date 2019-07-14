@@ -5,7 +5,7 @@ using Pair = System.Tuple<int, int>;
 using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Graphics.Geometry;
 
-namespace PuppetMasterKit.Utility.Map
+namespace PuppetMasterKit.Terrain.Map
 {
   public class PathFinder : IPathFinder
   {

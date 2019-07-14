@@ -1,5 +1,5 @@
 ﻿using System;
-namespace PuppetMasterKit.Utility.Map
+namespace PuppetMasterKit.Terrain.Map
 {
   public enum TileType
   {

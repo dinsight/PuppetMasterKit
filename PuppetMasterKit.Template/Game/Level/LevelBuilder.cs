@@ -11,11 +11,12 @@ using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Template.Game.Character.Rabbit;
 using PuppetMasterKit.Template.Game.Character.Wolf;
 using SpriteKit;
-using PuppetMasterKit.Utility.Map;
 using PuppetMasterKit.Utility.Diagnostics;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
+using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Terrain.Map.SimplePlacement;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -243,111 +244,20 @@ namespace PuppetMasterKit.Template.Game.Level
       return flightMap;
     }
 
-    private void GenerateMap2()
-    {
-      var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
-      var existing = scene.Children.OfType<SKTileMapNode>();
-      scene.RemoveChildren(existing.ToArray());
-
-      //var map = new int[,]{
-      //  {'-','A','A','A','A','A','A'},
-      //  {'A','A','A','A','W','A','A'},
-      //  {'A','A','W','W','W','A','A'},
-      //  {'A','W','W','W','W','W','A'},
-      //  {'A','W','W','W','W','A','A'},
-      //  {'A','A','W','A','W','A','A'},
-      //  {'A','A','A','A','A','A','-'},
-      //};
-
-      var map = new int[,]{
-        {'W','W','W','A','A','A','A','A','A'},
-        {'W','W','W','A','A','A','A','A','A'},
-        {'W','W','W','A','A','W','W','W','W'},
-        {'A','A','A','A','A','W','W','W','W'},
-        {'A','A','A','A','A','W','W','W','W'},
-        {'A','A','W','W','W','W','W','W','W'},
-        {'A','A','W','W','W','W','W','W','W'},
-        {'A','A','W','W','W','W','W','W','W'},
-        {'A','A','W','W','W','W','W','W','W'},
-      };
-
-      var mapping = new Dictionary<int, string> {
-        { '-', "Dirt"},
-        { '+', "Sand"},
-        { 'W', "Water" },
-        { 'A', "Grass" },
-      };
-
-      var tileSize = 128;
-      var s = new int[] { 0x0, 0x0, 0xff, 0xff };
-      var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
-      var rows = map.GetLength(0);
-      var cols = map.GetLength(1);
-
-      var regions = Region.ExtractRegions(map);
-
-      var tileSet = SKTileSet.FromName("MainTileSet");
-
-      var defaultPainter = new TiledRegionPainter(mapping, tileSet);
-      var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
-      var layeredPainter = new LayeredRegionPainter(1, new List<string>()
-      //{ "Water_L2", "Water", "Water_L1" }, tileSet);
-      { "Sand", "Water_L2", "Water", "Water_L1" }, tileSet);
-
-      var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      tileMap.AddPainter('W', layeredPainter);
-
-      tileMap.Build(regions, '-', '+', 'A', 'W');
-      var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
-      //RegionFill.Fill(regions, tileSize, 'W', woods, 1f, tileMap.GetLayer(0));
-      scene.AddChild(tileMap);
-      var layer = tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map.png"));
-    }
-
+    
     /// <summary>
     /// Generates the map1.
     /// </summary>
     private void GenerateMap()
     {
+      var rows = 100;
+      var cols = 100;
       var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 
-      var modules = new List<Module>();
-
-      var module0 = new Module(new int[,] {
-                { 3,3,3,3,3},
-                { 3,3,3,3,3},
-                { 3,3,3,3,3},
-                { 3,3,3,3,3},
-      }, '+');
-
-      var module1 = new Module(new int[,] {
-                { 1,1,1,1,1,1,1},
-                { 1,1,1,1,1,1,1},
-                { 1,1,1,1,1,1,1},
-                { 1,1,1,1,1,1,1},
-                { 1,1,1,1,1,1,1},
-                { 1,1,1,1,1,1,1},
-                { 1,1,1,1,1,1,1},
-      }, 1){ IsAccessible = false };
-
-      var module2 = new Module(new int[,] {
-                { 0,0,0,3,0,0,0,0,0 },
-                { 3,3,3,3,3,3,3,3,3 },
-                { 3,3,3,3,3,3,3,3,3 },
-                { 3,3,3,3,3,3,3,3,3 },
-                { 3,3,3,3,3,3,3,3,3 },
-                { 3,3,3,3,3,3,3,3,3 },
-                { 3,3,3,3,3,3,3,3,3 },
-            }, 'W');
-
-      modules.Add(module0);
-      modules.Add(module1);
-      modules.Add(module2);
-
-      var builder = new MapBuilder(100, 100, 5, new PathFinder());
-      builder.Create(120, modules);
+      var builder = Container.GetContainer().GetInstance<IMapGenerator>();
+      var regions = builder.Create(rows, cols);
 
       var mapping = new Dictionary<int, string> {
         { '+', "Sand" },
@@ -361,12 +271,11 @@ namespace PuppetMasterKit.Template.Game.Level
       var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
       var tileSet = SKTileSet.FromName("MainTileSet");
 
-      var regions = builder.Regions;
       var defaultPainter = new TiledRegionPainter(mapping, tileSet);
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet);
-      var tileMap = new TileMap(defaultPainter, builder.Rows, builder.Cols, tileSize);
+      var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
       tileMap.AddPainter(1, layeredPainter);
 
       Measure.Timed("Map building", () => {
@@ -384,7 +293,7 @@ namespace PuppetMasterKit.Template.Game.Level
         tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map0.png"));
       });
 
-      DumpMap(builder.Map);
+      //DumpMap(builder.Map);
     }
 
     private void DumpMap(int[,] map) {

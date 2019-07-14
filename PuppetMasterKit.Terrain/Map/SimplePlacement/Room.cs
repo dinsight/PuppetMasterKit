@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Pair = System.Tuple<int, int>;
 
-namespace PuppetMasterKit.Utility.Map
+namespace PuppetMasterKit.Terrain.Map.SimplePlacement
 {
   public class Room
     {

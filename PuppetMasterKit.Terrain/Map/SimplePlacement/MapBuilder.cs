@@ -2,17 +2,19 @@
 using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Geometry;
-using PuppetMasterKit.Utility;
 using System.Collections.ObjectModel;
 using PuppetMasterKit.Utility.Extensions;
+using PuppetMasterKit.Utility;
 
-namespace PuppetMasterKit.Utility.Map
+namespace PuppetMasterKit.Terrain.Map.SimplePlacement
 {
-  public class MapBuilder
+  public class MapBuilder : IMapGenerator
   {
     public static readonly int Blank = int.MinValue;
 
-    private readonly int[,] map;
+    private int[,] map;
+    private readonly int maxRooms;
+    private readonly List<Module> modules;
     private readonly int roomPadding;
     private int pathCount;
     private IPathFinder pathFinder;
@@ -28,21 +30,18 @@ namespace PuppetMasterKit.Utility.Map
     public int[,] Map { get => map; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.MapBuilder"/> class.
+    /// 
     /// </summary>
-    /// <param name="rows">Rows.</param>
-    /// <param name="cols">Cols.</param>
-    /// <param name="roomPadding">Room padding.</param>
-    /// <param name="pathFinder">Path finder.</param>
-    public MapBuilder(int rows, int cols, int roomPadding, IPathFinder pathFinder)
-    {
+    /// <param name="maxRooms"></param>
+    /// <param name="modules"></param>
+    /// <param name="roomPadding"></param>
+    /// <param name="pathFinder"></param>
+    public MapBuilder(int maxRooms, List<Module> modules, int roomPadding, IPathFinder pathFinder) {
       this.pathFinder = pathFinder;
-      this.Rows = rows;
-      this.Cols = cols;
       this.pathCount = 0;
+      this.maxRooms = maxRooms;
+      this.modules = modules;
       this.roomPadding = roomPadding;
-      map = new int[Rows, Cols];
-      ResetMap();
     }
 
     /// <summary>
@@ -111,12 +110,10 @@ namespace PuppetMasterKit.Utility.Map
     }
 
     /// <summary>
-    /// Randomly creates the rooms based on a list of modules.
+    /// 
     /// </summary>
-    /// <returns>The create.</returns>
-    /// <param name="maxRooms">Max rooms.</param>
-    /// <param name="modules">Modules.</param>
-    public int Create(int maxRooms, List<Module> modules)
+    /// <returns></returns>
+    private int Create()
     {
       var actual = 0;
       int index = 0;
@@ -201,7 +198,7 @@ namespace PuppetMasterKit.Utility.Map
           map[r, c] = closestRoom.Module.RegionFill;
         }
       });
-      return Region.ExtractRegions(map);
+      return Region.ExtractRegions(map);  
     }
 
     /// <summary>
@@ -278,6 +275,22 @@ namespace PuppetMasterKit.Utility.Map
       if (start != null && end != null)
         return Tuple.Create(start, end);
       return null;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="rows"></param>
+    /// <param name="cols"></param>
+    /// <returns></returns>
+    public List<Region> Create(int rows, int cols)
+    {
+      this.Rows = rows;
+      this.Cols = cols;
+      map = new int[Rows, Cols];
+      ResetMap();
+      Create();
+      return regions;
     }
   }
 }

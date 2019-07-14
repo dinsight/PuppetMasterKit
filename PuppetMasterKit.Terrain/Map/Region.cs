@@ -5,8 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using PuppetMasterKit.Utility;
 
-namespace PuppetMasterKit.Utility.Map
+namespace PuppetMasterKit.Terrain.Map
 {
   /// <summary>
   /// Region.

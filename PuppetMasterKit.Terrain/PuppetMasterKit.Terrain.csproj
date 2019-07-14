@@ -28,21 +28,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Map\IPathFinder.cs" />
-    <Compile Include="Map\MapBuilder.cs" />
-    <Compile Include="Map\MapCodes.cs" />
-    <Compile Include="Map\Module.cs" />
-    <Compile Include="Map\PathFinder.cs" />
-    <Compile Include="Map\Region.cs" />
-    <Compile Include="Map\Room.cs" />
     <Compile Include="Noise\Bicubic.cs" />
     <Compile Include="Noise\INoiseGenerator.cs" />
     <Compile Include="Noise\Perlin.cs" />
+    <Compile Include="Map\SimplePlacement\MapBuilder.cs" />
+    <Compile Include="Map\SimplePlacement\MapCodes.cs" />
+    <Compile Include="Map\SimplePlacement\Module.cs" />
+    <Compile Include="Map\SimplePlacement\Room.cs" />
+    <Compile Include="Map\IMapGenerator.cs" />
+    <Compile Include="Map\IPathFinder.cs" />
+    <Compile Include="Map\PathFinder.cs" />
+    <Compile Include="Map\Region.cs" />
     <Compile Include="Map\TileType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Map\" />
     <Folder Include="Noise\" />
+    <Folder Include="Map\SimplePlacement\" />
+    <Folder Include="Map\CellularAutomata\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
