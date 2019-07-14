@@ -1,7 +1,7 @@
 ﻿using System;
 using LightInject;
 
-namespace PuppetMasterKit.AI.Configuration
+namespace PuppetMasterKit.Utility.Configuration
 {
     public static class Container
     {

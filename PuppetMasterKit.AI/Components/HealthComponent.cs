@@ -1,6 +1,6 @@
 ﻿using System;
 using LightInject;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Utility;

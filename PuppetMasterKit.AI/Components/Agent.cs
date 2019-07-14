@@ -5,7 +5,7 @@ using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Utility.Extensions;
 using System;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 
 namespace PuppetMasterKit.AI.Components
 {

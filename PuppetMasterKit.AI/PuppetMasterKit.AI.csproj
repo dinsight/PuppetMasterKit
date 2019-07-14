@@ -54,7 +54,6 @@
     <Compile Include="Goals\GoalToSeparateFrom.cs" />
     <Compile Include="Goals\GoalToWander.cs" />
     <Compile Include="Entity.cs" />
-    <Compile Include="Configuration\Container.cs" />
     <Compile Include="Components\IAgentDelegate.cs" />
     <Compile Include="EntityBuilder.cs" />
     <Compile Include="EntityBucket.cs" />
@@ -76,7 +75,6 @@
   <ItemGroup>
     <Folder Include="Components\" />
     <Folder Include="Goals\" />
-    <Folder Include="Configuration\" />
     <Folder Include="Rules\" />
   </ItemGroup>
   <ItemGroup>
@@ -97,13 +95,13 @@
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\netstandard1.1\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="LightInject">
-      <HintPath>..\packages\LightInject.5.4.0\lib\netstandard1.1\LightInject.dll</HintPath>
+      <HintPath>..\packages\LightInject.5.5.0\lib\netstandard1.1\LightInject.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

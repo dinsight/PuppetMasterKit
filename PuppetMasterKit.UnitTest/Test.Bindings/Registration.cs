@@ -1,5 +1,5 @@
 ﻿using System;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.UnitTest.Test.Bindings;
 using SpriteKit;

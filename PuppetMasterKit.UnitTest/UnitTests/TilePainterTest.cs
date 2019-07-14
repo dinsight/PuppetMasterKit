@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using PuppetMasterKit.AI;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;

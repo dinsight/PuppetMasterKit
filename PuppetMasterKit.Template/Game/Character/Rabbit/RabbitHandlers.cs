@@ -4,7 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.AI.Rules;
 using PuppetMasterKit.Graphics.Geometry;

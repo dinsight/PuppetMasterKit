@@ -5,7 +5,7 @@ using CoreGraphics;
 using LightInject;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Template.Game.Character.Rabbit;

@@ -7,7 +7,7 @@ using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Template.Game.Level;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Sprites;
 using System.Collections.Generic;
 

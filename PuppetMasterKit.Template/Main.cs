@@ -1,5 +1,5 @@
 ﻿using PuppetMasterKit.AI;
-using PuppetMasterKit.AI.Configuration;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Sprites;
 using UIKit;
 
