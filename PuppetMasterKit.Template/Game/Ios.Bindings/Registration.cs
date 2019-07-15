@@ -4,6 +4,8 @@ using SpriteKit;
 using PuppetMasterKit.Terrain.Map;
 using System.Collections.Generic;
 using PuppetMasterKit.Terrain.Map.SimplePlacement;
+using System;
+using PuppetMasterKit.Terrain.Map.CellularAutomata;
 
 namespace PuppetMasterKit.Template.Game.Ios.Bindings
 {
@@ -14,8 +16,21 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
       Container.GetContainer().Register<ISpriteFactory>(factory => new SpriteFactory(scene));
       Container.GetContainer().Register<ICoordinateMapper>(factory => new IsometricMapper(scene));
       Container.GetContainer().Register<SKScene>(factory => scene);
-      Container.GetContainer().Register<IMapGenerator>(factory =>
-      new MapBuilder(120, CreateAvailableModules(), 5, new PathFinder()));
+
+      //Container.GetContainer().Register<IMapGenerator>(factory =>
+      //new MapBuilder(120, CreateAvailableModules(), 5, new PathFinder()));
+
+      Random random = new Random(scene.GetHashCode());
+
+      Container.GetContainer().Register<IMapGenerator>(factory => 
+        new CellularAutomataGenerator(7,
+        (i, j) => {
+          if (random.Next(1, 101) < 50) {
+            return 1;
+          }
+          return 0;
+        })
+      );
     }
 
     /// <summary>

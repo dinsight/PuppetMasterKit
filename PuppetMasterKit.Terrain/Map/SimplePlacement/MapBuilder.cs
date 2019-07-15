@@ -29,6 +29,8 @@ namespace PuppetMasterKit.Terrain.Map.SimplePlacement
     public IReadOnlyCollection<Region> Regions { get => new ReadOnlyCollection<Region>(regions); }
     public int[,] Map { get => map; }
 
+    public int this[int row, int col] => map[row,col];
+
     /// <summary>
     /// 
     /// </summary>

@@ -40,6 +40,7 @@
     <Compile Include="Map\PathFinder.cs" />
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\TileType.cs" />
+    <Compile Include="Map\CellularAutomata\CellularAutomataGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Map\" />

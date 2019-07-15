@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using PuppetMasterKit.Terrain.Map.SimplePlacement;
+using PuppetMasterKit.Terrain.Map.CellularAutomata;
+using PuppetMasterKit.Utility.Subscript;
 
 namespace PuppetMasterKit.UnitTest
 {
@@ -14,43 +16,37 @@ namespace PuppetMasterKit.UnitTest
     static int rows = 140;
     static int cols = 140;
 
-    /// <summary>
-    /// Prints the map.
-    /// </summary>
-    /// <param name="builder">Builder.</param>
-    private static void PrintMap(MapBuilder builder, List<Module> modules)
+    
+    private static void PrintMap(I2DSubscript<int> i2)
     {
-      var buffer = new StringBuilder();
-      var line = new StringBuilder();
-      line.Append("    ");
-      for (int i = 0; i < cols; i++) {
-        line.Append((i % 10).ToString("D1"));
-      }
-      buffer.Append(line.ToString());
-      buffer.AppendLine();
-      line.Length = 0;
-      line.Append("000 ");
-      builder.Apply((i, j, x) => {
-        if (x == MapBuilder.Blank) {
-          line.Append("∙");
-        } else if (x == MapCodes.X) {
-          line.Append("@");
-        } else if (x == MapCodes.PATH) {
-          line.Append(' ');
-        } else {
-          line.Append((char)x);
+      for (int i = 0; i < i2.Rows; i++) {
+        for (int j = 0; j < i2.Cols; j++) {
+          var x = i2[i, j];
+          if (x == 0) {
+            Console.Write("∙");
+          } else if (x == 1) {
+            Console.Write("#");
+          } else {
+            Console.Write((char)x);
+          }
         }
-        if (j == cols - 1) {
-          line.AppendLine();
-          buffer.Append(line.ToString());
-          line.Length = 0;
-          line.Append((i + 1).ToString("D3") + " ");
-        }
-      });
-      Console.WriteLine(buffer.ToString());
-      foreach (var x in builder.Rooms) {
-        Console.WriteLine($"builder.AddRoom(modules[{modules.IndexOf(x.Module)}],{x.Row},{x.Col});");
+        Console.WriteLine();
       }
+    }
+
+    [Test]
+    public void TestCA() {
+      Random random = new Random(this.GetHashCode());
+      var gen = new CellularAutomataGenerator(7,
+        (i,j)=> {
+          if (random.Next(1, 101) < 45) {
+            return 1;
+          }
+          return 0;
+       });
+
+      var regs = gen.Create(100, 100);
+      PrintMap(gen);
     }
   }
 }

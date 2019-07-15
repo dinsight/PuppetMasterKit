@@ -260,10 +260,13 @@ namespace PuppetMasterKit.Template.Game.Level
       var regions = builder.Create(rows, cols);
 
       var mapping = new Dictionary<int, string> {
-        { '+', "Sand" },
-        { MapCodes.PATH, "Dirt" },
-        { 1, "Water" },
-        { 'W', "Grass"},
+        //{ '+', "Sand" },
+        //{ MapCodes.PATH, "Dirt" },
+        //{ 1, "Water" },
+        //{ 'W', "Grass"},
+
+        { 1, "Grass"},
+        { 0, "Dirt"},
       };
 
       var tileSize = 128;
@@ -276,16 +279,14 @@ namespace PuppetMasterKit.Template.Game.Level
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet);
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      tileMap.AddPainter(1, layeredPainter);
+      //tileMap.AddPainter(1, layeredPainter);
 
       Measure.Timed("Map building", () => {
-        //tileMap.Build(regions, 'W', '|', MapCodes.PATH, '+', 1);
-        tileMap.Build(regions, '+', MapCodes.PATH, 'W', 1 );
+        //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
+        tileMap.Build(regions, 0,  1);
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
-        var rocks = tileSet.TileGroups.First(x => x.Name == "Rocks");
-        //var water = tileSet.TileGroups.First(x => x.Name == "Water");
-        RegionFill.Fill(regions, tileSize, 'W', woods, 0.01f, tileMap.GetLayer(0));
-        //RegionFill.Fill(regions, tileSize, '+', rocks, 0.19f, tileMap.GetLayer(0));
+        //RegionFill.Fill(regions, tileSize, 'W', woods, 0.01f, tileMap.GetLayer(0));
+        RegionFill.Fill(regions, tileSize, 1, woods, 0.01f, tileMap.GetLayer(0));
       });
 
       Measure.Timed("Dump image", () => {
