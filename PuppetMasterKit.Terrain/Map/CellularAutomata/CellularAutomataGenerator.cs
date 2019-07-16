@@ -9,6 +9,7 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
   {
     private const int OFF = 0;
     private const int ON = 1;
+    private const int WATER = 3;
     private readonly int generations;
     private int bornThreshold;
     private int surviveThreshold;
@@ -70,7 +71,8 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     private List<Region> Postprocess(List<Region> regions){ 
       //Eliminate regions if they have a count of tiles less than or equal
       //to 2/5 of the total tiles number
-      var minTiles = (int)(0.4*(Rows * Cols));
+      var minTiles = (int)(0.01*(Rows * Cols));
+      var lakes = (int)(0.03*(Rows * Cols));
       var toRemove = regions
         .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=minTiles).ToList();
       toRemove.ForEach(x=>regions.Remove(x));
@@ -78,6 +80,13 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       toRemove.ForEach(r=>{ 
         r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
       });
+      //mark the remaining isolated regions as lakes 
+      regions
+        .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=lakes).ToList()
+        .ForEach(r=>{ 
+          r.Tiles.ForEach(t=>map[t.Row, t.Col]=WATER);
+        });
+
       return regions;
     }
 
@@ -106,9 +115,10 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
           var live = GetNeighbours(genPrev, i, j).Count(x => x > 0);
           var liveStep2 = GetNeighbours(genPrev, i, j, 2).Count(x => x > 0);
           gen[i, j] = genPrev[i, j];
-          var cutoff =  (float)currentGeneration/generations;
-          
-          if(live >= bornThreshold && liveStep2==0) { 
+
+          if(IsTooNarrow(genPrev, i, j) && currentGeneration == generations-1){ 
+            gen[i, j] = OFF;
+          } else if(live >= bornThreshold && liveStep2==0) { 
             gen[i, j] = OFF;
           } else if (val == OFF && live >= bornThreshold) {
             gen[i, j] = ON;
@@ -119,6 +129,21 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       }
     }
 
+    /// <summary>
+    /// Ensure we do not have regions with a tile width
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="i"></param>
+    /// <param name="j"></param>
+    /// <returns></returns>
+    private static bool IsTooNarrow(int[,] map, int i, int j){ 
+      var dim1 = map.GetLength(0);
+      var dim2 = map.GetLength(1);
+      return 
+        (i-1>=0 && i+1<dim1 && map[i-1,j]==OFF && map[i+1,j]==OFF) || 
+        (j-1>=0 && j+1<dim2 && map[i,j-1]==OFF && map[i,j+1]==OFF);
+    }
+    
     /// <summary>
     /// 
     /// </summary>
