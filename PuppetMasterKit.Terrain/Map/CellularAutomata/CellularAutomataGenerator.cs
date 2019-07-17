@@ -7,9 +7,8 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
 {
   public class CellularAutomataGenerator : IMapGenerator
   {
-    private const int OFF = 0;
+    public const int OFF = 0;
     private const int ON = 1;
-    private const int WATER = 3;
     private readonly int generations;
     private int bornThreshold;
     private int surviveThreshold;
@@ -60,7 +59,7 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         current = temp;
       }
       map = prev;
-      return Postprocess(Region.ExtractRegions(map));
+      return RemoveSmallRegions(Region.ExtractRegions(map));
     }
 
     /// <summary>
@@ -68,11 +67,10 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     /// </summary>
     /// <param name="regions"></param>
     /// <returns></returns>
-    private List<Region> Postprocess(List<Region> regions){ 
+    private List<Region> RemoveSmallRegions(List<Region> regions){ 
       //Eliminate regions if they have a count of tiles less than or equal
       //to 2/5 of the total tiles number
       var minTiles = (int)(0.01*(Rows * Cols));
-      var lakes = (int)(0.03*(Rows * Cols));
       var toRemove = regions
         .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=minTiles).ToList();
       toRemove.ForEach(x=>regions.Remove(x));
@@ -80,16 +78,6 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       toRemove.ForEach(r=>{ 
         r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
       });
-      //mark the remaining isolated regions as lakes
-      var lakeRegions = regions
-        .Where(r => r.RegionFill == OFF && r.Tiles.Count <= lakes);
-
-      lakeRegions.ToList()
-        .ForEach(r=>{
-          r.RegionFill = WATER;
-          r.Tiles.ForEach(t=>map[t.Row, t.Col]=WATER);
-        });
-
       return Region.ExtractRegions(map);
     }
 
@@ -172,6 +160,10 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         if (i + step < dim1) yield return map[i + step, j];
         if (i + step < dim1 && j + step < dim2) yield return map[i + step, j + step];
       }
+    }
+
+    public void UpdateFrom(Region region) {
+      region.Tiles.ForEach(x=>map[x.Row, x.Col]=region.RegionFill);
     }
   }
 }
