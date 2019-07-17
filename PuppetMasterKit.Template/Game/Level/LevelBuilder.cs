@@ -17,6 +17,7 @@ using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Terrain.Map.SimplePlacement;
+using PuppetMasterKit.Utility.Subscript;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -267,6 +268,7 @@ namespace PuppetMasterKit.Template.Game.Level
 
         { 1, "Grass"},
         { 0, "Dirt"},
+        { 3, "Water" },
       };
 
       var tileSize = 128;
@@ -279,14 +281,14 @@ namespace PuppetMasterKit.Template.Game.Level
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet);
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      //tileMap.AddPainter(1, layeredPainter);
+      tileMap.AddPainter(3, layeredPainter);
 
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
-        tileMap.Build(regions, 0,  1);
+        tileMap.Build(regions, 0,  1, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
         //RegionFill.Fill(regions, tileSize, 'W', woods, 0.01f, tileMap.GetLayer(0));
-        RegionFill.Fill(regions, tileSize, 1, woods, 0.01f, tileMap.GetLayer(0));
+        RegionFill.Fill(regions, tileSize, 1, woods, 0.001f, tileMap.GetLayer(0));
       });
 
       Measure.Timed("Dump image", () => {
@@ -294,21 +296,25 @@ namespace PuppetMasterKit.Template.Game.Level
         tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map0.png"));
       });
 
-      //DumpMap(builder.Map);
+      PrintMap(builder);
     }
 
-    private void DumpMap(int[,] map) {
-
-      for (int row = 0; row < map.GetLength(0); row++) {
-        System.Diagnostics.Debug.WriteLine($"");
-        for (int col = 0; col < map.GetLength(1); col++) {
-          var c = (char)map[row, col];
-          if (char.IsSymbol(c) || char.IsLetter(c)) {
-            System.Diagnostics.Debug.Write($" {(char)map[row, col]}");
+    private static void PrintMap(I2DSubscript<int> i2)
+    {
+      for (int i = 0; i < i2.Rows; i++) {
+        for (int j = 0; j < i2.Cols; j++) {
+          var x = i2[i, j];
+          if (x == 0) {
+            Console.Write("∙");
+          } else if (x == 1) {
+            Console.Write("#");
+          } else if (x == 3) {
+            Console.Write("~");
           } else {
-            System.Diagnostics.Debug.Write($" {map[row, col]}");
+            Console.Write((char)x);
           }
         }
+        Console.WriteLine();
       }
     }
   }

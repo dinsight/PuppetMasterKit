@@ -21,7 +21,7 @@ namespace PuppetMasterKit.Terrain.Map
     }
 
     public RegionType Type { get; set; }
-    public int RegionFill { get; }
+    public int RegionFill { get; set;  }
     public int MinRow { get; private set; } = int.MaxValue;
     public int MaxRow { get; private set; } = int.MinValue;
     public int MinCol { get; private set; } = int.MaxValue;

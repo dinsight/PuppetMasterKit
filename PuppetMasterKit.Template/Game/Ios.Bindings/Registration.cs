@@ -20,12 +20,14 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
       //Container.GetContainer().Register<IMapGenerator>(factory =>
       //new MapBuilder(120, CreateAvailableModules(), 5, new PathFinder()));
 
-      Random random = new Random(scene.GetHashCode());
+      Random random = new Random(1);
 
       Container.GetContainer().Register<IMapGenerator>(factory => 
-        new CellularAutomataGenerator(7,
-        (i, j) => {
-          if (random.Next(1, 101) < 50) {
+        new CellularAutomataGenerator(12, 5,4,
+        (i, j, rows, cols) => {
+          if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1)
+            return 1;
+          if (random.Next(1, 101) < 48) {
             return 1;
           }
           return 0;

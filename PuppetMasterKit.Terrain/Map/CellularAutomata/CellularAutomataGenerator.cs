@@ -80,14 +80,17 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       toRemove.ForEach(r=>{ 
         r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
       });
-      //mark the remaining isolated regions as lakes 
-      regions
-        .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=lakes).ToList()
-        .ForEach(r=>{ 
+      //mark the remaining isolated regions as lakes
+      var lakeRegions = regions
+        .Where(r => r.RegionFill == OFF && r.Tiles.Count <= lakes);
+
+      lakeRegions.ToList()
+        .ForEach(r=>{
+          r.RegionFill = WATER;
           r.Tiles.ForEach(t=>map[t.Row, t.Col]=WATER);
         });
 
-      return regions;
+      return Region.ExtractRegions(map);
     }
 
     /// <summary>
