@@ -294,5 +294,9 @@ namespace PuppetMasterKit.Terrain.Map.SimplePlacement
       Create();
       return regions;
     }
+    
+    public void UpdateFrom(Region region) {
+      throw new NotImplementedException();
+    }
   }
 }
