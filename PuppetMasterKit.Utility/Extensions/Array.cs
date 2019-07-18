@@ -36,7 +36,7 @@ namespace PuppetMasterKit.Utility.Extensions
     /// <typeparam name="T"></typeparam>
     /// <param name="array"></param>
     /// <param name="value"></param>
-    public static void Reset<T>(this T[,] array, T value = default) {
+    public static void Reset<T>(this T[,] array, T value = default(T)) {
       var dim1 = array.GetLength(0);
       var dim2 = array.GetLength(1);
       for (int i = 0; i < dim1; i++) {

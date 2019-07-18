@@ -17,7 +17,7 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
 
     public int Rows { get; private set; }
     public int Cols { get; private set; }
-    public int this[int row, int col] => map[row,col];
+    public int? this[int row, int col] => map[row,col];
 
     /// <summary>
     /// 

@@ -21,7 +21,7 @@ namespace PuppetMasterKit.Terrain.Map
     }
 
     public RegionType Type { get; set; }
-    public int RegionFill { get; set;  }
+    public int RegionFill { get; set; }
     public int MinRow { get; private set; } = int.MaxValue;
     public int MaxRow { get; private set; } = int.MinValue;
     public int MinCol { get; private set; } = int.MaxValue;
@@ -29,7 +29,8 @@ namespace PuppetMasterKit.Terrain.Map
     public int Rows => this.MaxRow - this.MinRow + 1;
     public int Cols => this.MaxCol - this.MinCol + 1;
 
-    public IReadOnlyCollection<GridCoord> Tiles {
+    public IReadOnlyCollection<GridCoord> Tiles
+    {
       get {
         return new ReadOnlyCollection<GridCoord>(tiles.Keys.ToList());
       }
@@ -41,8 +42,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Region"/> class.
     /// </summary>
     /// <param name="regionFill">Region fill.</param>
-    public Region(int regionFill)
-    {
+    public Region(int regionFill) {
       this.RegionFill = regionFill;
       this.Type = RegionType.REGION;
     }
@@ -52,8 +52,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="regionFill">Region fill.</param>
-    public Region(RegionType type, int regionFill = 0)
-    {
+    public Region(RegionType type, int regionFill = 0) {
       this.RegionFill = regionFill;
       this.Type = type;
     }
@@ -64,8 +63,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// <returns>The func.</returns>
     /// <param name="a">The alpha component.</param>
     /// <param name="b">The blue component.</param>
-    private int HashFunc(int a, int b)
-    {
+    private int HashFunc(int a, int b) {
       var hashCode = 1084646500;
       hashCode = hashCode * -1521134295 + a.GetHashCode();
       hashCode = hashCode * -1521134295 + b.GetHashCode();
@@ -77,8 +75,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public void AddTile(int row, int col)
-    {
+    public void AddTile(int row, int col) {
       var key = new GridCoord(row, col);
       if (tiles.ContainsKey(key))
         return;
@@ -94,8 +91,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// 
     /// </summary>
     /// <param name="region"></param>
-    public void Merge(Region region)
-    {
+    public void Merge(Region region) {
       if (region == null)
         return;
       foreach (var item in region.Tiles) {
@@ -109,7 +105,8 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public int? this[int row, int col] {
+    public int? this[int row, int col]
+    {
       get {
         tiles.TryGetValue(new GridCoord(row, col), out int? value);
         return value;
@@ -127,8 +124,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <returns>The regions.</returns>
     /// <param name="geography">Geography.</param>
-    public static List<Region> ExtractRegions(int[,] geography)
-    {
+    public static List<Region> ExtractRegions(int[,] geography) {
       var rows = geography.GetLength(0);
       var cols = geography.GetLength(1);
       return ExtractRegions(new ArraySubscript<int>(geography), rows, cols);
@@ -139,8 +135,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <returns>The regions.</returns>
     /// <param name="geography">Geography.</param>
-    public static List<Region> ExtractRegions(Region geography)
-    {
+    public static List<Region> ExtractRegions(Region geography) {
       var rows = geography.MaxRow + 1;
       var cols = geography.MaxCol + 1;
       return ExtractRegions(geography, rows, cols);
@@ -151,8 +146,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <returns>The regions.</returns>
     /// <param name="geography">Geography.</param>
-    private static List<Region> ExtractRegions(I2DSubscript<int?> geography, int rows, int cols)
-    {
+    private static List<Region> ExtractRegions(I2DSubscript<int?> geography, int rows, int cols) {
       var regions = new List<Region>();
       var pr = new Region[cols];
 
@@ -207,14 +201,51 @@ namespace PuppetMasterKit.Terrain.Map
     /// Repeat until you reach the first tile
     /// </summary>
     /// <returns>The contour.</returns>
-    public List<GridCoord> TraceContour(bool traceOutsideContour = true)
-    {
-      int dir = N;//North
+    public List<GridCoord> TraceContour(bool traceOutsideContour) {
       var result = new List<GridCoord>();
+      //trace outer contour
       var min = this.Tiles.MinBy(x => x.Col);
-      var start = traceOutsideContour ? new GridCoord(min.Row, min.Col - 1) :
+      var start = traceOutsideContour ? new GridCoord(min.Row, min.Col - 1) : 
                                         new GridCoord(min.Row, min.Col);
-      result.Add(start);
+      //because we start from the leftmost tile, we set the start direction to North
+      result.AddRange(TraceContourFrom(start, traceOutsideContour, N));
+      //trace inner contours
+      var visited = new Dictionary<GridCoord, bool>();
+      for (int row = 0; row < Rows; row++) {
+        int? col = 0;
+        while (col != null && (col = ScanRow(row, col.Value, RegionFill)) != null) {
+          var sp = traceOutsideContour ? new GridCoord(row, col.Value) : 
+                                         new GridCoord(row, col.Value - 1);
+          var cv = this[row, col.Value];
+          if (!visited.ContainsKey(sp)) {
+            //we start tracing from the rightmost tile, so we need start 
+            //moving downward (South)
+            var contour = TraceContourFrom(sp, traceOutsideContour, S);
+            contour.ForEach(x => {
+              if (!visited.ContainsKey(x))
+                visited.Add(x, true);
+            });
+            result.AddRange(contour);
+          }
+          col = ScanRow(row, col.Value, cv);
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="traceOutsideContour"></param>
+    /// <param name="startDirection">N,S,E,W</param>
+    /// <returns></returns>
+    private List<GridCoord> TraceContourFrom(GridCoord start, 
+      bool traceOutsideContour, 
+      int startDirection) 
+    {
+      int dir = startDirection;
+      var result = new List<GridCoord> { start };
       var next = GetNext(start, traceOutsideContour, ref dir);
       while (next != start) {
         if (result.Last() != next) {
@@ -223,6 +254,24 @@ namespace PuppetMasterKit.Terrain.Map
         next = GetNext(next, traceOutsideContour, ref dir);
       }
       return result;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="col"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    private int? ScanRow(int row, int col, int? value) {
+      int jj = col;
+      //scan the line while the value is "value"
+      for (; jj < this.Cols && this[row, jj] == value; jj++);
+      //stop at the end of the row
+      if (jj == Cols)
+        return null;
+      //or when we have a value different than "value"
+      return jj;
     }
 
     /// <summary>
@@ -243,8 +292,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// <returns>The next.</returns>
     /// <param name="current">Current.</param>
     /// <param name="dir">Dir.</param>
-    private GridCoord GetNext(GridCoord current, bool traceOutsideContour, ref int dir)
-    {
+    private GridCoord GetNext(GridCoord current, bool traceOutsideContour, ref int dir) {
       var fwdRow = current.Row + step[dir, 0, 0];
       var fwdCol = current.Col + step[dir, 0, 1];
       var leftRow = current.Row + step[dir, 1, 0];
@@ -300,8 +348,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// Traverses the region.
     /// </summary>
     /// <param name="action">Action.</param>
-    public void TraverseRegion(Action<int, int, TileType> action, bool traceOutsideContour = true)
-    {
+    public void TraverseRegion(Action<int, int, TileType> action, bool traceOutsideContour = true) {
       var contour = TraceContour(traceOutsideContour);
 
       if (traceOutsideContour) {
@@ -310,7 +357,6 @@ namespace PuppetMasterKit.Terrain.Map
         Tiles.Except(contour)
         .ForEach(a => action(a.Row, a.Col, TileType.Plain));
       }
-
 
       for (int index = 0; index < contour.Count; index++) {
 
