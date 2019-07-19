@@ -17,7 +17,7 @@ namespace PuppetMasterKit.UnitTest
     static int cols = 140;
 
     
-    private static void PrintMap(I2DSubscript<int> i2)
+    private static void PrintMap(I2DSubscript<int?> i2)
     {
       for (int i = 0; i < i2.Rows; i++) {
         for (int j = 0; j < i2.Cols; j++) {

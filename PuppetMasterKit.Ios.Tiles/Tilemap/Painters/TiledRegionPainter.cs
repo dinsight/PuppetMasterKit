@@ -87,7 +87,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
           var index = random.Next(0, corners[type].Count);
           layer.SetTile(corners[type][index], row, col, null);
         }
-      });
+      }, false);
     }
 
     /// <summary>

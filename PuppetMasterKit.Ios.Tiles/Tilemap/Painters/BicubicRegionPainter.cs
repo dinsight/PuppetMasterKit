@@ -48,7 +48,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
       //generate a gradient
       var gradient = GenerateGradient(gradientDimension);
       //trace the region's contour
-      var contour = region.TraceContour();
+      var contour = region.TraceContour(true);
       //add both tiles and contour to the list of tiles to point
       var tiles = region.Tiles;
       var all = new List<GridCoord>(tiles);

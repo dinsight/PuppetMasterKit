@@ -33,7 +33,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
         new GridCoord(2,3), new GridCoord(2,4), new GridCoord(1,4), new GridCoord(0,4), new GridCoord(0,3),
         new GridCoord(0,2), new GridCoord(1,2), new GridCoord(1,1), new GridCoord(2,1), new GridCoord(2,0)
       };
-      var contour = region.TraceContour();
+      var contour = region.TraceContour(true);
       for (int i = 0; i < contour.Count; i++) {
         Assert.True(contour[i] == expected[i]);
       }
@@ -57,7 +57,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
         new GridCoord(5,4), new GridCoord(5,3), new GridCoord(4,3), new GridCoord(3,3), new GridCoord(3,2),
         new GridCoord(2,2), new GridCoord(2,1), new GridCoord(2,0)
       };
-      var contour = region.TraceContour();
+      var contour = region.TraceContour(true);
       for (int i = 0; i < contour.Count; i++) {
         Assert.True(contour[i] == expected[i]);
       }
@@ -76,7 +76,7 @@ namespace PuppetMasterKit.UnitTest.UnitTests
         new GridCoord(1,0), new GridCoord(2,0), new GridCoord(2,1), new GridCoord(2,2), new GridCoord(1,2),
         new GridCoord(0,2), new GridCoord(0,1), new GridCoord(0,0)
       };
-      var contour = region.TraceContour();
+      var contour = region.TraceContour(true);
       for (int i = 0; i < contour.Count; i++) {
         Assert.True(contour[i] == expected[i]);
       }
