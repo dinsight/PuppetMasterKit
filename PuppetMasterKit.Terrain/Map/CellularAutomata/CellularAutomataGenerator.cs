@@ -100,14 +100,20 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     /// <param name="gen"></param>
     private void Generate(int currentGeneration, int[,] genPrev, int[,] gen)
     {
+      //Set a post-processing threshold at about 80% of the steps
+      var postStepPct = (int)(0.9*generations);
+
       for (int i = 0; i < Rows; i++) {
         for (int j = 0; j < Cols; j++) {
           var val = genPrev[i, j];
+          //if(i==10 && j==54 && currentGeneration==generations-1){ 
+          //  var tmp = genPrev[i, j];
+          //}
           var live = GetNeighbours(genPrev, i, j).Count(x => x > 0);
           var liveStep2 = GetNeighbours(genPrev, i, j, 2).Count(x => x > 0);
+          
           gen[i, j] = genPrev[i, j];
-
-          if(IsTooNarrow(genPrev, i, j) && currentGeneration == generations-1){ 
+          if(IsTooNarrow(genPrev, i, j) && currentGeneration >= postStepPct){ 
             gen[i, j] = OFF;
           } else if(live >= bornThreshold && liveStep2==0) { 
             gen[i, j] = OFF;
@@ -131,8 +137,18 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       var dim1 = map.GetLength(0);
       var dim2 = map.GetLength(1);
       return 
-        (i-1>=0 && i+1<dim1 && map[i-1,j]==OFF && map[i+1,j]==OFF) || 
-        (j-1>=0 && j+1<dim2 && map[i,j-1]==OFF && map[i,j+1]==OFF);
+        (i-1>=0 && j-1>=0 && i+1<dim1 && j+1<dim2 && 
+          (
+            (map[i-1,j]==OFF && map[i+1,j]==OFF) ||
+            (map[i,j-1]==OFF && map[i,j+1]==OFF)
+          )
+        ) || 
+        (i-1>=0 && j-1>=0 && i+1<dim1 && j+1<dim2 && 
+          (
+            (map[i-1,j-1]==OFF && map[i+1,j+1]==OFF) ||
+            (map[i-1,j+1]==OFF && map[i+1,j-1]==OFF)
+          )
+        );
     }
     
     /// <summary>

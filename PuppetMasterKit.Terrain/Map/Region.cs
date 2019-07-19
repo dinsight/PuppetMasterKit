@@ -211,23 +211,26 @@ namespace PuppetMasterKit.Terrain.Map
       result.AddRange(TraceContourFrom(start, traceOutsideContour, N));
       //trace inner contours
       var visited = new Dictionary<GridCoord, bool>();
-      for (int row = 0; row < Rows; row++) {
-        int? col = 0;
+      for (int row = MinRow; row <= MaxRow; row++) {
+        int? col = ScanRow(row, MinCol, null);
         while (col != null && (col = ScanRow(row, col.Value, RegionFill)) != null) {
-          var sp = traceOutsideContour ? new GridCoord(row, col.Value) : 
-                                         new GridCoord(row, col.Value - 1);
           var cv = this[row, col.Value];
-          if (!visited.ContainsKey(sp)) {
-            //we start tracing from the rightmost tile, so we need start 
-            //moving downward (South)
-            var contour = TraceContourFrom(sp, traceOutsideContour, S);
-            contour.ForEach(x => {
-              if (!visited.ContainsKey(x))
-                visited.Add(x, true);
-            });
-            result.AddRange(contour);
+          var next = ScanRow(row, col.Value, cv);
+          if(next<MaxCol){ 
+            var sp = traceOutsideContour ? new GridCoord(row, col.Value) : 
+                                         new GridCoord(row, col.Value - 1);
+            if (!visited.ContainsKey(sp)) {
+              //we start tracing from the rightmost tile, so we need start 
+              //moving downward (South)
+              var contour = TraceContourFrom(sp, traceOutsideContour, S);
+              contour.ForEach(x => {
+                if (!visited.ContainsKey(x))
+                  visited.Add(x, true);
+              });
+              result.AddRange(contour);
+            }
           }
-          col = ScanRow(row, col.Value, cv);
+          col = next;
         }
       }
       return result;
@@ -266,9 +269,9 @@ namespace PuppetMasterKit.Terrain.Map
     private int? ScanRow(int row, int col, int? value) {
       int jj = col;
       //scan the line while the value is "value"
-      for (; jj < this.Cols && this[row, jj] == value; jj++);
+      for (; jj <= MaxCol && this[row, jj] == value; jj++);
       //stop at the end of the row
-      if (jj == Cols)
+      if (jj > MaxCol)
         return null;
       //or when we have a value different than "value"
       return jj;
