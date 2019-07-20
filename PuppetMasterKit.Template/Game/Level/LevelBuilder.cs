@@ -288,7 +288,7 @@ namespace PuppetMasterKit.Template.Game.Level
         tileMap.Build(regions, 0,  1, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
         //RegionFill.Fill(regions, tileSize, 'W', woods, 0.01f, tileMap.GetLayer(0));
-        RegionFill.Fill(regions, tileSize, 1, woods, 0.001f, tileMap.GetLayer(0));
+        //RegionFill.Fill(regions, tileSize, 1, woods, 0.001f, tileMap.GetLayer(0));
       });
 
       Measure.Timed("Dump image", () => {

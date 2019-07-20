@@ -201,14 +201,15 @@ namespace PuppetMasterKit.Terrain.Map
     /// Repeat until you reach the first tile
     /// </summary>
     /// <returns>The contour.</returns>
-    public List<GridCoord> TraceContour(bool traceOutsideContour) {
-      var result = new List<GridCoord>();
+    public List<Contour> TraceContour(bool traceOutsideContour) {
+      var result = new List<Contour>();
       //trace outer contour
       var min = this.Tiles.MinBy(x => x.Col);
       var start = traceOutsideContour ? new GridCoord(min.Row, min.Col - 1) : 
                                         new GridCoord(min.Row, min.Col);
       //because we start from the leftmost tile, we set the start direction to North
-      result.AddRange(TraceContourFrom(start, traceOutsideContour, N));
+      result.Add(TraceContourFrom(start, traceOutsideContour, N));
+
       //trace inner contours
       var visited = new Dictionary<GridCoord, bool>();
       for (int row = MinRow; row <= MaxRow; row++) {
@@ -223,11 +224,11 @@ namespace PuppetMasterKit.Terrain.Map
               //we start tracing from the rightmost tile, so we need start 
               //moving downward (South)
               var contour = TraceContourFrom(sp, traceOutsideContour, S);
-              contour.ForEach(x => {
+              contour.Coords.ForEach(x => {
                 if (!visited.ContainsKey(x))
                   visited.Add(x, true);
               });
-              result.AddRange(contour);
+              result.Add(contour);
             }
           }
           col = next;
@@ -243,7 +244,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// <param name="traceOutsideContour"></param>
     /// <param name="startDirection">N,S,E,W</param>
     /// <returns></returns>
-    private List<GridCoord> TraceContourFrom(GridCoord start, 
+    private Contour TraceContourFrom(GridCoord start, 
       bool traceOutsideContour, 
       int startDirection) 
     {
@@ -256,7 +257,10 @@ namespace PuppetMasterKit.Terrain.Map
         }
         next = GetNext(next, traceOutsideContour, ref dir);
       }
-      return result;
+      var contourType = traceOutsideContour ?
+          Contour.ContourType.OUTSIDE
+        : Contour.ContourType.INSIDE;
+      return new Contour(contourType, result);
     }
 
     /// <summary>
@@ -352,74 +356,78 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <param name="action">Action.</param>
     public void TraverseRegion(Action<int, int, TileType> action, bool traceOutsideContour = true) {
-      var contour = TraceContour(traceOutsideContour);
+      var contours = TraceContour(traceOutsideContour);
+      var allContourTiles = contours.SelectMany(x => x.Coords).ToList();
 
       if (traceOutsideContour) {
         Tiles.ForEach(a => action(a.Row, a.Col, TileType.Plain));
       } else {
-        Tiles.Except(contour)
+        Tiles.Except(allContourTiles)
         .ForEach(a => action(a.Row, a.Col, TileType.Plain));
       }
 
-      for (int index = 0; index < contour.Count; index++) {
+      contours.ForEach(contour => {
+        var coords = contour.Coords.ToList();
+        for (int index = 0; index < coords.Count; index++) {
 
-        var tileType = TileType.Unknown;
-        var c = contour[index];
-        //get the prev and next tiles. Make sure to wrap around when the 
-        //one of the ends of the list is reached
-        var p = index == 0 ? contour[contour.Count - 1] : contour[index - 1];
-        var n = index == contour.Count - 1 ? contour[0] : contour[index + 1];
+          var tileType = TileType.Unknown;
+          var c = coords[index];
+          //get the prev and next tiles. Make sure to wrap around when the 
+          //one of the ends of the list is reached
+          var p = index == 0 ? coords[contour.Coords.Count - 1] : coords[index - 1];
+          var n = index == coords.Count - 1 ? coords[0] : coords[index + 1];
 
-        if (p.Col == c.Col && c.Col == n.Col && p.Row < c.Row && c.Row < n.Row) { //l
-          tileType = TileType.LeftSide;
+          if (p.Col == c.Col && c.Col == n.Col && p.Row < c.Row && c.Row < n.Row) { //l
+            tileType = TileType.LeftSide;
+          }
+          if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
+            tileType = TileType.RightSide;
+          }
+          if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
+            tileType = TileType.TopSide;
+          }
+          if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b
+            tileType = TileType.BottomSide;
+          }
+          if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col > c.Col) { //tlc
+            tileType = TileType.TopLeftCorner;
+          }
+          if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row < c.Row) { //trc
+            tileType = TileType.TopRightCorner;
+          }
+          if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row > c.Row) { //blc *
+            tileType = TileType.BottomLeftCorner;
+          }
+          if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col < c.Col) { //brc
+            tileType = TileType.BottomRightCorner;
+          }
+          if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col < c.Col) { //blj
+            tileType = TileType.BottomLeftJoint;
+          }
+          if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row < c.Row) { //brj
+            tileType = TileType.BottomRightJoint;
+          }
+          if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col > c.Col) { //trj
+            tileType = TileType.TopRightJoint;
+          }
+          if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
+            tileType = TileType.TopLeftJoint;
+          }
+          if (p.Row == n.Row && p.Col == n.Col && c.Col > p.Col && c.Row == p.Row) { //cdsl
+            tileType = TileType.CulDeSacLeft;
+          }
+          if (p.Row == n.Row && p.Col == n.Col && c.Col < p.Col && c.Row == p.Row) { //cdsr
+            tileType = TileType.CulDeSacRight;
+          }
+          if (p.Row == n.Row && p.Col == n.Col && c.Row < p.Row && c.Col == p.Col) { //cdst
+            tileType = TileType.CulDeSacTop;
+          }
+          if (p.Row == n.Row && p.Col == n.Col && c.Row > p.Row && c.Col == p.Col) { //cdsb
+            tileType = TileType.CulDeSacBottom;
+          }
+          action(c.Row, c.Col, tileType);
         }
-        if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
-          tileType = TileType.RightSide;
-        }
-        if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
-          tileType = TileType.TopSide;
-        }
-        if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b
-          tileType = TileType.BottomSide;
-        }
-        if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col > c.Col) { //tlc
-          tileType = TileType.TopLeftCorner;
-        }
-        if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row < c.Row) { //trc
-          tileType = TileType.TopRightCorner;
-        }
-        if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row > c.Row) { //blc *
-          tileType = TileType.BottomLeftCorner;
-        }
-        if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col < c.Col) { //brc
-          tileType = TileType.BottomRightCorner;
-        }
-        if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col < c.Col) { //blj
-          tileType = TileType.BottomLeftJoint;
-        }
-        if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row < c.Row) { //brj
-          tileType = TileType.BottomRightJoint;
-        }
-        if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col > c.Col) { //trj
-          tileType = TileType.TopRightJoint;
-        }
-        if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
-          tileType = TileType.TopLeftJoint;
-        }
-        if (p.Row == n.Row && p.Col == n.Col && c.Col > p.Col && c.Row == p.Row) { //cdsl
-          tileType = TileType.CulDeSacLeft;
-        }
-        if (p.Row == n.Row && p.Col == n.Col && c.Col < p.Col && c.Row == p.Row) { //cdsr
-          tileType = TileType.CulDeSacRight;
-        }
-        if (p.Row == n.Row && p.Col == n.Col && c.Row < p.Row && c.Col == p.Col) { //cdst
-          tileType = TileType.CulDeSacTop;
-        }
-        if (p.Row == n.Row && p.Col == n.Col && c.Row > p.Row && c.Col == p.Col) { //cdsb
-          tileType = TileType.CulDeSacBottom;
-        }
-        action(c.Row, c.Col, tileType);
-      }
+      });
     }
   }
 }

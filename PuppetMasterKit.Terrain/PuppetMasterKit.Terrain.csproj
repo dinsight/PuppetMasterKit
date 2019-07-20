@@ -41,6 +41,7 @@
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\TileType.cs" />
     <Compile Include="Map\CellularAutomata\CellularAutomataGenerator.cs" />
+    <Compile Include="Map\Contour.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Map\" />

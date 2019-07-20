@@ -52,7 +52,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
       //add both tiles and contour to the list of tiles to point
       var tiles = region.Tiles;
       var all = new List<GridCoord>(tiles);
-      all.AddRange(contour);
+      all.AddRange(contour.SelectMany(x=>x.Coords));
       //get the min/max values for the rows and cols
       var minRow = Math.Max(0, all.Min(x => x.Row));
       var maxRow = all.Max(x => x.Row);

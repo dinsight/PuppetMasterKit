@@ -75,6 +75,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     private List<HashSet<GridCoord>> PartitionRegion(Region region, TileMap map)
     {
       var contour = region.TraceContour(false)
+          .SelectMany(b=>b.Coords)
           .Where(x => x.Row != 0 && x.Row != map.Rows - 1
                   && x.Col != 0 && x.Col != map.Cols - 1).ToList();
 
