@@ -194,6 +194,23 @@ namespace PuppetMasterKit.Terrain.Map
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<Contour> TraceInsideContour() {
+      return TraceContour(false);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<Contour> TraceOutsideContour()
+    {
+      return TraceContour(true);
+    }
+
+    /// <summary>
     /// Returns a list of tiles wrapping the current region
     /// The algorithm consists in walking around the tiles always
     /// touching the wall with your right hand (or left hand if we trace the inside contour). 
@@ -201,7 +218,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// Repeat until you reach the first tile
     /// </summary>
     /// <returns>The contour.</returns>
-    public List<Contour> TraceContour(bool traceOutsideContour) {
+    private List<Contour> TraceContour(bool traceOutsideContour) {
       var result = new List<Contour>();
       //trace outer contour
       var min = this.Tiles.MinBy(x => x.Col);
@@ -224,7 +241,7 @@ namespace PuppetMasterKit.Terrain.Map
               //we start tracing from the rightmost tile, so we need start 
               //moving downward (South)
               var contour = TraceContourFrom(sp, traceOutsideContour, S);
-              contour.Coords.ForEach(x => {
+              contour.ContourLines.ForEach(x => {
                 if (!visited.ContainsKey(x))
                   visited.Add(x, true);
               });
@@ -357,7 +374,7 @@ namespace PuppetMasterKit.Terrain.Map
     /// <param name="action">Action.</param>
     public void TraverseRegion(Action<int, int, TileType> action, bool traceOutsideContour = true) {
       var contours = TraceContour(traceOutsideContour);
-      var allContourTiles = contours.SelectMany(x => x.Coords).ToList();
+      var allContourTiles = contours.SelectMany(x => x.ContourLines).ToList();
 
       if (traceOutsideContour) {
         Tiles.ForEach(a => action(a.Row, a.Col, TileType.Plain));
@@ -367,15 +384,15 @@ namespace PuppetMasterKit.Terrain.Map
       }
 
       contours.ForEach(contour => {
-        var coords = contour.Coords.ToList();
-        for (int index = 0; index < coords.Count; index++) {
+        var coords = contour.ContourLines.ToList();
+        for (int index = 0; index < contour.Count; index++) {
 
           var tileType = TileType.Unknown;
           var c = coords[index];
           //get the prev and next tiles. Make sure to wrap around when the 
           //one of the ends of the list is reached
-          var p = index == 0 ? coords[contour.Coords.Count - 1] : coords[index - 1];
-          var n = index == coords.Count - 1 ? coords[0] : coords[index + 1];
+          var p = index == 0 ? coords[contour.ContourLines.Count - 1] : coords[index - 1];
+          var n = index == contour.Count - 1 ? coords[0] : coords[index + 1];
 
           if (p.Col == c.Col && c.Col == n.Col && p.Row < c.Row && c.Row < n.Row) { //l
             tileType = TileType.LeftSide;

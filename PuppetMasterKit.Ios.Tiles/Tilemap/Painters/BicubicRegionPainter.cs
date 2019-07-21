@@ -48,11 +48,11 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
       //generate a gradient
       var gradient = GenerateGradient(gradientDimension);
       //trace the region's contour
-      var contour = region.TraceContour(true);
+      var contour = region.TraceOutsideContour();
       //add both tiles and contour to the list of tiles to point
       var tiles = region.Tiles;
       var all = new List<GridCoord>(tiles);
-      all.AddRange(contour.SelectMany(x=>x.Coords));
+      all.AddRange(contour.SelectMany(x => x.ContourLines));
       //get the min/max values for the rows and cols
       var minRow = Math.Max(0, all.Min(x => x.Row));
       var maxRow = all.Max(x => x.Row);

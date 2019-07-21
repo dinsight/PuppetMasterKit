@@ -79,7 +79,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
       var masks = tileSet.TileGroups.First(x => x.Name == MASKS);
       var corners = GetCorners(tileGroup, masks);
       region.TraverseRegion((row, col, type) => {
-        if (region.RegionFill == 1) {
+        //if (region.RegionFill == 1) {
           if (type == TileType.Plain || region.RegionFill != 1 ||
             row == 0 || col == 0 || row == layer.GetMap().Rows - 1 || col == layer.GetMap().Cols - 1) {
             layer.SetTile(tileGroup.GetRandomTexture(CENTER),
@@ -89,7 +89,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
             var index = random.Next(0, corners[type].Count);
             layer.SetTile(corners[type][index], row, col, null);
           }
-        }
+        //}
       }, false);
     }
 

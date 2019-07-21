@@ -7,45 +7,44 @@ namespace PuppetMasterKit.Terrain.Map
 {
 	public class Contour : IEnumerable<GridCoord>, System.Collections.IEnumerable
 	{
-		public enum ContourType
+    private List<GridCoord> contourLines;
+
+    public enum ContourType
 		{
 			OUTSIDE,
 			INSIDE
 		}
-		private List<GridCoord> coords = new List<GridCoord>();
-		public ContourType Type { get; private set; }
-		public IReadOnlyCollection<GridCoord> Coords
-		{
-			get
-			{
-				return new ReadOnlyCollection<GridCoord>(coords);
-			}
-		}
+    public int Count => contourLines.Count;
+    public ContourType Type { get; private set; }
+    public IReadOnlyCollection<GridCoord> ContourLines => new ReadOnlyCollection<GridCoord>(contourLines);
+    public GridCoord this[int i] => contourLines[i];
 
-		public Contour(ContourType type, List<GridCoord> coords)
-		{
-			this.Type = type;
-			this.coords.AddRange(coords);
-		}
-
-		public int Count
-		{
-			get { return coords.Count; }
-		}
-
-		public GridCoord this[int i]{
-      get{
-        return coords[i];
-      }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="coords"></param>
+    public Contour(ContourType type, List<GridCoord> coords)
+    {
+      this.contourLines = new List<GridCoord>(coords);
+      this.Type = type;
     }
 
-		public IEnumerator<GridCoord> GetEnumerator() {
-			foreach (var item in coords)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator<GridCoord> GetEnumerator() {
+			foreach (var item in contourLines)
 			{
 				yield return item;
 			}
 		}
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();

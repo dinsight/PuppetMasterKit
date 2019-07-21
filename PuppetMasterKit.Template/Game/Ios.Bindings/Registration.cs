@@ -28,7 +28,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
           if (i == 0 || i==1 || i == rows - 1 || i == rows-2 ||
               j == 0 || j==1 || j == cols - 1 || j == cols-2)
             return 1;
-          if (random.Next(1, 101) < 48) {
+          if (random.Next(1, 101) < 52) {
             return 1;
           }
           return 0;
