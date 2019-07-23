@@ -40,6 +40,17 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     /// <summary>
     /// 
     /// </summary>
+    private void Initialize() {
+      for (int i = 0; i < Rows; i++) {
+        for (int j = 0; j < Cols; j++) {
+          map[i, j] = seed(i, j, Rows, Cols);
+        }
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <param name="rows"></param>
     /// <param name="cols"></param>
     /// <returns></returns>
@@ -59,37 +70,8 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         current = temp;
       }
       map = prev;
+      PostProcess(map);
       return RemoveSmallRegions(Region.ExtractRegions(map));
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="regions"></param>
-    /// <returns></returns>
-    private List<Region> RemoveSmallRegions(List<Region> regions){ 
-      //Eliminate regions if they have a count of tiles less than or equal
-      //to 2/5 of the total tiles number
-      var minTiles = (int)(0.01*(Rows * Cols));
-      var toRemove = regions
-        .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=minTiles).ToList();
-      toRemove.ForEach(x=>regions.Remove(x));
-      //mark the eliminated regions as ON on the map;
-      toRemove.ForEach(r=>{ 
-        r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
-      });
-      return Region.ExtractRegions(map);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private void Initialize() {
-      for (int i = 0; i < Rows; i++) {
-        for (int j = 0; j < Cols; j++) {
-          map[i, j] = seed(i, j, Rows, Cols);
-        }
-      }
     }
 
     /// <summary>
@@ -109,8 +91,8 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
           //if(i==10 && j==54 && currentGeneration==generations-1){ 
           //  var tmp = genPrev[i, j];
           //}
-          var live = GetNeighbours(genPrev, i, j).Count(x => x > 0);
-          var liveStep2 = GetNeighbours(genPrev, i, j, 2).Count(x => x > 0);
+          var live = GetNeighbours(genPrev, x => x > 0, i, j).Count();
+          var liveStep2 = GetNeighbours(genPrev, x => x > 0, i, j, 2).Count();
           
           gen[i, j] = genPrev[i, j];
           if(IsTooNarrow(genPrev, i, j) && currentGeneration >= postStepPct){ 
@@ -124,6 +106,41 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
           }
         }
       }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="map"></param>
+    private void PostProcess(int[,] map) {
+      var dim1 = map.GetLength(0);
+      var dim2 = map.GetLength(1);
+      for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++) {
+          if (CanTrimCell(map, i, j)) {
+            map[i, j] = OFF;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="regions"></param>
+    /// <returns></returns>
+    private List<Region> RemoveSmallRegions(List<Region> regions){ 
+      //Eliminate regions if they have a count of tiles less than or equal
+      //to 2/5 of the total tiles number
+      var minTiles = (int)(0.01*(Rows * Cols));
+      var toRemove = regions
+        .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=minTiles).ToList();
+      toRemove.ForEach(x=>regions.Remove(x));
+      //mark the eliminated regions as ON on the map;
+      toRemove.ForEach(r=>{ 
+        r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
+      });
+      return Region.ExtractRegions(map);
     }
 
     /// <summary>
@@ -150,7 +167,32 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
           )
         );
     }
-    
+
+    /// <summary>
+    /// Trim the cells that have patterns like this:
+    ///   X    #         #
+    ///  ###   #X  ###  X#
+    ///        #    X    #
+    ///  The 
+    ///  1 2 3
+    ///  8 o 4
+    ///  7 6 5 
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="i"></param>
+    /// <param name="j"></param>
+    /// <returns></returns>
+    private static bool CanTrimCell(int[,] map, int i, int j) {
+      var n = GetNeighbours(map, x => x == ON, i, j);
+      var sum = n.Sum();
+      if (n.Count() == 3 && (sum == 6 | sum == 12 || sum == 18 || sum == 16)) {
+        return true;
+      }
+      if(n.Count()==0)
+        return true;
+      return false;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -158,23 +200,23 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     /// <param name="i"></param>
     /// <param name="j"></param>
     /// <returns></returns>
-    private static IEnumerable<int> GetNeighbours(int[,] map, int i, int j, int step=1)
+    private static IEnumerable<int> GetNeighbours(int[,] map, Func<int,bool> criteria, int i, int j, int step=1)
     {
       var dim1 = map.GetLength(0);
       var dim2 = map.GetLength(1);
       if(i==0 || j==0 || i==dim1-step || j == dim1-step){
         for (int ii = 0; ii < 8; ii++) {
-          yield return 1;
+          yield return ii+1;
         }
       } else {
-        if (i - step >= 0 && j - step >= 0) yield return map[i - step, j - step];
-        if (i - step >= 0) yield return map[i - step, j];
-        if (i - step >= 0 && j + step < dim2) yield return map[i - step, j + step];
-        if (j - step >= 0) yield return map[i, j - step];
-        if (j + step < dim2) yield return map[i, j + step];
-        if (i + step < dim1 && j - step >= 0) yield return map[i + step, j - step];
-        if (i + step < dim1) yield return map[i + step, j];
-        if (i + step < dim1 && j + step < dim2) yield return map[i + step, j + step];
+        if (i - step >= 0 && j - step >= 0 && criteria(map[i - step, j - step])) yield return 1;
+        if (i - step >= 0 && criteria(map[i - step, j])) yield return 2;
+        if (i - step >= 0 && j + step < dim2 && criteria(map[i - step, j + step])) yield return 3;
+        if (j + step < dim2 && criteria(map[i, j + step])) yield return 4;
+        if (i + step < dim1 && j + step < dim2 && criteria(map[i + step, j + step])) yield return 5;
+        if (i + step < dim1 && criteria(map[i + step, j])) yield return 6;
+        if (i + step < dim1 && j - step >= 0 && criteria(map[i + step, j - step])) yield return 7;
+        if (j - step >= 0 && criteria(map[i, j - step])) yield return 8;
       }
     }
 
