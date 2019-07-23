@@ -12,6 +12,8 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     private readonly int generations;
     private int bornThreshold;
     private int surviveThreshold;
+    private float smallRegionThresholdOn;
+    private float smallRegionThresholdOff;
     private readonly Func<int, int, int , int, int> seed;
     private int[,] map;
 
@@ -26,11 +28,15 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     /// <param name="seed"></param>
     public CellularAutomataGenerator(int generations,
       int bornThreshold, int surviveThreshold,
+      float smallRegionThresholdOn,
+      float smallRegionThresholdOff,
       Func<int,int,int, int, int> seed)
     {
       this.generations = generations;
       this.bornThreshold = bornThreshold;
       this.surviveThreshold = surviveThreshold;
+      this.smallRegionThresholdOn = smallRegionThresholdOn;
+      this.smallRegionThresholdOff = smallRegionThresholdOff;
       this.seed = seed;
       this.Rows = 0;
       this.Cols = 0;
@@ -83,27 +89,25 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     private void Generate(int currentGeneration, int[,] genPrev, int[,] gen)
     {
       //Set a post-processing threshold at about 80% of the steps
-      var postStepPct = (int)(0.9*generations);
+      var stepCheckNarrow = (int)(0.9*generations);
+      var stepFillAreas = (int)(0.8*generations);
 
       for (int i = 0; i < Rows; i++) {
         for (int j = 0; j < Cols; j++) {
           var val = genPrev[i, j];
-          //if(i==10 && j==54 && currentGeneration==generations-1){ 
-          //  var tmp = genPrev[i, j];
-          //}
           var live = GetNeighbours(genPrev, x => x > 0, i, j).Count();
           var liveStep2 = GetNeighbours(genPrev, x => x > 0, i, j, 2).Count();
           
           gen[i, j] = genPrev[i, j];
-          if(IsTooNarrow(genPrev, i, j) && currentGeneration >= postStepPct){ 
-            gen[i, j] = OFF;
-          } else if(live >= bornThreshold && liveStep2==0) { 
-            gen[i, j] = OFF;
+          if(currentGeneration == stepFillAreas && (live >= bornThreshold || liveStep2==0)) { 
+            gen[i, j] = ON;
           } else if (val == OFF && live >= bornThreshold) {
             gen[i, j] = ON;
           } else if (val == ON && live < surviveThreshold) {
             gen[i, j] = OFF;
-          }
+          } else if(IsTooNarrow(genPrev, i, j) && currentGeneration >= stepCheckNarrow){ 
+            gen[i, j] = OFF;
+          } 
         }
       }
     }
@@ -130,16 +134,28 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     /// <param name="regions"></param>
     /// <returns></returns>
     private List<Region> RemoveSmallRegions(List<Region> regions){ 
-      //Eliminate regions if they have a count of tiles less than or equal
-      //to 2/5 of the total tiles number
-      var minTiles = (int)(0.01*(Rows * Cols));
-      var toRemove = regions
-        .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=minTiles).ToList();
-      toRemove.ForEach(x=>regions.Remove(x));
-      //mark the eliminated regions as ON on the map;
-      toRemove.ForEach(r=>{ 
-        r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
-      });
+      {
+        //Eliminate regions if they have a count of tiles less than or equal
+        //to 0.01 of the total tiles number
+        var minTiles = (int)(smallRegionThresholdOff*(Rows * Cols));
+        var toRemove = regions
+          .Where(r=>r.RegionFill==OFF && r.Tiles.Count <=minTiles).ToList();
+        toRemove.ForEach(x=>regions.Remove(x));
+        //mark the eliminated regions as ON on the map;
+        toRemove.ForEach(r=>{ 
+          r.Tiles.ForEach(t=>map[t.Row, t.Col]=ON);
+        });
+      }
+      {
+        var minTiles = (int)(smallRegionThresholdOn*(Rows * Cols));
+        var toRemove = regions
+          .Where(r => r.RegionFill == ON && r.Tiles.Count <= minTiles).ToList();
+        toRemove.ForEach(x => regions.Remove(x));
+        //mark the eliminated regions as OFF on the map;
+        toRemove.ForEach(r => {
+          r.Tiles.ForEach(t => map[t.Row, t.Col] = OFF);
+        });
+      }
       return Region.ExtractRegions(map);
     }
 
@@ -186,6 +202,10 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       var n = GetNeighbours(map, x => x == ON, i, j);
       var sum = n.Sum();
       if (n.Count() == 3 && (sum == 6 | sum == 12 || sum == 18 || sum == 16)) {
+        return true;
+      }
+      if (n.Count() == 2 && (sum == 3 | sum == 5 || sum == 7 || sum == 9 
+        || sum==11 || sum == 13 || sum == 15 ) ) {
         return true;
       }
       if(n.Count()==0)
