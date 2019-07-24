@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -27,6 +27,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Map\CellularAutomata\Automaton.cs" />
+    <Compile Include="Map\CellularAutomata\AutomatonBuilder.cs" />
+    <Compile Include="Map\CellularAutomata\FillAreasAutomaton.cs" />
+    <Compile Include="Map\CellularAutomata\IAutomaton.cs" />
+    <Compile Include="Map\CellularAutomata\NarrowAreasAutomaton.cs" />
+    <Compile Include="Map\CellularAutomata\TrimAreasAutomaton.cs" />
+    <Compile Include="Map\CellularAutomata\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Noise\Bicubic.cs" />
     <Compile Include="Noise\INoiseGenerator.cs" />
@@ -43,12 +50,7 @@
     <Compile Include="Map\CellularAutomata\CellularAutomataGenerator.cs" />
     <Compile Include="Map\Contour.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Map\" />
-    <Folder Include="Noise\" />
-    <Folder Include="Map\SimplePlacement\" />
-    <Folder Include="Map\CellularAutomata\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj">
       <Project>{F3270C94-52FB-4C33-9640-93F991A67BB0}</Project>

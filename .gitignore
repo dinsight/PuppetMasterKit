@@ -3,3 +3,18 @@
 ################################################################################
 
 /PuppetMasterKit.AI/obj/Debug
+/PuppetMasterKit.Template/obj/iPhone/Debug
+/PuppetMasterKit.Ios.Tiles/obj/Debug
+/PuppetMasterKit.UnitTest/obj/iPhone/Debug
+/PuppetMasterKit.Utility/bin/Debug
+/PuppetMasterKit.Ios.Tiles/obj/Debug
+/PuppetMasterKit.Graphics.Geometry/bin/Debug
+/packages
+/PuppetMasterKit.Graphics.Geometry/obj/Debug
+/PuppetMasterKit.Terrain/obj/Debug
+/PuppetMasterKit.Terrain/bin/Debug
+/PuppetMasterKit.Utility/obj/Debug
+*.user
+/.vs
+/PmWorkspace.sln
+/ConsoleUnitTest
