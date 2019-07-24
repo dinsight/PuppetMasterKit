@@ -92,24 +92,53 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       var stepCheckNarrow = (int)(0.9*generations);
       var stepFillAreas = (int)(0.8*generations);
 
-      for (int i = 0; i < Rows; i++) {
+      if(currentGeneration == stepFillAreas){ 
+        GenStepFillAreas(genPrev, gen);
+      } else if(currentGeneration == stepCheckNarrow) { 
+        GenStepCheckNarrow(genPrev, gen);
+      } else { 
+        GenStepDefault(genPrev, gen);
+      }
+    }
+
+    private void GenStepDefault(int[,] genPrev, int[,] gen) {
+      for (int i = 0; i < Rows; i++)
         for (int j = 0; j < Cols; j++) {
           var val = genPrev[i, j];
           var live = GetNeighbours(genPrev, x => x > 0, i, j).Count();
           var liveStep2 = GetNeighbours(genPrev, x => x > 0, i, j, 2).Count();
-          
+
           gen[i, j] = genPrev[i, j];
-          if(currentGeneration == stepFillAreas && (live >= bornThreshold || liveStep2==0)) { 
-            gen[i, j] = ON;
-          } else if (val == OFF && live >= bornThreshold) {
+          if (val == OFF && live >= bornThreshold) {
             gen[i, j] = ON;
           } else if (val == ON && live < surviveThreshold) {
             gen[i, j] = OFF;
-          } else if(IsTooNarrow(genPrev, i, j) && currentGeneration >= stepCheckNarrow){ 
-            gen[i, j] = OFF;
-          } 
+          }
         }
-      }
+    }
+
+    private void GenStepFillAreas(int[,] genPrev, int[,] gen) {
+      for (int i = 0; i < Rows; i++)
+        for (int j = 0; j < Cols; j++) {
+          var live1 = GetNeighbours(genPrev, x => x > 0, i, j).Count();
+          var live2 = GetNeighbours(genPrev, x => x > 0, i, j, 2).Count();
+          gen[i, j] = genPrev[i, j];
+          if (live1 >= bornThreshold || live2 == 0) {
+            gen[i, j] = ON;
+          }
+        }
+    }
+
+    private void GenStepCheckNarrow(int[,] genPrev, int[,] gen) {
+      for (int i = 0; i < Rows; i++)
+        for (int j = 0; j < Cols; j++) {
+          var live1 = GetNeighbours(genPrev, x => x > 0, i, j).Count();
+          var live2 = GetNeighbours(genPrev, x => x > 0, i, j, 2).Count();
+          gen[i, j] = genPrev[i, j];
+          if (IsTooNarrow(genPrev, i, j)) {
+            gen[i, j] = OFF;
+          }
+        }
     }
 
     /// <summary>
