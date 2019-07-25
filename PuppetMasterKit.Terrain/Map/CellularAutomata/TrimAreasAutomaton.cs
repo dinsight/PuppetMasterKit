@@ -28,11 +28,12 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       this.smallRegionThresholdOff = smallRegionThresholdOff;
     }
 
-    public void Run(int iterations) {
+    public IAutomaton Run(int iterations) {
       for (int i = 0; i < iterations; i++) {
         Trim(map);
       }
       RemoveSmallRegions();
+      return this;
     }
 
     public IAutomaton ThenRun(IAutomaton automaton, int iterations) {

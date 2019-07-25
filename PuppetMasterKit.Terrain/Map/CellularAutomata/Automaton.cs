@@ -27,7 +27,7 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
       cols = map.GetLength(1);
     }
 
-    public void Run(int iterations) {
+    public IAutomaton Run(int iterations) {
       var prev = map;
       var current = new int [rows, cols];
       
@@ -37,6 +37,7 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         prev = current;
         current = temp;
       }
+      return this;
     }
 
     public IAutomaton ThenRun(IAutomaton automaton, int iterations) {

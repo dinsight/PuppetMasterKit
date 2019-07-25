@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PuppetMasterKit.Terrain.Map.CellularAutomata
 {
   public interface IAutomaton {
-    void Run(int iterations);
+    IAutomaton Run(int iterations);
 
     IAutomaton ThenRun(IAutomaton automaton, int iterations);
   }
