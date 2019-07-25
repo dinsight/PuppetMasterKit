@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PuppetMasterKit.Terrain.Map.CellularAutomata
 {
-  public class AutomatonBuilder
+  public class MapBuilder
   {
     Func<int,int,int, int, int> seed;
     private int birthThreshold = 5;
@@ -15,34 +15,34 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     private float onThreshold = 0.01f;
     private float offThreshold = 0.009f;
 
-    private AutomatonBuilder(){
+    private MapBuilder(){
     }
 
-    public static AutomatonBuilder Create() { 
-      AutomatonBuilder builder = new AutomatonBuilder();
+    public static MapBuilder Create() { 
+      MapBuilder builder = new MapBuilder();
       return builder;
     }
 
-    public AutomatonBuilder With(Func<int,int,int, int, int> seed){ 
+    public MapBuilder With(Func<int,int,int, int, int> seed){ 
       this.seed = seed;
       return this;
     }
-    public AutomatonBuilder WithBirthThreshold(int birthThreshold){ 
+    public MapBuilder WithBirthThreshold(int birthThreshold){ 
       this.birthThreshold = birthThreshold;
       return this;
     }
 
-    public AutomatonBuilder WithSurvivalThreshold(int survivalThreshold){ 
+    public MapBuilder WithSurvivalThreshold(int survivalThreshold){ 
       this.survivalThreshold = survivalThreshold;
       return this;
     }
 
-    public AutomatonBuilder WithOnRegionThreshold(float onThreshold){ 
+    public MapBuilder WithOnRegionThreshold(float onThreshold){ 
       this.onThreshold = onThreshold;
       return this;
     }
 
-    public AutomatonBuilder WithOffRegionThreshold(float offThreshold){ 
+    public MapBuilder WithOffRegionThreshold(float offThreshold){ 
       this.offThreshold = offThreshold;
       return this;
     }

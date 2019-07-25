@@ -28,7 +28,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Map\CellularAutomata\Automaton.cs" />
-    <Compile Include="Map\CellularAutomata\AutomatonBuilder.cs" />
+    <Compile Include="Map\CellularAutomata\MapBuilder.cs" />
     <Compile Include="Map\CellularAutomata\FillAreasAutomaton.cs" />
     <Compile Include="Map\CellularAutomata\IAutomaton.cs" />
     <Compile Include="Map\CellularAutomata\NarrowAreasAutomaton.cs" />
