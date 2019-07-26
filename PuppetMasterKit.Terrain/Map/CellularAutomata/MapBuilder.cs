@@ -94,11 +94,15 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         var faAutomaton = new FillAreasAutomaton(map, BirthThreshold, SurvivalThreshold);
         var naAutomaton = new NarrowAreasAutomaton(map, BirthThreshold, SurvivalThreshold);
         var trimAutomaton = new TrimAreasAutomaton(map, OnThreshold, OffThreshold);
+        var automaton55 = new Automaton(map, 4, 4);
         automaton.Run(20)
           .ThenRun(faAutomaton, 1)
           .ThenRun(naAutomaton, 1)
           .ThenRun(automaton, 5)
-          .ThenRun(trimAutomaton,1);
+          .ThenRun(automaton55,1)
+          .ThenRun(automaton, 2)
+          .ThenRun(trimAutomaton,3)
+          ;
 
         return Region.ExtractRegions(map);
       }

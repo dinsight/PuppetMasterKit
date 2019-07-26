@@ -26,15 +26,16 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     }
 
     public IAutomaton Run(int iterations) {
-      var prev = map;
+      var prev = new int [rows, cols];
       var current = new int [rows, cols];
-      
+      map.CopyTo(prev);
       for (int i = 0; i < iterations; i++) {
         Generate(prev, current);
         var temp = prev;
         prev = current;
         current = temp;
       }
+      prev.CopyTo(map);
       return this;
     }
 
