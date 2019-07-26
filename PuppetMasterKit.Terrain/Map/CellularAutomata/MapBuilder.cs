@@ -96,7 +96,7 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         var trimAutomaton = new TrimAreasAutomaton(map, OnThreshold, OffThreshold);
         var automaton55 = new Automaton(map, 4, 4);
         automaton.Run(20)
-          .ThenRun(faAutomaton, 1)
+          //.ThenRun(faAutomaton, 1)
           .ThenRun(naAutomaton, 1)
           .ThenRun(automaton, 5)
           .ThenRun(automaton55,1)

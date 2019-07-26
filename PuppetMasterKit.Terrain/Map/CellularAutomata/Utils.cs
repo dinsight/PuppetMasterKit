@@ -28,11 +28,12 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
     {
       var dim1 = map.GetLength(0);
       var dim2 = map.GetLength(1);
-      if(i==0 || j==0 || i==dim1-step || j == dim1-step){
-        for (int ii = 0; ii < 8; ii++) {
-          yield return ii+1;
-        }
-      } else {
+      //if(i==0 || j==0 || i==dim1-step || j == dim1-step){
+      //  for (int ii = 0; ii < 8; ii++) {
+      //    yield return ii+1;
+      //  }
+      //} else 
+      {
         if (i - step >= 0 && j - step >= 0 && criteria(map[i - step, j - step])) yield return 1;
         if (i - step >= 0 && criteria(map[i - step, j])) yield return 2;
         if (i - step >= 0 && j + step < dim2 && criteria(map[i - step, j + step])) yield return 3;
