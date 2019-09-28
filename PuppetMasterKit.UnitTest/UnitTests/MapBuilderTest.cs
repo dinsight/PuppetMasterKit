@@ -36,21 +36,6 @@ namespace PuppetMasterKit.UnitTest
       }
     }
 
-    [Test]
-    public void TestCA() {
-      Random random = new Random(13);
-      var gen = new CellularAutomataGenerator(30, 5, 4,
-        (i, j, rows, cols) => {
-          if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1)
-            return 1;
-          if (random.Next(1, 101) < 50) {
-            return 1;
-          }
-          return 0;
-        });
-
-      var regs = gen.Create(100, 100);
-      PrintMap(gen);
-    }
+    
   }
 }

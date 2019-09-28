@@ -14,7 +14,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
   public static class TextureHelper
   {
 
-    static Random randomTexture = new Random(Guid.NewGuid().GetHashCode());
+    //static Random randomTexture = new Random(Guid.NewGuid().GetHashCode());
 
     static ICoordinateMapper mapper;
 
@@ -28,7 +28,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
     /// <returns>The texture.</returns>
     /// <param name="group">Group.</param>
     /// <param name="ruleName">Rule name.</param>
-    public static SKTexture GetRandomTexture(this SKTileGroup group, string ruleName)
+    public static SKTexture GetRandomTexture(this SKTileGroup group, string ruleName, Random random)
     {
       if (group.Rules.Count() == 1) {
         return group.Rules
@@ -50,7 +50,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
         return tileDefs.First().Textures.First();
       }
 
-      var index = randomTexture.Next(0, tileDefs.Count());
+      var index = random.Next(0, tileDefs.Count());
       return tileDefs[index].Textures.First();
     }
 

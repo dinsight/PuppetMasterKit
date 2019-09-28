@@ -28,7 +28,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               new StateComponent<RabbitStates>(RabbitStates.idle),
               new SpriteComponent(CharacterName, new Size(60, 60)),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(5, 10, 1, 30),
+              new PhysicsComponent(5, 30, 1, 30),
               new CommandComponent(RabbitHandlers.OnTouched, RabbitHandlers.OnMoveToPoint),
               new CollisionComponent((e) => 
                                      flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole"), 

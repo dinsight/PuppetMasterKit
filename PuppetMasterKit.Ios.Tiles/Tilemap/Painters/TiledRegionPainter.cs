@@ -11,6 +11,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
   {
     private Dictionary<int, string> tileMapping;
     private SKTileSet tileSet;
+    private readonly Random randomTexture;
     private static readonly Dictionary<SKTileGroup, Dictionary<TileType, List<SKTexture>>> cornersCache
         = new Dictionary<SKTileGroup, Dictionary<TileType, List<SKTexture>>>();
 
@@ -39,10 +40,12 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     /// </summary>
     /// <param name="tileMapping">Tile mapping.</param>
     /// <param name="tileSet">Tile set.</param>
-    public TiledRegionPainter(Dictionary<int, string> tileMapping, SKTileSet tileSet)
+    /// <param name="randomSeed">Tile set.</param>
+    public TiledRegionPainter(Dictionary<int, string> tileMapping, SKTileSet tileSet, int randomSeed)
     {
       this.tileMapping = tileMapping;
       this.tileSet = tileSet;
+      this.randomTexture = new Random(randomSeed);
     }
 
     /// <summary>
@@ -69,6 +72,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     private void PaintRegion(Region region, TileMapLayer layer)
     {
       var random = new Random(Guid.NewGuid().GetHashCode());
+      
       var tileGroup = tileMapping
           .Where(k => k.Key == region.RegionFill)
           .Select(x => tileSet
@@ -80,9 +84,9 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
       var corners = GetCorners(tileGroup, masks);
       region.TraverseRegion((row, col, type) => {
         //if (region.RegionFill == 1) {
-          if (type == TileType.Plain || region.RegionFill != 1 ||
+          if (type == TileType.Plain || (region.RegionFill != 1 && region.RegionFill != 2) ||
             row == 0 || col == 0 || row == layer.GetMap().Rows - 1 || col == layer.GetMap().Cols - 1) {
-            layer.SetTile(tileGroup.GetRandomTexture(CENTER),
+            layer.SetTile(tileGroup.GetRandomTexture(CENTER, randomTexture),
                                   row,
                                   col);
           } else if (type != TileType.Unknown) {
@@ -129,13 +133,13 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     /// <returns>The corners.</returns>
     /// <param name="tileGroup">Tile group.</param>
     /// <param name="masks">Masks.</param>
-    private static Dictionary<TileType, List<SKTexture>> GetCorners(SKTileGroup tileGroup, SKTileGroup masks)
+    private Dictionary<TileType, List<SKTexture>> GetCorners(SKTileGroup tileGroup, SKTileGroup masks)
     {
       if (cornersCache.ContainsKey(tileGroup)) {
         return cornersCache[tileGroup];
       }
       var dictionary = new Dictionary<TileType, List<SKTexture>>();
-      var mainTile = tileGroup.GetRandomTexture(CENTER);
+      var mainTile = tileGroup.GetRandomTexture(CENTER, randomTexture);
 
       dictionary.Add(TileType.BottomRightJoint, GetCornerTextures(LOWER_LEFT_CORNER, tileGroup, masks));
       dictionary.Add(TileType.BottomLeftJoint, GetCornerTextures(LOWER_RIGHT_CORNER, tileGroup, masks));
@@ -165,13 +169,13 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     /// <param name="ruleName">Rule name.</param>
     /// <param name="tileGroup">Tile group.</param>
     /// <param name="masks">Masks.</param>
-    private static List<SKTexture> GetCornerTextures(string ruleName, SKTileGroup tileGroup, SKTileGroup masks)
+    private List<SKTexture> GetCornerTextures(string ruleName, SKTileGroup tileGroup, SKTileGroup masks)
     {
       var tiles = tileGroup.GetTextures(ruleName);
       if (tiles.Count > 0) {
         return tiles;
       }
-      var mainTile = tileGroup.GetRandomTexture(CENTER);
+      var mainTile = tileGroup.GetRandomTexture(CENTER, randomTexture);
       return masks.GetTextures(ruleName).Select(x => mainTile.BlendWithAlpha(x)).ToList();
     }
   }

@@ -18,6 +18,7 @@ using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Terrain.Map.SimplePlacement;
 using PuppetMasterKit.Utility.Subscript;
+using Foundation;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -166,7 +167,7 @@ namespace PuppetMasterKit.Template.Game.Level
         flightMap.Add(store);
       }
 
-      for (int i = 0; i < 0 ; i++) {
+      for (int i = 0; i < 1 ; i++) {
         var hole = HoleBuilder.Build(componentSystem, frame);
         var agent = hole.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -260,6 +261,13 @@ namespace PuppetMasterKit.Template.Game.Level
       var builder = Container.GetContainer().GetInstance<IMapGenerator>();
       var regions = builder.Create(rows, cols);
 
+      var mountains = regions.FirstOrDefault(x => x.Tiles.Count <= 0.05 * rows * cols);
+      if (mountains != null) {
+        mountains.RegionFill = 4;
+        mountains.Tiles.ToList().ForEach(x => mountains[x.Row, x.Col] = 4);
+        PrintMap(mountains);
+      }
+
       var mapping = new Dictionary<int, string> {
         //{ '+', "Sand" },
         //{ MapCodes.PATH, "Dirt" },
@@ -267,29 +275,45 @@ namespace PuppetMasterKit.Template.Game.Level
         //{ 'W', "Grass"},
 
         { 1, "Grass"},
+        { 2, "Upland1"},
         { 0, "Dirt"},
         { 3, "Water" },
+        { 4, "Marsh" }
       };
 
       var tileSize = 128;
       var s = new int[] { 0x0, 0x0, 0xff, 0xff };
       var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
-      var tileSet = SKTileSet.FromName("MainTileSet");
 
-      var defaultPainter = new TiledRegionPainter(mapping, tileSet);
+      var tileSet = SKTileSet.FromName("MainTileSet1");
+      var f = tileSet.TileGroups.Where(x => x.Name == "Upland1").FirstOrDefault();
+
+      var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed:1);
       var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       var layeredPainter = new LayeredRegionPainter(1, new List<string>()
-      { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet);
+      { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet, randomSeed: 0);
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
       tileMap.AddPainter(3, layeredPainter);
 
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
-        tileMap.Build(regions, 0,  1, 3);
+        tileMap.Build(regions, 0,  1, 2, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
         //RegionFill.Fill(regions, tileSize, 'W', woods, 0.01f, tileMap.GetLayer(0));
-        //RegionFill.Fill(regions, tileSize, 1, woods, 0.001f, tileMap.GetLayer(0));
+        RegionFill.Fill(regions, tileSize, 1, woods, 0.001f, tileMap.GetLayer(0));
       });
+
+      var txt = SKTexture.FromImageNamed("M1");
+      tileMap.GetLayer(0).SetTile(txt, 55, 50);
+
+      var house = SKTexture.FromImageNamed("Hobbit");
+      tileMap.GetLayer(0).SetTile(house, 65, 40);
+
+      var granary = SKTexture.FromImageNamed("Granary");
+      tileMap.GetLayer(0).SetTile(granary, 45, 38);
+
+      var hut = SKTexture.FromImageNamed("Hut");
+      tileMap.GetLayer(0).SetTile(hut, 55, 30);
 
       Measure.Timed("Dump image", () => {
         scene.AddChild(tileMap);
@@ -304,10 +328,14 @@ namespace PuppetMasterKit.Template.Game.Level
       for (int i = 0; i < i2.Rows; i++) {
         for (int j = 0; j < i2.Cols; j++) {
           var x = i2[i, j];
-          if (x == 0) {
+          if (!x.HasValue) {
+            Console.Write(" ");
+          } else if (x == 0) {
             Console.Write("∙");
           } else if (x == 1) {
             Console.Write("#");
+          } else if (x == 2) {
+            Console.Write("^");
           } else if (x == 3) {
             Console.Write("~");
           } else {

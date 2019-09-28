@@ -12,6 +12,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
   {
     private readonly int noiseAmplitude;
     private readonly SKTileSet tileSet;
+    private readonly int randomSeed;
     private readonly List<string> layers;
 
     /// <summary>
@@ -22,10 +23,11 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     /// <param name="tileSet">Tile set.</param>
     public LayeredRegionPainter(int noiseAmplitude,
           List<string> layers,
-          SKTileSet tileSet)
+          SKTileSet tileSet, int randomSeed)
     {
       this.noiseAmplitude = noiseAmplitude;
       this.tileSet = tileSet;
+      this.randomSeed = randomSeed;
       this.layers = layers;
     }
 
@@ -62,7 +64,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
 
       var regions = Region.ExtractRegions(region);
       var tileMapping = new Dictionary<int, string>();
-      var tiledRegionPainter = new TiledRegionPainter(tileMapping, tileSet);
+      var tiledRegionPainter = new TiledRegionPainter(tileMapping, tileSet, randomSeed);
       regions.ForEach(r => tileMapping.TryAdd(r.RegionFill, layers[r.RegionFill]));
       regions.OrderBy(r => r.RegionFill).ToList()
              .ForEach(x => tiledRegionPainter.Paint(x, layer));
