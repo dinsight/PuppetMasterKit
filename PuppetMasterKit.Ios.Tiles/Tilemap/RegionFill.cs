@@ -13,8 +13,6 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
   {
     private static Random randomDist = new Random(Guid.NewGuid().GetHashCode());
 
-    private static Random randomFill = new Random(Guid.NewGuid().GetHashCode());
-
     /// <summary>
     /// Fills the uniform.
     /// </summary>
@@ -81,7 +79,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
                            int regionFillCode, 
                            SKTileGroup group, 
                            float densityFactor, 
-                           SKNode layer)
+                           SKNode layer, Random random)
     {
       
 
@@ -90,36 +88,19 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
       var defs = group.Rules
                       .SelectMany(a => a.TileDefinitions)
                       .SelectMany(b => b.Textures).ToList();
-
-      //regionsToFill.ForEach(x => {
-      //  var density = densityFactor * x.MaxCol;
-      //  var filler = FillUniform(0.5f, 0.5f, x.MaxCol + 0.5f, x.MaxRow + 0.5f, density);
-
-      //  foreach (var item in filler) {
-      //    var col = (int)item.X;
-      //    var row = (int)item.Y;
-      //    if (x[row, col] != null) {
-      //      //the point is inside the region
-      //      if (defs.Any()) {
-      //        var texture = defs[randomFill.Next(0, defs.Count())];
-      //        texture.SetTexture(layer, item.Y * tileSize, item.X * tileSize);
-      //      }
-      //    }
-      //  }
-      //});
       //local fn
       float GetRandom(float a, float b)
       {
-        var f = (float)randomDist.NextDouble();
+        var f = (float)random.NextDouble();
         return f * (b - a) + a;
       }
-      var randOcc = new Random(Guid.NewGuid().GetHashCode());
+      var randOcc = random;
       regionsToFill.ForEach(reg=> {
         reg.TraverseRegion((row, col, type) => { 
           if(type == TileType.Plain) 
           {
             if (defs.Any()) {
-              var texture = defs[randomFill.Next(0, defs.Count())];
+              var texture = defs[random.Next(0, defs.Count())];
               var r = GetRandom(-0.4f, 0.4f);
               densityFactor = densityFactor >= 1 ? 0 : densityFactor;
               var occ = randOcc.Next(0, 1 + (int)(densityFactor * 100));

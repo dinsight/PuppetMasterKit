@@ -37,21 +37,23 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
     /// <param name="texture">Texture.</param>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public void SetTile(SKTexture texture, int row, int col, float? zPos =null )
+    public SKNode SetTile(SKTexture texture, int row, int col, float? zPos =null )
     {
       if (!Validate(row, col) || texture==null)
-        return;
+        return null;
       var x = (row + 1) * GetMap().TileSize;
       var y = (col + 1) * GetMap().TileSize;
       var pos = new Point(x, y);
       var scenePos = mapper.ToScene(pos);
       if(texture!=null){
         var node = SKSpriteNode.FromTexture(texture);
-        node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
+        //node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 1);
         node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
         node.ZPosition = zPos ?? ZPosition;
         this.AddChild(node);
+        return node;
       }
+      return null;
     }
 
     /// <summary>

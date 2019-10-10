@@ -61,7 +61,7 @@
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="LightInject">
-      <HintPath>..\packages\LightInject.5.5.0\lib\netstandard1.1\LightInject.dll</HintPath>
+      <HintPath>..\packages\LightInject.6.1.0\lib\netstandard1.1\LightInject.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

@@ -25,7 +25,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
-    <DeviceSpecificBuild>false</DeviceSpecificBuild>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchVerbosity></MtouchVerbosity>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
@@ -89,7 +89,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="LightInject">
-      <HintPath>..\packages\LightInject.5.5.0\lib\netstandard2.0\LightInject.dll</HintPath>
+      <HintPath>..\packages\LightInject.6.1.0\lib\netstandard2.0\LightInject.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -258,6 +258,22 @@
     <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center5.imageset\" />
     <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center6.imageset\" />
     <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center7.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center8.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_le.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\MArsh_lle.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_lle.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ue.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ule.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ure.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_re.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_lre.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_de.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_icn.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ics.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ice.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_icw.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-7.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-8.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -588,15 +604,45 @@
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center2.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center3.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center4.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center4.imageset\Marsh4.png" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center5.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center3.imageset\Marsh3-1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center2.imageset\Marsh2.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center5.imageset\Marsh5.png" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center6.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center6.imageset\Marsh6.png" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center7.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center7.imageset\Marsh7.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center7.imageset\Marsh7-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center6.imageset\Marsh6-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center8.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center8.imageset\Marsh8-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center2.imageset\Marsh2-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center4.imageset\Marsh4-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center5.imageset\Marsh5-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_le.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_lle.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ue.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ule.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ure.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_re.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_lre.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_de.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_icn.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ics.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ice.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_icw.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_le.imageset\le.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_lle.imageset\lle.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ue.imageset\ue.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ule.imageset\ule-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ure.imageset\ure-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_re.imageset\re.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_lre.imageset\lre-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_de.imageset\de.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_icn.imageset\ic_n-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ics.imageset\ic_s-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_ice.imageset\ic_e-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_icw.imageset\ic_w-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-7.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-7.imageset\m_tree1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-8.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-8.imageset\m_tree2.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
