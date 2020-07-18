@@ -379,8 +379,8 @@ namespace PuppetMasterKit.Terrain.Map
       if (traceOutsideContour) {
         Tiles.ForEach(a => action(a.Row, a.Col, TileType.Plain));
       } else {
-        Tiles.Except(allContourTiles)
-        .ForEach(a => action(a.Row, a.Col, TileType.Plain));
+        Tiles.Except(allContourTiles).OrderBy(x=>x.Row).ThenBy(x=>x.Col)
+          .ForEach(a => action(a.Row, a.Col, TileType.Plain));
       }
 
       contours.ForEach(contour => {

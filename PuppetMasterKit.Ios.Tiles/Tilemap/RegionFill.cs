@@ -101,7 +101,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
           {
             if (defs.Any()) {
               var texture = defs[random.Next(0, defs.Count())];
-              var r = GetRandom(-0.4f, 0.4f);
+              var r = GetRandom(-0.2f, 0.2f);
               densityFactor = densityFactor >= 1 ? 0 : densityFactor;
               var occ = randOcc.Next(0, 1 + (int)(densityFactor * 100));
               if (occ == 0) {

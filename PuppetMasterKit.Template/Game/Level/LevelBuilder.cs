@@ -185,8 +185,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 1.2f;
-      cameraNode.YScale = 1.2f;
+      cameraNode.XScale = 1.4f;
+      cameraNode.YScale = 1.4f;
       //cameraNode.XScale = 5f;
       //cameraNode.YScale = 5f;
       var player = flightMap
@@ -254,30 +254,18 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var rows = 100;
       var cols = 100;
-      var baseFolder = "/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/assets/map";
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 
       var builder = Container.GetContainer().GetInstance<IMapGenerator>();
       var regions = builder.Create(rows, cols);
-      //var mountains = regions.FirstOrDefault(x => x.Tiles.Count <= 0.05 * rows * cols);
-      //if (mountains != null) {
-      //  mountains.RegionFill = 4;
-      //  mountains.Tiles.ToList().ForEach(x => mountains[x.Row, x.Col] = 4);
-      //  PrintMap(mountains);
-      //}
-      //regions.Clear();
-      //var reg = new Region(1);
-      //reg.AddTile(0, 0);
-      //regions.Add(reg);
 
       var mapping = new Dictionary<int, string> {
-        //{ 1, "Grass"},
-        { 1, "Marsh"},
-        { 2, "Upland1"},
-        { 0, "Dirt"},
-        { 3, "Water" },
-        { 4, "Marsh" }
+        //{ 1, "Marsh"},
+        { 3, "Upland1"},
+        { 1, "Wang_Swamp"},
+        { 0, "Dirt-2"},
+        { 2, "Water" }
       };
 
       var tileSize = 128;
@@ -285,22 +273,19 @@ namespace PuppetMasterKit.Template.Game.Level
       var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
 
       var tileSet = SKTileSet.FromName("MainTileSet1");
-      var f = tileSet.TileGroups.Where(x => x.Name == "Upland1").FirstOrDefault();
 
-      var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed:1);
-      var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
-      var layeredPainter = new LayeredRegionPainter(1, new List<string>()
-      { "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet, randomSeed: 0);
+      //var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
+      //var layeredPainter = new LayeredRegionPainter(1, new List<string>()
+      //{ "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet, randomSeed: 0);
+      var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed: 1);
       var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
-      tileMap.AddPainter(3, layeredPainter);
+      //tileMap.AddPainter(3, layeredPainter);
 
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
         tileMap.Build(regions, 0,  1, 2, 3);
-        //var woods = tileSet.TileGroups.First(x => x.Name == "Trees");
-        //RegionFill.Fill(regions, tileSize, 1, woods, 0.001f, tileMap.GetLayer(0));
-        var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
-        RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(0), new Random(0));
+        //var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
+        //RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(0), new Random(0));
       });
 
       
@@ -313,8 +298,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var granary = SKTexture.FromImageNamed("Granary");
       //var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 45, 38);
       var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 5, 10);
-      //var shader = SKShader.FromFile("Wind.fsh");
-      //node.Shader = shader;
+      var shader = SKShader.FromFile("Wind.fsh");
+      node.Shader = shader;
       
 
       var hut = SKTexture.FromImageNamed("Hut");

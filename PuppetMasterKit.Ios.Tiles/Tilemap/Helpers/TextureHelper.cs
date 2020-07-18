@@ -54,6 +54,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
       return tileDefs[index].Textures.First();
     }
 
+
     /// <summary>
     /// Gets the textures.
     /// </summary>
@@ -140,10 +141,11 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
         var node = SKSpriteNode.FromTexture(texture);
         //BUG : anchor point is not working properly
         //We substract half the width so the image gets centered on the x axis
-        //var scenePos = mapper.ToScene(new Point(x+(float)node.Size.Width/2, y + 128/2));
+        //var scenePos = mapper.ToScene(new Point(x, y - 128/2));
         var scenePos = mapper.ToScene(new Point(x, y));
-        //node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
-        node.Position = new CoreGraphics.CGPoint(scenePos.X - (float)node.Size.Width / 2 + 128/2, scenePos.Y);
+        node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
+        node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
+        //node.Position = new CoreGraphics.CGPoint(scenePos.X - (float)node.Size.Width / 2 + 128/2, scenePos.Y);
         node.ZPosition = zPos ?? dest.ZPosition;
         dest.AddChild(node);
       }

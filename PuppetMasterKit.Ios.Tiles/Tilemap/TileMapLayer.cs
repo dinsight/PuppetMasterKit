@@ -47,7 +47,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
       var scenePos = mapper.ToScene(pos);
       if(texture!=null){
         var node = SKSpriteNode.FromTexture(texture);
-        //node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 1);
+        node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
         node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
         node.ZPosition = zPos ?? ZPosition;
         this.AddChild(node);
