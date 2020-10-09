@@ -107,7 +107,7 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var data = LevelData.Load("PuppetMasterKit.Template.Resources.GameScene.json");
       flightMap.Obstacles.AddRange(LoadObstaclesFromMap());
-      AddHoles(data.Holes);
+      //AddHoles(data.Holes);
       return data;
     }
 
@@ -136,7 +136,7 @@ namespace PuppetMasterKit.Template.Game.Level
       var frame = GetMapFrame();
 
       for (int i = 0; i < 1 ; i++) {
-        var rabbit = RabbitBuilder.Build(componentSystem, frame);
+        var rabbit = BeaverBuilder.Build(componentSystem, frame);
         var agent = rabbit.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
@@ -170,7 +170,6 @@ namespace PuppetMasterKit.Template.Game.Level
       for (int i = 0; i < 1 ; i++) {
         var hole = HoleBuilder.Build(componentSystem, frame);
         var agent = hole.GetComponent<Agent>();
-        var random = new Random(Guid.NewGuid().GetHashCode());
         var x = 250;
         var y = 395;
         agent.Position = new Point(x, y);
@@ -185,8 +184,8 @@ namespace PuppetMasterKit.Template.Game.Level
       var frameRect = scene.GetFrame();
       var cameraNode = new SKCameraNode();
 
-      cameraNode.XScale = 1.4f;
-      cameraNode.YScale = 1.4f;
+      cameraNode.XScale = 1.5f;
+      cameraNode.YScale = 1.5f;
       //cameraNode.XScale = 5f;
       //cameraNode.YScale = 5f;
       var player = flightMap
@@ -264,7 +263,7 @@ namespace PuppetMasterKit.Template.Game.Level
         //{ 1, "Marsh"},
         { 3, "Upland1"},
         { 1, "Wang_Swamp"},
-        { 0, "Dirt-2"},
+        { 0, "Wang_Dirt"},
         { 2, "Water" }
       };
 
@@ -284,8 +283,8 @@ namespace PuppetMasterKit.Template.Game.Level
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
         tileMap.Build(regions, 0,  1, 2, 3);
-        //var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
-        //RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(0), new Random(0));
+        var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
+        RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(0), new Random(0));
       });
 
       
@@ -295,11 +294,12 @@ namespace PuppetMasterKit.Template.Game.Level
       var house = SKTexture.FromImageNamed("Hobbit");
       tileMap.GetLayer(0).SetTile(house, 65, 40);
 
-      var granary = SKTexture.FromImageNamed("Granary");
+      var granary = SKTexture.FromImageNamed("Mt1");
+      //var granary = SKTexture.FromImageNamed("Granary");
       //var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 45, 38);
       var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 5, 10);
       var shader = SKShader.FromFile("Wind.fsh");
-      node.Shader = shader;
+      //node.Shader = shader;
       
 
       var hut = SKTexture.FromImageNamed("Hut");

@@ -85,7 +85,7 @@ namespace PuppetMasterKit.AI.Components
       orientation = mapper.ToSceneOrientation(orientation);
       var strState = String.IsNullOrEmpty(state) ? "" : $"-{state}";
       var strOrientation = String.IsNullOrEmpty(orientation) ? "" : $"-{orientation}";
-      var suffix = $"{atlas}{strState}{strOrientation}";
+      var suffix = $"{atlas}/{atlas}{strState}{strOrientation}.atlas";
       return suffix;
     }
     /// <summary>
@@ -113,8 +113,8 @@ namespace PuppetMasterKit.AI.Components
     {
       var factory = Container.GetContainer().GetInstance<ISpriteFactory>();
       var texture = GetTextureName(atlas, orientation, state);
-      var maxSpeed = Entity.GetComponent<PhysicsComponent>().MaxSpeed;
-      var speed = 1/maxSpeed;
+      var fps = Entity.GetComponent<PhysicsComponent>().Fps;
+      var speed = 1/fps;
       return factory.ChangeTexture(theSprite, texture, speed);
     }
 
