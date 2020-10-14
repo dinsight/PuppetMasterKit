@@ -26,13 +26,13 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               //new RuleSystemComponent<FlightMap, RabbitHandlers>(
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<BeaverStates>(BeaverStates.idle),
-              new SpriteComponent(CharacterName, new Size(50, 130)),
+              new SpriteComponent(CharacterName, new Size(50, 120), new Point(0.5f,0.2f)),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(5, 7, 1, 3, 1, 15.0f),
+              new PhysicsComponent(5, 12, 1, 3, 1),
               new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint),
               new CollisionComponent((e) => 
                                      flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole"), 
-                                     BeaverHandlers.HandleCollision, 35),
+                                     BeaverHandlers.HandleCollision, 45),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
@@ -58,7 +58,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       shadow.FillColor = UIKit.UIColor.Black;
       shadow.StrokeColor = UIKit.UIColor.FromRGBA(0, 0, 0, 0.1f);
       shadow.Alpha = 0.3f;
-      shadow.Position = new CoreGraphics.CGPoint(0, 10);
+      shadow.Position = new CoreGraphics.CGPoint(0, -10);
       node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
       node.AddChild(shadow);
     }

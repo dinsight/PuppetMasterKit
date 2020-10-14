@@ -19,6 +19,8 @@ namespace PuppetMasterKit.AI.Components
 
     private Size size = Size.Zero;
 
+    private Point anchorPoint;
+
     public const string ENTITY_ID_PPROPERTY = "id";
 
     ICoordinateMapper mapper;
@@ -37,10 +39,11 @@ namespace PuppetMasterKit.AI.Components
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.SpriteComponent"/> class.
     /// </summary>
     /// <param name="atlasName">Atlas name.</param>
-    public SpriteComponent(string atlasName, Size size = null)
+    public SpriteComponent(string atlasName, Size size = null, Point anchorPoint = null)
     {
       this.atlasName = atlasName;
       this.size = size;
+      this.anchorPoint = anchorPoint ?? new Point(0.5f, 0.5f);//default anchor point is the middle of the sprite
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
     }
 
@@ -109,13 +112,16 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="atlas">Atlas.</param>
     /// <param name="orientation">Orientation.</param>
     /// <param name="state">State.</param>
-    private ISprite ChangeTexture(String atlas, string orientation, string state)
+    private ISprite ChangeTexture(String atlas, string orientation, string state, float fps)
     {
       var factory = Container.GetContainer().GetInstance<ISpriteFactory>();
       var texture = GetTextureName(atlas, orientation, state);
-      var fps = Entity.GetComponent<PhysicsComponent>().Fps;
-      var speed = 1/fps;
-      return factory.ChangeTexture(theSprite, texture, speed);
+      var speed = 1 / fps;
+      var sprite = factory.ChangeTexture(theSprite, texture, speed);
+      if (sprite != null) {
+        sprite.AnchorPoint = anchorPoint;
+      }
+      return sprite;
     }
 
     /// <summary>
@@ -138,16 +144,22 @@ namespace PuppetMasterKit.AI.Components
         var direction = agent.Position - theSprite.Position;
         var orientation = Orientation.GetOrientation(direction);
         var state = Entity.GetComponent<StateComponent>();
+        PhysicsComponent physics = Entity.GetComponent<PhysicsComponent>();
 
-        if (direction == Vector.Zero && currentState==state.ToString() )
+        if (direction == Vector.Zero && currentState == state.ToString())
           return;
 
         if (orientation != currentOrientation || currentState != state.ToString()) {
           currentState = state.ToString();
-          if(orientation!=null){
+          if (orientation != null) {
             currentOrientation = orientation;
           }
-          var newTexture = ChangeTexture(atlasName, currentOrientation, currentState);
+
+          var maxSpeed = physics?.MaxSpeed ?? 1;
+          var currentSpeed = agent.Velocity.Magnitude() > 0 ? Math.Min(maxSpeed, agent.Velocity.Magnitude()) : maxSpeed;
+          var fps = currentSpeed * 24 / maxSpeed;
+
+          var newTexture = ChangeTexture(atlasName, currentOrientation, currentState, fps);
           if (newTexture != null) {
             theSprite = newTexture;
           }

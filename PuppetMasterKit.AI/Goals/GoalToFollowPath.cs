@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
 
@@ -22,6 +23,7 @@ namespace PuppetMasterKit.AI.Goals
     /// <param name="pathNodeRadius">Path node radius.</param>
     public GoalToFollowPath(Point[] path, float pathNodeRadius = 10)
     {
+      Debug.Assert(pathNodeRadius > 0, "pathNodeRadius must be greater than zero");
       this.path = path;
       this.pathNodeRadius = pathNodeRadius;
       this.currentPointIndex = 0;

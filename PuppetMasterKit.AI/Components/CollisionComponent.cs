@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.Utility.Extensions;
 using PuppetMasterKit.Graphics.Geometry;
+using System.Diagnostics;
 
 namespace PuppetMasterKit.AI.Components
 {
@@ -38,8 +39,9 @@ namespace PuppetMasterKit.AI.Components
     /// </summary>
     private void Detect(double deltaTime)
     {
+      var thisAgent = Entity.GetComponent<Agent>();
+
       var inRange = entitiesProvider(Entity).Where(x => {
-        var thisAgent = Entity.GetComponent<Agent>();
         var agent = x.GetComponent<Agent>();
         return Point.Distance(thisAgent.Position, agent.Position) <= collisionRange;
       });
@@ -65,6 +67,7 @@ namespace PuppetMasterKit.AI.Components
       doneCollisions.ForEach(x => {
         Entity temp;
         if (x.WithEntity.TryGetTarget(out temp)) {
+          x.State.Status = CollisionStatus.DONE;
           handler(Entity, temp, x.State);
           notifiedEntities.Remove(temp.Id);
         }});
@@ -72,6 +75,7 @@ namespace PuppetMasterKit.AI.Components
       inProgress.ForEach(x => {
         Entity temp;
         if (x.WithEntity.TryGetTarget(out temp)) {
+          x.State.Status = CollisionStatus.IN_PROGRESS;
           x.State.ElapsedTime += deltaTime;
           x.State.StopWatchValue += deltaTime;
           handler(Entity, temp, x.State);

@@ -54,7 +54,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival
-      var goToPoint = new GoalToFollowPath(newPath.ToArray(), 100).WhenArrived((x, p) => {
+      var goToPoint = new GoalToFollowPath(newPath.ToArray(), 10  ).WhenArrived((x, p) => {
           state.CurrentState = BeaverStates.idle;
       });
       agent.Add(goToPoint, 3);
@@ -75,20 +75,26 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// Handle the specified rabbit, entity and state.
     /// </summary>
     /// <returns>The handle.</returns>
-    /// <param name="rabbit">Rabbit.</param>
+    /// <param name="beaver">Rabbit.</param>
     /// <param name="entity">Entity.</param>
     /// <param name="state">State.</param>
-    public static void HandleCollision(Entity rabbit,
+    public static void HandleCollision(Entity beaver,
                               Entity entity,
                               CollisionState state)
     {
       if(entity.Name == "store"){
-        GatherFood(rabbit, entity, state);
+        GatherFood(beaver, entity, state);
       }
 
       if(entity.Name == "hole"){
-        var stateComponent = entity.GetComponent<StateComponent<BeaverStates>>();
-        stateComponent.CurrentState = BeaverStates.build;
+        if (state.Status == CollisionStatus.INIT) {
+          var beaverAgent = beaver.GetComponent<Agent>();
+          var stateComponent = beaver.GetComponent<StateComponent<BeaverStates>>();
+          beaverAgent.Remove<GoalToFollowPath>();
+          stateComponent.CurrentState = BeaverStates.build;
+        }
+
+        //spriteComponent.
         //Travel(rabbit, entity, state);
 
       }

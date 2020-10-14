@@ -173,6 +173,7 @@ namespace PuppetMasterKit.Template.Game.Level
         var x = 250;
         var y = 395;
         agent.Position = new Point(x, y);
+        flightMap.Add(hole);
       } 
     }
 

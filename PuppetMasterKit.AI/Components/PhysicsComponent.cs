@@ -13,8 +13,6 @@ namespace PuppetMasterKit.AI.Components
 
     public float AttckRange { get; private set; }
 
-    public float Fps { get; private set; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.PhysicsComponent"/> class.
     /// </summary>
@@ -25,14 +23,13 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="attackRange">Attack range.</param>
     public PhysicsComponent(float mass = 1, float maxSpeed = 1,
                             float maxForce = 1, float radius = 1,
-                            float attackRange = 1, float fps = 24)
+                            float attackRange = 1)
     {
       Mass = mass;
       MaxSpeed = maxSpeed;
       MaxForce = maxForce;
       Radius = radius;
       AttckRange = attackRange;
-      Fps = fps;
     }
   }
 }

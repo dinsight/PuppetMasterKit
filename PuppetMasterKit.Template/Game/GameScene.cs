@@ -6,9 +6,12 @@ using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Level;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Utility.Extensions;
 using SpriteKit;
 using UIKit;
+using LightInject;
+using PuppetMasterKit.Graphics.Sprites;
 
 namespace PuppetMasterKit.Template.Game
 {
@@ -68,7 +71,7 @@ namespace PuppetMasterKit.Template.Game
       if (entity == null)
         return;
 
-      var touch = entity.GetComponent<CommandComponent>();
+      var command = entity.GetComponent<CommandComponent>();
       if (!isMultiSelect) {
         //if multisect is disabled, clear existing selections
         flightMap.GetEntities(x => {
@@ -80,13 +83,16 @@ namespace PuppetMasterKit.Template.Game
         });
       }
       //send touched event to the entity's command component
-      if (touch != null) {
-        touch.OnTouched(entity);
+      if (command != null) {
+        command.OnTouched(entity);
       }
 
+
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      
       flightMap.GetHeroes()
         .ForEach(e => e.GetComponent<CommandComponent>()?
-                 .OnMoveToPoint(e, entity.GetComponent<Agent>().Position));
+                 .OnMoveToPoint(e, mapper.ToScene(entity.GetComponent<Agent>().Position)));
     }
 
     /// <summary>
@@ -122,7 +128,7 @@ namespace PuppetMasterKit.Template.Game
     /// <summary>
     /// Update the specified currentTime.
     /// </summary>
-    /// <returns>The update.</returns>
+    /// <returns>The update.</returns>  
     /// <param name="currentTime">Current time.</param>
     public override void Update(double currentTime)
     {
