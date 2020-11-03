@@ -32,6 +32,10 @@ namespace PuppetMasterKit.Template.Game.Level
 
     private ComponentSystem componentSystem;
 
+    int  mapRows = 100;
+    int  mapCols = 100;
+    int  tileSize = 64;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.LevelBuilder"/> class.
     /// </summary>
@@ -41,7 +45,7 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       this.componentSystem = componentSystem;
       this.scene = scene;
-      var size = scene.GetMapSize();
+      var size = new Size(2 * mapRows * tileSize, 2 * mapCols * tileSize);
 
       this.flightMap = new GameFlightMap(size.Width, size.Height, 7, 7);
       Ios.Bindings.Registration.RegisterBindings(scene);
@@ -112,28 +116,16 @@ namespace PuppetMasterKit.Template.Game.Level
     }
 
     /// <summary>
-    /// Gets the frame.
-    /// </summary>
-    /// <returns>The frame.</returns>
-    private Polygon GetMapFrame()
-    {
-      var frameRect = scene.GetMapSize();
-      var frame = new Polygon(
-        new Point(0, 0),
-        new Point(0, (float)frameRect.Height),
-        new Point((float)frameRect.Width, (float)frameRect.Height),
-        new Point((float)frameRect.Width, 0)
-      );
-
-      return frame;
-    }
-
-    /// <summary>
     /// Adds the entities.
     /// </summary>
     private void AddEntities()
     {
-      var frame = GetMapFrame();
+      var frame = new Polygon(
+        new Point(0, 0),
+        new Point(0, (float)2 * mapRows* tileSize),
+        new Point((float)2 * mapCols*tileSize, (float)mapRows * tileSize * 2),
+        new Point((float)2 * mapCols*tileSize, 0)
+      );
 
       for (int i = 0; i < 1 ; i++) {
         var rabbit = BeaverBuilder.Build(componentSystem, frame);
@@ -157,17 +149,19 @@ namespace PuppetMasterKit.Template.Game.Level
         flightMap.Add(wolf);
       }
 
-      for (int i = 0; i < 0 ; i++) {
+      for (int i = 0; i < 1 ; i++) {
         var store = StoreBuilder.Build(componentSystem, frame);
         var agent = store.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
-        var x = random.Next(10, 300);
-        var y = random.Next(100, 600);
+        //var x = random.Next(10, 300);
+        //var y = random.Next(100, 600);
+        var x = 300;
+        var y = 500;
         agent.Position = new Point(x, y);
         flightMap.Add(store);
       }
 
-      for (int i = 0; i < 1 ; i++) {
+      for (int i = 0; i < 0 ; i++) {
         var hole = HoleBuilder.Build(componentSystem, frame);
         var agent = hole.GetComponent<Agent>();
         var x = 250;
@@ -187,8 +181,8 @@ namespace PuppetMasterKit.Template.Game.Level
 
       cameraNode.XScale = 1.5f;
       cameraNode.YScale = 1.5f;
-      //cameraNode.XScale = 5f;
-      //cameraNode.YScale = 5f;
+      //cameraNode.XScale = 16f;
+      //cameraNode.YScale = 16f;
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -222,12 +216,12 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <param name="holes">Holes.</param>
     private void AddHoles(Entity[] holes)
     {
-      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
-      var frame = GetMapFrame();
-      foreach (var item in holes) {
-        var entity = HoleBuilder.Build(item, componentSystem, frame);
-        flightMap.Add(entity);
-      }
+      //var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      //var frame = GetMapFrame();
+      //foreach (var item in holes) {
+      //  var entity = HoleBuilder.Build(item, componentSystem, frame);
+      //  flightMap.Add(entity);
+      //}
     }
 
     /// <summary>
@@ -252,13 +246,12 @@ namespace PuppetMasterKit.Template.Game.Level
     /// </summary>
     private void GenerateMap()
     {
-      var rows = 100;
-      var cols = 100;
+      
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 
       var builder = Container.GetContainer().GetInstance<IMapGenerator>();
-      var regions = builder.Create(rows, cols);
+      var regions = builder.Create(mapRows, mapCols);
 
       var mapping = new Dictionary<int, string> {
         //{ 1, "Marsh"},
@@ -278,38 +271,37 @@ namespace PuppetMasterKit.Template.Game.Level
       //var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       //{ "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet, randomSeed: 0);
       var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed: 1);
-      var tileMap = new TileMap(defaultPainter, rows, cols, tileSize);
+      var tileMap = new TileMap(defaultPainter, mapRows, mapCols, tileSize);
       //tileMap.AddPainter(3, layeredPainter);
 
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
         tileMap.Build(regions, 0,  1, 2, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
-        RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(0), new Random(0));
+        RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(1), new Random(0));
       });
 
       
-      var txt = SKTexture.FromImageNamed("M1");
-      tileMap.GetLayer(0).SetTile(txt, 55, 50);
+      //var txt = SKTexture.FromImageNamed("M1");
+      //tileMap.GetLayer(1).SetTile(txt, 55, 50);
 
-      var house = SKTexture.FromImageNamed("Hobbit");
-      tileMap.GetLayer(0).SetTile(house, 65, 40);
+      //var house = SKTexture.FromImageNamed("Hobbit");
+      //tileMap.GetLayer(1).SetTile(house, 65, 40);
 
-      var granary = SKTexture.FromImageNamed("Mt1");
       //var granary = SKTexture.FromImageNamed("Granary");
       //var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 45, 38);
-      var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 5, 10);
-      var shader = SKShader.FromFile("Wind.fsh");
+      //var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 5, 10);
+      //var shader = SKShader.FromFile("Wind.fsh");
       //node.Shader = shader;
       
 
-      var hut = SKTexture.FromImageNamed("Hut");
-      tileMap.GetLayer(0).SetTile(hut, 55, 30);
-      tileMap.GetLayer(0).SetTile(hut, 5, 23);
+      //var hut = SKTexture.FromImageNamed("Hut");
+      //tileMap.GetLayer(1).SetTile(hut, 55, 30);
+      //tileMap.GetLayer(1).SetTile(hut, 5, 23);
 
       Measure.Timed("Dump image", () => {
         scene.AddChild(tileMap);
-        //tileMap.FlattenLayer(0, x => x.SaveImage($"{baseFolder}/map0.png"));
+        //tileMap.FlattenLayer(0, x => x.SaveImage($"/Users/alexjecu/Desktop/Workspace/dinsight/xamarin/tmp/map0.png"));
       });
 
       PrintMap(builder);

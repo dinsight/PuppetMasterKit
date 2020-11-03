@@ -51,8 +51,8 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
     public void Build(IReadOnlyCollection<Region> regions, params int[] order)
     {
       var baseTileLayer = CreateLayer(-1);
-      var topTileLayer = CreateLayer(1);
-      var thirdLayer = CreateLayer(2);
+      var topTileLayer = CreateLayer(0);
+      var thirdLayer = CreateLayer(1);
 
       //if a preferred build order is given, apply it to the region list
       if (order != null) {

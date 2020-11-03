@@ -17,6 +17,10 @@ namespace PuppetMasterKit.AI
 
     private Dictionary<string, Entity> Entities { get; set; }
 
+    public float MapWidth { get => mapWidth; }
+
+    public float MapHeight { get => mapHeight; }
+
     private float mapWidth;
 
     private float mapHeight;
@@ -198,7 +202,7 @@ namespace PuppetMasterKit.AI
       var j = (int)(point.Y / partitionHeight);
       //try not to create a separate bucket for points on the
       //bottom and right edges of the map
-      if (point.X >= mapWidth) i--;
+      if (point.X >= MapWidth) i--;
       if (point.Y >= mapHeight) j--;
       return new Tuple<int, int>(i, j);
     }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Utility.Extensions;
+using LightInject;
 using SpriteKit;
 
 namespace PuppetMasterKit.Ios.Tiles.Tilemap
@@ -94,20 +97,26 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
         var f = (float)random.NextDouble();
         return f * (b - a) + a;
       }
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
+      var mx = flightMap.MapWidth;
+      var my = flightMap.MapHeight;
+      
+      var D = (float)Math.Sqrt(mx * mx + my * my);
+
       var randOcc = random;
       regionsToFill.ForEach(reg=> {
-        reg.TraverseRegion((row, col, type) => { 
-          if(type == TileType.Plain) 
-          {
-            if (defs.Any()) {
-              var texture = defs[random.Next(0, defs.Count())];
-              var r = GetRandom(-0.2f, 0.2f);
-              densityFactor = densityFactor >= 1 ? 0 : densityFactor;
-              var occ = randOcc.Next(0, 1 + (int)(densityFactor * 100));
-              if (occ == 0) {
-                texture.SetTexture(layer, 
-                  row * tileSize + tileSize / 2f + tileSize * r, 
-                  col * tileSize + tileSize / 2f + tileSize * r);
+        reg.TraverseRegion((row, col, type) => {
+        if (type == TileType.Plain) {
+          if (defs.Any()) {
+            var texture = defs[random.Next(0, defs.Count())];
+            var r = GetRandom(-0.2f, 0.2f);
+            densityFactor = densityFactor >= 1 ? 0 : densityFactor;
+            var occ = randOcc.Next(0, 1 + (int)(densityFactor * 100));
+            if (occ == 0) {
+                var x = row * tileSize + tileSize / 2f + tileSize * r;
+                var y = col * tileSize + tileSize / 2f + tileSize * r;
+                var d = (float)Math.Sqrt(x * x + y * y);
+                texture.SetTexture(layer, x, y, (float)layer.ZPosition + d/D);
               }
             }
           }

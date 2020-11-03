@@ -8,6 +8,7 @@ using SpriteKit;
 using UIKit;
 using System.Collections.Generic;
 using CoreImage;
+using System.Threading.Tasks;
 
 namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
 {
@@ -29,7 +30,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
 
     const byte bitsPerComponent = 8;
     const byte bytesPerPixel = 4;
-    const uint mask = (uint)CGImageAlphaInfo.PremultipliedLast | (uint)CGBitmapFlags.ByteOrder32Big;
+    const uint mask = (uint)CGImageAlphaInfo.PremultipliedFirst | (uint)CGBitmapFlags.ByteOrder32Little;
 
     public static byte BytesPerPixel => bytesPerPixel;
 
@@ -166,14 +167,13 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
                                                  0,
                                                  colourSpace,
                                                  (CGImageAlphaInfo)mask)) {
-          var count = 0;
-          foreach (SKSpriteNode item in node.Children) {
+          Parallel.ForEach(node.Children, (x) => {
+            SKSpriteNode item = x as SKSpriteNode;
             context.DrawImage(new CGRect(item.Position.X + width / 2 - tileSize / 2,
                                          height + item.Position.Y,
                                          item.Size.Width,
                                          item.Size.Height), item.Texture.CGImage);
-            count++;
-          }
+          });
           image = context.ToImage();
         }
       }

@@ -8,5 +8,6 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     [StringValue("idle")] idle,
     [StringValue("build")] build,
     [StringValue("walk")] walk,
+    [StringValue("chop")] chop,
   }
 }

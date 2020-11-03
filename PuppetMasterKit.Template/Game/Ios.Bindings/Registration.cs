@@ -17,9 +17,6 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
       Container.GetContainer().Register<ICoordinateMapper>(factory => new IsometricMapper(scene));
       Container.GetContainer().Register<SKScene>(factory => scene);
 
-      //Container.GetContainer().Register<IMapGenerator>(factory =>
-      //new MapBuilder(120, CreateAvailableModules(), 5, new PathFinder()));
-
       var step = 2;
       Random random = new Random(3);
       var gen = Terrain.Map.CellularAutomata.MapBuilder.Create()

@@ -107,8 +107,9 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
         }
       }, false);
 
-        var wangTextures = tileGroup.GetTextures(CENTER);
+      var wangTextures = tileGroup.GetTextures(CENTER);
       region.TraverseRegion((row, col, type) => {
+
         if (type == TileType.Plain) {
           var r = row - region.MinRow;
           var c = col - region.MinCol;
@@ -204,7 +205,8 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
         return tiles;
       }
       var mainTile = tileGroup.GetRandomTexture(CENTER, randomTexture);
-      return masks.GetTextures(ruleName).Select(x => mainTile.BlendWithAlpha(x)).ToList();
+      //return masks.GetTextures(ruleName).Select(x => mainTile.BlendWithAlpha(x)).ToList();
+      return new List<SKTexture>() { mainTile };
     }
   }
 }

@@ -84,7 +84,6 @@ namespace PuppetMasterKit.AI.Components
     private String GetTextureName(String atlas, string orientation,
                               string state)
     {
-      Debug.WriteLine($"orientation: {orientation}");
       orientation = mapper.ToSceneOrientation(orientation);
       var strState = String.IsNullOrEmpty(state) ? "" : $"-{state}";
       var strOrientation = String.IsNullOrEmpty(orientation) ? "" : $"-{orientation}";
@@ -145,7 +144,7 @@ namespace PuppetMasterKit.AI.Components
         var orientation = Orientation.GetOrientation(direction);
         var state = Entity.GetComponent<StateComponent>();
         PhysicsComponent physics = Entity.GetComponent<PhysicsComponent>();
-
+        
         if (direction == Vector.Zero && currentState == state.ToString())
           return;
 
@@ -167,6 +166,14 @@ namespace PuppetMasterKit.AI.Components
         }
       }
       theSprite.Position = agent.Position;
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
+      var x = agent.Position.X;
+      var y = agent.Position.Y;
+      var mx = flightMap.MapWidth;
+      var my = flightMap.MapHeight;
+      var d = (float)Math.Sqrt(x * x + y * y);
+      var D = (float)Math.Sqrt(mx * mx + my * my);
+      theSprite.ZOrder = d / D;
     }
 
     /// <summary>
@@ -175,7 +182,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="stateComponent">State component.</param>
     private void SetSelection(StateComponent stateComponent)
     {
-      theSprite.Alpha = stateComponent.IsSelected ? 0.7f : 1f;
+      //theSprite.Alpha = stateComponent.IsSelected ? 0.7f : 1f;
     }
   }
 }

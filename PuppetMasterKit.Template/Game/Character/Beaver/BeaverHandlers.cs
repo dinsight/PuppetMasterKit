@@ -83,6 +83,12 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
                               CollisionState state)
     {
       if(entity.Name == "store"){
+        if (state.Status == CollisionStatus.INIT) {
+          var beaverAgent = beaver.GetComponent<Agent>();
+          var stateComponent = beaver.GetComponent<StateComponent<BeaverStates>>();
+          beaverAgent.Remove<GoalToFollowPath>();
+          stateComponent.CurrentState = BeaverStates.chop;
+        }
         GatherFood(beaver, entity, state);
       }
 
@@ -91,7 +97,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           var beaverAgent = beaver.GetComponent<Agent>();
           var stateComponent = beaver.GetComponent<StateComponent<BeaverStates>>();
           beaverAgent.Remove<GoalToFollowPath>();
-          stateComponent.CurrentState = BeaverStates.build;
+          stateComponent.CurrentState = BeaverStates.chop;
         }
 
         //spriteComponent.

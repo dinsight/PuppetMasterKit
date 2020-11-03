@@ -26,13 +26,13 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               //new RuleSystemComponent<FlightMap, RabbitHandlers>(
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<BeaverStates>(BeaverStates.idle),
-              new SpriteComponent(CharacterName, new Size(50, 120), new Point(0.5f,0.2f)),
+              new SpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f,0.2f)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 12, 1, 3, 1),
               new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint),
               new CollisionComponent((e) => 
                                      flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole"), 
-                                     BeaverHandlers.HandleCollision, 45),
+                                     BeaverHandlers.HandleCollision, 80),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();

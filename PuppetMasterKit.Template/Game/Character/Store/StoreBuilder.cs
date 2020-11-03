@@ -23,7 +23,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       var entity = EntityBuilder.Build()
         .With(componentSystem,
               new StateComponent<StoreStates>(StoreStates.full),
-              new SpriteComponent(CharacterName, new Size(65, 65)),
+              new SpriteComponent(CharacterName, new Size(150, 150)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 15),
               new CommandComponent(StoreHandlers.OnTouched, StoreHandlers.OnMoveToPoint),
