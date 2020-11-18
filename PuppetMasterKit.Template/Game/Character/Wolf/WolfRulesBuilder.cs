@@ -11,7 +11,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
 {
   public class WolfRulesBuilder
   {
-    private static int maxAttackRange = 200;
+    private static int maxAttackRange = 1200;
     private static int escapeRange = 20;
 
     /// <summary>
@@ -47,7 +47,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
     {
       var thisAgent = entity.GetComponent<Agent>();
       var target = state
-        .GetEntities(t => t.Name == "rabbit")
+        .GetEntities(t => t.Name == "beaver")
         .FirstOrDefault(x => {
           var agent = x.GetComponent<Agent>();
         var dist = Point.Distance(agent.Position, thisAgent.Position);

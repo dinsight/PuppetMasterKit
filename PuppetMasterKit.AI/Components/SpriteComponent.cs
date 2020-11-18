@@ -105,6 +105,21 @@ namespace PuppetMasterKit.AI.Components
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
+    private float GetFps(Entity entity) {
+      PhysicsComponent physics = entity.GetComponent<PhysicsComponent>();
+      var agent = entity.GetComponent<Agent>();
+      var maxSpeed = physics?.MaxSpeed ?? 1;
+      //var currentSpeed = agent.Velocity.Magnitude() > 0 ? Math.Min(maxSpeed, agent.Velocity.Magnitude()) : maxSpeed;
+      var currentSpeed = maxSpeed;
+      var fps = currentSpeed * 24 / maxSpeed;
+      return fps;
+    }
+
+    /// <summary>
     /// Changes the texture.
     /// </summary>
     /// <returns>The texture.</returns>
@@ -154,10 +169,7 @@ namespace PuppetMasterKit.AI.Components
             currentOrientation = orientation;
           }
 
-          var maxSpeed = physics?.MaxSpeed ?? 1;
-          var currentSpeed = agent.Velocity.Magnitude() > 0 ? Math.Min(maxSpeed, agent.Velocity.Magnitude()) : maxSpeed;
-          var fps = currentSpeed * 24 / maxSpeed;
-
+          var fps = GetFps(Entity);
           var newTexture = ChangeTexture(atlasName, currentOrientation, currentState, fps);
           if (newTexture != null) {
             theSprite = newTexture;

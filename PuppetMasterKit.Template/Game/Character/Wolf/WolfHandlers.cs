@@ -52,11 +52,11 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
     {
       var agent = target.GetComponent<Agent>();
       var state = target.GetComponent<StateComponent<WolfStates>>();
-      if (state.CurrentState != WolfStates.attack) {
+      if (state.CurrentState == WolfStates.idle) {
         agent.Remove<GoalToFollowAgent>();
         agent.Remove<GoalToWander>();
         agent.Add(new GoalToPursueAgent(() => fact.GetTarget()?.GetComponent<Agent>()));
-        state.CurrentState = WolfStates.attack;
+        state.CurrentState = WolfStates.run;
       }
     }
 
@@ -73,7 +73,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
       if (state.CurrentState == WolfStates.attack) {
         agent.Remove<GoalToFollowAgent>();
         agent.Remove<GoalToPursueAgent>();
-        agent.Add(new GoalToWander());
+        //agent.Add(new GoalToWander());
         state.CurrentState = WolfStates.idle;
       }
     }
@@ -83,20 +83,32 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
     /// </summary>
     /// <param name="wolf">Wolf.</param>
     /// <param name="prey">Prey.</param>
-    public static void WolfMeetsPrey(Entity wolf, 
-                                     Entity prey, 
+    public static void WolfMeetsPrey(Entity wolf,
+                                     Entity prey,
                                      CollisionState state)
     {
-      if (state.StopWatchValue > 1) {
-        var health = prey.GetComponent<HealthComponent>();
+      var agent = wolf.GetComponent<Agent>();
+      var wolfState = wolf.GetComponent<StateComponent<WolfStates>>();
+      var hud = Container.GetContainer().GetInstance<Hud>();
 
-        if(health.Damage < health.MaxHealth){
+      if (state.Status == CollisionStatus.INIT) {
+        //remove competing goals
+        agent.Remove<GoalToFollowAgent>();
+        agent.Remove<GoalToPursueAgent>();
+        //change status to attack
+        wolfState.CurrentState = WolfStates.attack;
+      }
+      else if (state.Status == CollisionStatus.IN_PROGRESS && state.StopWatchValue > 1) {
+        var health = prey.GetComponent<HealthComponent>();
+        if (health.Damage < health.MaxHealth) {
           health.Damage += 10;
-          var hud = Container.GetContainer().GetInstance<Hud>();
           hud.UpdateHealth((int)health.MaxHealth, (int)health.Damage);
-          hud.SetMessage($"Ooops! Your rabbit is in trouble !");
+          hud.SetMessage($"Beaver damage - {health.Damage}");
           state.ResetStopWatch();
         }
+      } else if (state.Status == CollisionStatus.DONE) {
+        wolfState.CurrentState = WolfStates.idle;
+        hud.SetMessage($"Wolf is idle");
       }
     }
   }
