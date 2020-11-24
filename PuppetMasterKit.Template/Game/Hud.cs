@@ -1,10 +1,24 @@
 ﻿using System;
 using System.Linq;
 using CoreGraphics;
+using Foundation;
 using SpriteKit;
+using UIKit;
 
 namespace PuppetMasterKit.Template.Game
 {
+  public class HudSprite : SKSpriteNode
+  {
+    public HudSprite(IntPtr handle) : base(handle)
+    {
+
+    }
+    public override void TouchesBegan(NSSet touches, UIEvent evt)
+    {
+      base.TouchesBegan(touches, evt);
+    }
+  }
+
   public class Hud
   {
     public SKSpriteNode Menu { get; private set; }
@@ -23,6 +37,7 @@ namespace PuppetMasterKit.Template.Game
       var scn = SKNode.FromFile<SKScene>(fromFile);
       hud.Menu = scn.Children.FirstOrDefault(x => x.Name == controlName) as SKSpriteNode;
       hud.Menu.RemoveFromParent();
+      hud.Menu.UserInteractionEnabled = true;
       return hud;
     }
 
