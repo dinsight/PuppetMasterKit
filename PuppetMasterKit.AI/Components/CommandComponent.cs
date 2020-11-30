@@ -9,6 +9,8 @@ namespace PuppetMasterKit.AI.Components
 
     public Action<Entity,Point> OnMoveToPoint { get; private set; }
 
+    public Action<Entity, Point> OnAttackPoint { get; private set; }
+
     public Action<Entity> OnMoveToEntity { get; private set; }
 
     /// <summary>
@@ -17,10 +19,12 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="onTouched">Target touched.</param>
     /// <param name="onMoveToPoint">Scene touched.</param>
     public CommandComponent(Action<Entity> onTouched, 
-                            Action<Entity,Point> onMoveToPoint )
+                            Action<Entity,Point> onMoveToPoint,
+                            Action<Entity, Point> onAttackPoint)
     {
       OnTouched = onTouched;
       OnMoveToPoint = onMoveToPoint;
+      OnAttackPoint = onAttackPoint;
     }
   }
 }

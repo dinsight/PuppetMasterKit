@@ -237,11 +237,6 @@
     <Folder Include="Resources\Media.xcassets\Mountain.spriteatlas\Plateau_ice.imageset\" />
     <Folder Include="Resources\Media.xcassets\Mountain.spriteatlas\Plateau_icw.imageset\" />
     <Folder Include="Resources\Media.xcassets\mountain1.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Mountain1.spriteatlas\" />
-    <Folder Include="Resources\Media.xcassets\Mountain1.spriteatlas\M1.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Mountain1.spriteatlas\Hobbit.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Mountain1.spriteatlas\Granary.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Mountain1.spriteatlas\Hut.imageset\" />
     <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\" />
     <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center.imageset\" />
     <Folder Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center2.imageset\" />
@@ -347,12 +342,15 @@
     <Folder Include="Resources\Media.xcassets\Wang_Dirt.spriteatlas\Wang_Dirt_InsideBottom.imageset\" />
     <Folder Include="Resources\Media.xcassets\Wang_Dirt.spriteatlas\Wang_Dirt_InsideLeft.imageset\" />
     <Folder Include="Resources\Media.xcassets\Wang_Dirt.spriteatlas\Wang_Dirt_InsideRight.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Mountain1.spriteatlas\Mt1.imageset\" />
     <Folder Include="Resources\hole\" />
     <Folder Include="Resources\hole\hole-open-nw.atlas\" />
     <Folder Include="Resources\beaver\" />
     <Folder Include="Resources\store\" />
     <Folder Include="Resources\wolf\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\" />
+    <Folder Include="Resources\artifacts\" />
+    <Folder Include="Resources\artifacts\rocks.atlas\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -649,16 +647,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Mountain.spriteatlas\Plateau_ics.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Mountain.spriteatlas\Plateau_ice.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Mountain.spriteatlas\Plateau_icw.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\M1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\M1.imageset\Mountain2.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\M1.imageset\Tree-2.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Hobbit.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Hobbit.imageset\House.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Granary.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Granary.imageset\Granary-1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Hut.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Hut.imageset\Hut.png" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Marsh.spriteatlas\Marsh_center.imageset\Marsh.png" />
@@ -863,8 +851,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Wang_Dirt.spriteatlas\Wang_Dirt_InsideBottom.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Dirt.spriteatlas\Wang_Dirt_InsideLeft.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Dirt.spriteatlas\Wang_Dirt_InsideRight.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Mt1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Mountain1.spriteatlas\Mt1.imageset\Mt1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Swamp.spriteatlas\Wang_Swamp_0.imageset\wang_0.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Swamp.spriteatlas\Wang_Swamp_1.imageset\wang_1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Swamp.spriteatlas\Wang_Swamp_10.imageset\wang_10-1.png" />
@@ -921,6 +907,20 @@
     <ImageAsset Include="Resources\Media.xcassets\Wang_Swamp.spriteatlas\Wang_Swamp_OutsideLeft.imageset\OutsideLeft-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Swamp.spriteatlas\Wang_Swamp_OutsideRight.imageset\OutsideRight-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Swamp.spriteatlas\Wang_Swamp_OutsideTop.imageset\OutsideTop-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Granary.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Granary.imageset\Granary-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Hobbit.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Hobbit.imageset\House.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Hut.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Hut.imageset\Hut.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\M1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\M1.imageset\Mountain2.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\M1.imageset\Tree-2.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Mt1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Mt1.imageset\Mt1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\smallrockround_640.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
@@ -1811,6 +1811,7 @@
     <AtlasTexture Include="Resources\wolf\wolf-attack-w.atlas\frame_7_0006.png" />
     <AtlasTexture Include="Resources\wolf\wolf-attack-w.atlas\frame_7_0007.png" />
     <AtlasTexture Include="Resources\wolf\wolf-attack-w.atlas\frame_7_0013.png" />
+    <AtlasTexture Include="Resources\artifacts\rocks.atlas\pebble.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />

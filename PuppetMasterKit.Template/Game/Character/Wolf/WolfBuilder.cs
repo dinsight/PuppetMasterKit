@@ -27,7 +27,7 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
               new SpriteComponent(CharacterName, new Size(120, 140), new Point(0.5f, 0.2f)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 7, 1, 80),
-              new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint),
+              new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint, null),
               new CollisionComponent((e) => flightMap.GetAdjacentEntities(e, p => p.Name == "beaver"), WolfHandlers.WolfMeetsPrey, 80),
               new Agent())
         .WithName(CharacterName)

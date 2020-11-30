@@ -55,6 +55,23 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="atlasName"></param>
+    /// <param name="imageName"></param>
+    /// <returns></returns>
+    public ISprite FromTexture(String atlasName, String imageName) {
+      var node = new SKSpriteNode();
+      node.UserData = new Foundation.NSMutableDictionary();
+      node.PhysicsBody = null;
+      var sprite = new Sprite(node, scene);
+      var atlas = SKTextureAtlas.FromName(atlasName);
+      node.RemoveActionForKey(animationKey);
+      node.Texture = atlas.TextureNamed(imageName);
+      return sprite;
+    }
+
+    /// <summary>
     /// Changes the texture.
     /// </summary>
     /// <returns>The texture.</returns>

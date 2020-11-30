@@ -71,6 +71,7 @@
     <Compile Include="Obstacle.cs" />
     <Compile Include="CircularObstacle.cs" />
     <Compile Include="PolygonalObstacle.cs" />
+    <Compile Include="Components\RangeWeaponComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

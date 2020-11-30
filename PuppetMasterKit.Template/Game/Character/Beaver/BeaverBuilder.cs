@@ -20,6 +20,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     public static Entity Build(ComponentSystem componentSystem, Polygon boundaries)
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
+      var hud = Container.GetContainer().GetInstance<Hud>();
 
       var entity = EntityBuilder.Build()
         .With(componentSystem,
@@ -27,9 +28,10 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<BeaverStates>(BeaverStates.idle),
               new SpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f,0.2f)),
+              new RangeWeaponComponent("artifacts/rocks.atlas", "pebble.png", new Size(30, 30), 400, 3, 7),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 12, 1, 3, 1),
-              new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint),
+              new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint, BeaverHandlers.OnAttackPoint),
               new CollisionComponent((e) => 
                                      flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole"), 
                                      BeaverHandlers.HandleCollision, 80),
@@ -44,6 +46,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           .Add(new GoalToAvoidObstacles(x => ((GameFlightMap)flightMap).GetObstacles(entity), 30));
 
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
+
+      hud.OnBuildingGranaryClick += (sender, e)=> BeaverHandlers.OnBuildGranaryClick(sender, entity);
       return entity;
     }
 

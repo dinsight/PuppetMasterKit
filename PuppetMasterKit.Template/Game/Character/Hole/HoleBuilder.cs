@@ -38,7 +38,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               new SpriteComponent(CharacterName, new Size(25, 25)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 15),
-              new CommandComponent(HoleHandlers.OnTouched, HoleHandlers.OnMoveToPoint),
+              new CommandComponent(HoleHandlers.OnTouched, HoleHandlers.OnMoveToPoint, null),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();

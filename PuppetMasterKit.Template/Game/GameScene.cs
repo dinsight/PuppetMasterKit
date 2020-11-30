@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using CoreGraphics;
 using Foundation;
 using PuppetMasterKit.AI;
@@ -49,6 +50,10 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="evt">Evt.</param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
+      bool attachTouched = touches.Select(x => ((UITouch)x).LocationInNode(this))
+        .Select(x => this.GetNodeAtPoint(x))
+        .Any(x => x.Name == "attack");
+
       foreach (UITouch touch in touches) {
         var positionInScene = touch.LocationInNode(this);
         //Debug.WriteLine($"{{\"X\":{positionInScene.X},\"Y\":{positionInScene.Y}}}");
@@ -57,7 +62,7 @@ namespace PuppetMasterKit.Template.Game
         if (entity != null) {
           OnEntityTouched(entity);
         } else {
-          OnSceneTouched(positionInScene);
+          OnSceneTouched(positionInScene, attachTouched);
         }
       }
     }
@@ -99,13 +104,19 @@ namespace PuppetMasterKit.Template.Game
     /// On selected scene.
     /// </summary>
     /// <param name="location">Touched node.</param>
-    private void OnSceneTouched(CGPoint location)
+    private void OnSceneTouched(CGPoint location, bool attachTouched)
     {
       Point point = new Point((float)location.X, (float)location.Y);
 
-      flightMap.GetHeroes()
-        .ForEach(e => e.GetComponent<CommandComponent>()?
-               .OnMoveToPoint(e, point));
+      if (attachTouched) {
+        flightMap.GetHeroes()
+          .ForEach(e => e.GetComponent<CommandComponent>()?
+                 .OnAttackPoint(e, point));
+      } else {
+        flightMap.GetHeroes()
+          .ForEach(e => e.GetComponent<CommandComponent>()?
+                 .OnMoveToPoint(e, point));
+      }
     }
 
     /// <summary>

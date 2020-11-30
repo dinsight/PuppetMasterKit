@@ -31,6 +31,33 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    public static void OnBuildGranaryClick(object sender, Entity entity)
+    {
+      var agent = entity.GetComponent<Agent>();
+      var state = entity.GetComponent<StateComponent<BeaverStates>>();
+      agent.Remove<GoalToFollowPath>();
+      state.CurrentState = BeaverStates.build;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="location"></param>
+    public static void OnAttackPoint(Entity entity, Point location)
+    {
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      var weapon = entity.GetComponent<RangeWeaponComponent>();
+      var agent = entity.GetComponent<Agent>();
+      Point point = mapper.FromScene(location);
+      weapon.Fire(point);
+    }
+
+    /// <summary>
     /// Ons the move to point.
     /// </summary>
     /// <param name="entity">Entity.</param>

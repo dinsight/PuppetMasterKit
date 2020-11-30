@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
@@ -7,23 +8,26 @@ using UIKit;
 
 namespace PuppetMasterKit.Template.Game
 {
-  public class HudSprite : SKSpriteNode
+  
+  public class Hud : SKSpriteNode
   {
-    public HudSprite(IntPtr handle) : base(handle)
+    public event EventHandler OnBuildingGranaryClick;
+
+    public Hud(IntPtr handle) : base(handle)
     {
 
     }
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
+      foreach (UITouch touch in touches) {
+        var positionInScene = touch.LocationInNode(this);
+        var node = this.GetNodeAtPoint(positionInScene);
+        if (node.Name == "build" && OnBuildingGranaryClick != null) {
+          OnBuildingGranaryClick(this, null);
+        }
+      }
       base.TouchesBegan(touches, evt);
     }
-  }
-
-  public class Hud
-  {
-    public SKSpriteNode Menu { get; private set; }
-
-    private Hud(){}
 
     /// <summary>
     /// Create the specified fromFile, contolName and inScene.
@@ -33,11 +37,10 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="controlName">Contol name.</param>
     public static Hud Create(string fromFile, string controlName)
     {
-      var hud = new Hud();
       var scn = SKNode.FromFile<SKScene>(fromFile);
-      hud.Menu = scn.Children.FirstOrDefault(x => x.Name == controlName) as SKSpriteNode;
-      hud.Menu.RemoveFromParent();
-      hud.Menu.UserInteractionEnabled = true;
+      var hud = scn.Children.FirstOrDefault(x => x.Name == controlName) as Hud;
+      hud.RemoveFromParent();
+      hud.UserInteractionEnabled = true;
       return hud;
     }
 
@@ -47,7 +50,7 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="score">Score.</param>
     public void UpdateScore(int score)
     {
-      var scoreControl = Menu.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
+      var scoreControl = this.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
       scoreControl.Text = $"{score}";
     }
 
@@ -57,7 +60,7 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="message">Message.</param>
     public void SetMessage(string message)
     {
-      var messageControl = Menu.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
+      var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
       messageControl.Text = message;
     }
 
@@ -68,8 +71,8 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="damage">Damage.</param>
     public void UpdateHealth(int maxHealth, int damage)
     {
-      var healthBar = Menu.Children.FirstOrDefault(x => x.Name == "health") as SKSpriteNode;
-      var damageBar = Menu.Children.FirstOrDefault(x => x.Name == "damage") as SKSpriteNode;
+      var healthBar = this.Children.FirstOrDefault(x => x.Name == "health") as SKSpriteNode;
+      var damageBar = this.Children.FirstOrDefault(x => x.Name == "damage") as SKSpriteNode;
       damageBar.Size = new CGSize( damage * healthBar.Size.Width / maxHealth, damageBar.Size.Height);
     }
   }

@@ -183,12 +183,6 @@ namespace PuppetMasterKit.Template.Game.Level
       cameraNode.YScale = 1.5f;
       //cameraNode.XScale = 16f;
       //cameraNode.YScale = 16f;
-      var player = flightMap
-        .GetHeroes()
-        .Select(a => a.GetComponent<SpriteComponent>())
-        .Select(s => s.Sprite.GetNativeSprite() as SKNode).First();
-
-      player.AddChild(cameraNode);
       scene.Camera = cameraNode;
       return cameraNode;
     }
@@ -200,29 +194,16 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var frameRect = scene.GetViewFrame();
       hudDisplay = Hud.Create("Hud", "control");
-      cameraNode.AddChild(hudDisplay.Menu);
+      cameraNode.AddChild(hudDisplay);
 
       var sz = new CGPoint(scene.View.Bounds.Width, scene.View.Bounds.Height);
       var s = scene.ConvertPointFromView(sz);
       var t = cameraNode.ConvertPointFromNode(s, scene);
-      hudDisplay.Menu.Position = new CGPoint(-Math.Abs(t.X),-Math.Abs(t.Y) );
+      hudDisplay.Position = new CGPoint(-Math.Abs(t.X),-Math.Abs(t.Y) );
 
       Container.GetContainer().RegisterInstance<Hud>(hudDisplay);
     }
 
-    /// <summary>
-    /// Adds the holes.
-    /// </summary>
-    /// <param name="holes">Holes.</param>
-    private void AddHoles(Entity[] holes)
-    {
-      //var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
-      //var frame = GetMapFrame();
-      //foreach (var item in holes) {
-      //  var entity = HoleBuilder.Build(item, componentSystem, frame);
-      //  flightMap.Add(entity);
-      //}
-    }
 
     /// <summary>
     /// Build this instance.
@@ -230,13 +211,22 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <returns>The build.</returns>
     public FlightMap Build()
     {
-      AddEntities();
       var camera = AddCamera();
+      AddHud(camera);
+      AddEntities();
+
+      var player = flightMap
+        .GetHeroes()
+        .Select(a => a.GetComponent<SpriteComponent>())
+        .Select(s => s.Sprite.GetNativeSprite() as SKNode).First();
+
+      player.AddChild(camera);
+
       var data = LoadSceneData();
       //scene.DrawObstacles(flightMap.Obstacles);
       //scene.DrawEnclosure();
       GenerateMap();
-      AddHud(camera);
+      
       return flightMap;
     }
 

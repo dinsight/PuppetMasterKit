@@ -19,6 +19,11 @@ namespace PuppetMasterKit.Template.Test.Bindings
       return new Sprite();
     }
 
+    public ISprite FromTexture(String atlasName, String imageName)
+    {
+      return new Sprite();
+    }
+
     public ISprite ChangeTexture(ISprite sprite, String atlasName, double secondsPerFrame = 1)
     {
       return sprite;
