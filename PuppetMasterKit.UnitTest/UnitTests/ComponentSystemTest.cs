@@ -19,7 +19,7 @@ namespace PuppetMasterKit.UnitTest
             system.Add(new FoodComponent());
             system.Add(new PhysicsComponent());
 
-            system.Remove<HealthComponent>();
+            //system.Remove<HealthComponent>();
 
             Assert.True(system.Count == 2);
         }

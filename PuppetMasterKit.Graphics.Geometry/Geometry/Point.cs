@@ -35,6 +35,14 @@ namespace PuppetMasterKit.Graphics.Geometry
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public Point Clone() {
+      return new Point(X, Y);
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Graphics.Geometry.Point"/> class.
     /// </summary>
     /// <param name="point">Point.</param>

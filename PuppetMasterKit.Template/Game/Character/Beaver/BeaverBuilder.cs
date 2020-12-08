@@ -6,12 +6,17 @@ using PuppetMasterKit.Graphics.Geometry;
 using LightInject;
 using PuppetMasterKit.AI.Rules;
 using SpriteKit;
+using System.Collections.Generic;
+using System;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
   public static class BeaverBuilder
   {
     private static string CharacterName = "beaver";
+    private static string RangeWeaponAtlas = "artifacts/rocks.atlas";
+    private static string RangeWeaponName = "pebble.png";
+
     /// <summary>
     /// Build the specified componentSystem and flightMap.
     /// </summary>
@@ -27,28 +32,52 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               //new RuleSystemComponent<FlightMap, RabbitHandlers>(
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<BeaverStates>(BeaverStates.idle),
-              new SpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f,0.2f)),
-              new RangeWeaponComponent("artifacts/rocks.atlas", "pebble.png", new Size(30, 30), 400, 3, 7),
+              new SpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f, 0.2f)),
+              new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap),
+                    RangeWeaponAtlas, RangeWeaponName, new Size(30, 30), 700, 10, 500),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 12, 1, 3, 1),
-              new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint, BeaverHandlers.OnAttackPoint),
-              new CollisionComponent((e) => 
-                                     flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole"), 
-                                     BeaverHandlers.HandleCollision, 80),
+              new CommandComponent(BeaverHandlers.OnTouched,
+                    BeaverHandlers.OnMoveToPoint,
+                    BeaverHandlers.OnAttackPoint),
+              new CollisionComponent(GetCollisions(flightMap),
+                    BeaverHandlers.HandleCollision, 80),
               new Agent())
         .WithName(CharacterName)
         .GetEntity();
-      
+
       entity.GetComponent<Agent>()
           .Add(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
-          .Add(new GoalToSeparateFrom( x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.005f)
+          .Add(new GoalToSeparateFrom(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.005f)
           .Add(new ConstraintToStayWithin(boundaries))
           .Add(new GoalToAvoidObstacles(x => ((GameFlightMap)flightMap).GetObstacles(entity), 30));
 
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
 
-      hud.OnBuildingGranaryClick += (sender, e)=> BeaverHandlers.OnBuildGranaryClick(sender, entity);
+      hud.OnBuildingGranaryClick += (sender, e) => BeaverHandlers.OnBuildGranaryClick(sender, entity);
       return entity;
+
+      
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="flightMap"></param>
+    /// <returns></returns>
+    static Func<Entity, IEnumerable<Entity>> GetCollisions(FlightMap flightMap)
+    {
+      return (e) =>flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole");
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="flightMap"></param>
+    /// <returns></returns>
+    static Func<Entity, IEnumerable<Entity>> GetRangeWeaponCollisions(FlightMap flightMap)
+    {
+      return (e) => flightMap.GetAdjacentEntities(e, p => p.Name == "wolf" );
     }
 
     /// <summary>

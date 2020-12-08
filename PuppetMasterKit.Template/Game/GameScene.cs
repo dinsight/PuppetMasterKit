@@ -50,7 +50,7 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="evt">Evt.</param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
-      bool attachTouched = evt.AllTouches.Select(x => ((UITouch)x).LocationInNode(this))
+      bool attackTouched = evt.AllTouches.Select(x => ((UITouch)x).LocationInNode(this))
         .Select(x => this.GetNodeAtPoint(x))
         .Any(x => x.Name == "attack");
 
@@ -58,11 +58,16 @@ namespace PuppetMasterKit.Template.Game
         var positionInScene = touch.LocationInNode(this);
         //Debug.WriteLine($"{{\"X\":{positionInScene.X},\"Y\":{positionInScene.Y}}}");
         var touchedNode = this.GetNodeAtPoint(positionInScene);
-        var entity = GetEntityFromNode(touchedNode);
-        if (entity != null) {
-          OnEntityTouched(entity);
+
+        if (attackTouched) {
+          OnAttackLocation(positionInScene);
         } else {
-          OnSceneTouched(positionInScene, attachTouched);
+          var entity = GetEntityFromNode(touchedNode);
+          if (entity != null) {
+            OnEntityTouched(entity);
+          } else {
+            OnSceneTouched(positionInScene);
+          }
         }
       }
     }
@@ -104,19 +109,26 @@ namespace PuppetMasterKit.Template.Game
     /// On selected scene.
     /// </summary>
     /// <param name="location">Touched node.</param>
-    private void OnSceneTouched(CGPoint location, bool attachTouched)
+    private void OnSceneTouched(CGPoint location)
     {
       Point point = new Point((float)location.X, (float)location.Y);
 
-      if (attachTouched) {
-        flightMap.GetHeroes()
-          .ForEach(e => e.GetComponent<CommandComponent>()?
-                 .OnAttackPoint(e, point));
-      } else {
-        flightMap.GetHeroes()
-          .ForEach(e => e.GetComponent<CommandComponent>()?
-                 .OnMoveToPoint(e, point));
-      }
+      flightMap.GetHeroes()
+        .ForEach(e => e.GetComponent<CommandComponent>()?
+          .OnMoveToPoint(e, point));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="location"></param>
+    private void OnAttackLocation(CGPoint location)
+    {
+      Point point = new Point((float)location.X, (float)location.Y);
+
+      flightMap.GetHeroes()
+        .ForEach(e => e.GetComponent<CommandComponent>()?
+          .OnAttackPoint(e, point));
     }
 
     /// <summary>
@@ -145,6 +157,8 @@ namespace PuppetMasterKit.Template.Game
     {
       var delta = (float)(currentTime - prevTime);
       prevTime = currentTime;
+
+      componentSystem.CleanupOrphanComponents();
       componentSystem.Update(delta);
       base.Update(currentTime);
     }

@@ -69,7 +69,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime">Delta time.</param>
     public override void Update(double deltaTime)
     {
-      if(canEvaluate){
+      if(canEvaluate && this.Entity!=null){
         canEvaluate = false;
         Task.Factory.StartNew(() => Evaluate());
       }

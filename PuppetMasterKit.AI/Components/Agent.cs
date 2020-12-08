@@ -116,6 +116,9 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime">Delta time.</param>
     public override void Update(double deltaTime)
     {
+      if (Entity == null) {
+        return;
+      }
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var delegates = Entity.GetComponents<IAgentDelegate>();
 

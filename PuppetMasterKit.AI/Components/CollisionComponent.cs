@@ -89,6 +89,9 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime">Delta time.</param>
     public override void Update(double deltaTime)
     {
+      if (Entity == null) {
+        return;
+      }
       Detect(deltaTime);
       base.Update(deltaTime);
     }

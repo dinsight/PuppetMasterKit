@@ -14,11 +14,8 @@ using SpriteKit;
 using PuppetMasterKit.Utility.Diagnostics;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
-using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Terrain.Map;
-using PuppetMasterKit.Terrain.Map.SimplePlacement;
 using PuppetMasterKit.Utility.Subscript;
-using Foundation;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -128,18 +125,18 @@ namespace PuppetMasterKit.Template.Game.Level
       );
 
       for (int i = 0; i < 1 ; i++) {
-        var rabbit = BeaverBuilder.Build(componentSystem, frame);
-        var agent = rabbit.GetComponent<Agent>();
+        var beaver = BeaverBuilder.Build(componentSystem, frame);
+        var agent = beaver.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
         //var y = random.Next(100, 600);
         var x = 0;
         var y = 0;
         agent.Position = new Point(x, y);
-        flightMap.AddHero(rabbit);
+        flightMap.AddHero(beaver);
       }
 
-      for (int i = 0; i < 3 ; i++) {
+      for (int i = 0; i < 1 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame);
         var agent = wolf.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -181,8 +178,6 @@ namespace PuppetMasterKit.Template.Game.Level
 
       cameraNode.XScale = 1.5f;
       cameraNode.YScale = 1.5f;
-      //cameraNode.XScale = 16f;
-      //cameraNode.YScale = 16f;
       scene.Camera = cameraNode;
       return cameraNode;
     }

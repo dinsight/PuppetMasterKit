@@ -72,6 +72,16 @@ namespace PuppetMasterKit.AI
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    private void CleanupDisposedEntities() {
+      var disposed = Entities.Values.Where(x => x.IsDisposed).ToList();
+      foreach (var item in disposed) {
+        Remove(item);
+      }
+    }
+
+    /// <summary>
     /// Wraps the read lock.
     /// </summary>
     /// <returns>The read lock.</returns>

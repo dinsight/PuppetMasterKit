@@ -102,6 +102,11 @@ namespace PuppetMasterKit.AI
     private bool disposedValue = false; // To detect redundant calls
 
     /// <summary>
+    /// 
+    /// </summary>
+    public bool IsDisposed { get { return disposedValue;  } }
+
+    /// <summary>
     /// Dispose instance.
     /// </summary>
     /// <returns>The dispose.</returns>
