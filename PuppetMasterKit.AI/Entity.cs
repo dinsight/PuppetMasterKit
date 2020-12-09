@@ -3,12 +3,15 @@ using System.Linq;
 using System.Collections.Generic;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Utility.Extensions;
+using System.Diagnostics;
 
 namespace PuppetMasterKit.AI
 {
   public class Entity : IDisposable
   {
     private List<Component> components;
+
+    private bool disposedValue;
 
     public String Id { get; set; }
 
@@ -45,7 +48,6 @@ namespace PuppetMasterKit.AI
     public Entity Add(Component component)
     {
       component.SetEntity(this);
-
       var type = component.GetType();
       if(!components.Exists(x => x.GetType() == type)){
         components.Add(component);
@@ -86,52 +88,39 @@ namespace PuppetMasterKit.AI
       return components.Where(x => x is T).Select(z => z as T);
     }
 
+    #region Cleanup
+    
     /// <summary>
     /// Cleanup this instance.
     /// </summary>
-    public void Cleanup()
+    private void Cleanup()
     {
-      components.ForEach(x => x.Cleanup());
-      components.Clear();
+      if (components != null) {
+        components.ForEach(x => x.Cleanup());
+        components.Clear();
+        components = null;
+      }
     }
-
-    /// <summary>
-    /// IDisposable
-    /// </summary>
-    #region IDisposable Support
-    private bool disposedValue = false; // To detect redundant calls
 
     /// <summary>
     /// 
     /// </summary>
-    public bool IsDisposed { get { return disposedValue;  } }
-
-    /// <summary>
-    /// Dispose instance.
-    /// </summary>
-    /// <returns>The dispose.</returns>
-    /// <param name="disposing">If set to <c>true</c> disposing.</param>
+    /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
       if (!disposedValue) {
         if (disposing) {
           Cleanup();
         }
-
         disposedValue = true;
       }
     }
 
-    /// <summary>
-    /// Releases all resource used by the <see cref="T:PuppetMasterKit.Entity"/> object.
-    /// </summary>
-    /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="T:PuppetMasterKit.Entity"/>. The
-    /// <see cref="Dispose"/> method leaves the <see cref="T:PuppetMasterKit.Entity"/> in an unusable state. After
-    /// calling <see cref="Dispose"/>, you must release all references to the <see cref="T:PuppetMasterKit.Entity"/>
-    /// so the garbage collector can reclaim the memory that the <see cref="T:PuppetMasterKit.Entity"/> was occupying.</remarks>
     public void Dispose()
     {
-      Dispose(true);
+      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+      Dispose(disposing: true);
+      GC.SuppressFinalize(this);
     }
     #endregion
   }

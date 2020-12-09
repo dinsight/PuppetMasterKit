@@ -196,5 +196,11 @@ namespace PuppetMasterKit.AI.Components
     {
       //theSprite.Alpha = stateComponent.IsSelected ? 0.7f : 1f;
     }
+
+    public override void Cleanup()
+    {
+      theSprite.RemoveFromParent();
+      base.Cleanup();
+    }
   }
 }

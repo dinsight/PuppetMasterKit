@@ -74,8 +74,8 @@ namespace PuppetMasterKit.AI.Components
 
       this.target = atPoint.Clone();
       this.currentPosition = agent.Position.Clone();
-      this.currentPosition.X -= 2*size.Width;
-      this.currentPosition.Y -= 2*size.Height;
+      //this.currentPosition.X -= 2*size.Width;
+      //this.currentPosition.Y -= 2*size.Height;
       var direction = (target - agent.Position);
       directionUnit = direction.Unit();
       this.distanceToTarget = Math.Min( direction.Magnitude(), this.range);
@@ -122,15 +122,16 @@ namespace PuppetMasterKit.AI.Components
     private void DoDamageTargets()
     {
       var thisAgent = Entity.GetComponent<Agent>();
-      var inRange = entitiesProvider(Entity).Where(x => {
+      var inRange = entitiesProvider(Entity)
+        .Where(x => {
         var agent = x.GetComponent<Agent>();
-        return Point.Distance(thisAgent.Position, agent.Position) <= this.range;
+        return agent!=null && Point.Distance(thisAgent.Position, agent.Position) <= this.range;
       });
       foreach (var entity in inRange) {
         var health = entity.GetComponent<HealthComponent>();
         health.Damage += this.damagePoints;
         if (health.Damage >= health.MaxHealth) {
-          entity.Cleanup();
+          entity.Dispose();
         }
       }
     }

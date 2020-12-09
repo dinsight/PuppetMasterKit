@@ -155,10 +155,10 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="currentTime">Current time.</param>
     public override void Update(double currentTime)
     {
+      componentSystem.CleanupOrphanComponents();
+      flightMap.CleanupUnusedEntities();
       var delta = (float)(currentTime - prevTime);
       prevTime = currentTime;
-
-      componentSystem.CleanupOrphanComponents();
       componentSystem.Update(delta);
       base.Update(currentTime);
     }

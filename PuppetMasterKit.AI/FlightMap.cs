@@ -74,8 +74,8 @@ namespace PuppetMasterKit.AI
     /// <summary>
     /// 
     /// </summary>
-    private void CleanupDisposedEntities() {
-      var disposed = Entities.Values.Where(x => x.IsDisposed).ToList();
+    public void CleanupUnusedEntities() {
+      var disposed = Entities.Values.Where(x => x.Components == null).ToList();
       foreach (var item in disposed) {
         Remove(item);
       }

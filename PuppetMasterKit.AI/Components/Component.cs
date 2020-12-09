@@ -18,7 +18,6 @@ namespace PuppetMasterKit.AI.Components
     {
     }
 
-
     /// <summary>
     /// Periodic update
     /// </summary>

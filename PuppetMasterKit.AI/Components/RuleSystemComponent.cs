@@ -48,6 +48,10 @@ namespace PuppetMasterKit.AI.Components
     private async Task<bool> Evaluate()
     {
       await Task.Delay(delayEvaluation);
+      if (this.Entity == null) {
+        canEvaluate = false;
+        return false;
+      }
       try {
         Fact fact = ruleSystem.Evaluate(this.Entity);
         if (!(fact is null)) {
