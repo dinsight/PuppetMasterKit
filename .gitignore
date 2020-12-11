@@ -2,6 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+/PuppetMasterKit.Template/obj/
 /PuppetMasterKit.AI/obj/Debug
 /PuppetMasterKit.Template/obj/iPhone/Debug
 /PuppetMasterKit.Ios.Tiles/obj/Debug

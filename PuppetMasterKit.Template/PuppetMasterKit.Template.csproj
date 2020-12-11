@@ -137,18 +137,6 @@
     <Folder Include="Resources\Media.xcassets\Grass.spriteatlas\Grass_LowerLeftCorner.imageset\" />
     <Folder Include="Resources\Media.xcassets\Grass.spriteatlas\Grass_UpperLeftCorner.imageset\" />
     <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_UpEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_UpperRightEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_RightEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_LowerRightEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_DownEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_LowerLeftEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_LeftEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_UpperLeftEdge.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_UpperRightCorner.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_LowerRightCorner.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_LowerLeftCorner.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_UpperLeftCorner.imageset\" />
     <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\" />
     <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-1.imageset\" />
     <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-2.imageset\" />
@@ -195,20 +183,14 @@
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_LeftEdge2.imageset\" />
     <Folder Include="Resources\Media.xcassets\Water.spriteatlas\Water_2.imageset\" />
     <Folder Include="Resources\Media.xcassets\Rocks.spriteatlas\" />
-    <Folder Include="Resources\Media.xcassets\Rocks.spriteatlas\Rock1.imageset\" />
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Left.imageset\" />
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Right.imageset\" />
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Top.imageset\" />
     <Folder Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Bottom.imageset\" />
     <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\Trunk1.imageset\" />
     <Folder Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-6.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_Center1.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_Center.imageset\" />
     <Folder Include="Resources\Media.xcassets\Dirt.spriteatlas\" />
     <Folder Include="Resources\Media.xcassets\WoodSoil.spriteatlas\" />
-    <Folder Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil.imageset\" />
-    <Folder Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil1.imageset\" />
-    <Folder Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil2.imageset\" />
     <Folder Include="Resources\Media.xcassets\Grass.spriteatlas\Grass1.imageset\" />
     <Folder Include="Resources\Media.xcassets\Grass.spriteatlas\Grass_de.imageset\" />
     <Folder Include="Resources\Media.xcassets\Grass.spriteatlas\Grass_re.imageset\" />
@@ -351,6 +333,9 @@
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\" />
     <Folder Include="Resources\artifacts\" />
     <Folder Include="Resources\artifacts\rocks.atlas\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -529,10 +514,7 @@
     <ImageAsset Include="Media.xcassets\deer.atlas\0363.png" />
     <ImageAsset Include="Media.xcassets\hud-rabbit.imageset\0020.png" />
     <ImageAsset Include="Media.xcassets\hud-rabbit.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\farm.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\farm.imageset\farm.png" />
     <ImageAsset Include="Resources\Media.xcassets\Grass.spriteatlas\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Sand.spriteatlas\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-1.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Trees.spriteatlas\Tree-1.imageset\tree-1.png" />
@@ -564,9 +546,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_2.imageset\0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L2.imageset\0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Water.spriteatlas\Water_Center-L1.imageset\0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Rocks.spriteatlas\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Rocks.spriteatlas\Rock1.imageset\0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Rocks.spriteatlas\Rock1.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Left.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Right.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Top.imageset\Contents.json" />
@@ -581,16 +560,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Left.imageset\cdsl1-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Top.imageset\cdst1-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_CulDeSac_Bottom.imageset\cdsb2-1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_Center.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_Center.imageset\Sand1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Sand.spriteatlas\Sand_Center.imageset\Sand1-1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil2.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil.imageset\WoodSoil.png" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil1.imageset\WoodSoil1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\WoodSoil.spriteatlas\WoodSoil2.imageset\WoodSoil2.png" />
     <ImageAsset Include="Resources\Media.xcassets\Grass.spriteatlas\Grass1.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Grass.spriteatlas\Grass1.imageset\Grass.png" />
     <ImageAsset Include="Resources\Media.xcassets\Masks.spriteatlas\Mask_RightEdge.imageset\re2-1.png" />
@@ -921,6 +890,9 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Mt1.imageset\Mt1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\smallrockround_640.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

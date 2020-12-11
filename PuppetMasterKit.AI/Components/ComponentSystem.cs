@@ -35,7 +35,6 @@ namespace PuppetMasterKit.AI.Components
       foreach (var component in components) {
         component.Update(deltaTime);
       }
-      
     }
 
     /// <summary>
@@ -69,36 +68,5 @@ namespace PuppetMasterKit.AI.Components
         );
       }
     }
-
-    /// <summary>
-    /// Remove a component.
-    /// </summary>
-    /// <typeparam name="T">The component type.</typeparam>
-    //public void Remove<T>()
-    //{
-    //  var toRemove = components
-    //      .Where(x => x is T).ToList();
-
-    //  foreach (var item in toRemove) {
-    //    item.System = null;
-    //    components.Remove(item);
-    //  }
-    //}
-
-    ///// <summary>
-    ///// Remove the specified instance.
-    ///// </summary>
-    ///// <returns>The remove.</returns>
-    ///// <param name="instance">Instance.</param>
-    //public void Remove(Component instance)
-    //{
-    //  var toRemove = components
-    //      .Where(x => Object.ReferenceEquals(x, instance)).ToList();
-
-    //  foreach (var item in toRemove) {
-    //    item.System = null;
-    //    components.Remove(item);
-    //  }
-    //}
   }
 }
