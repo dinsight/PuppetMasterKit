@@ -334,8 +334,10 @@
     <Folder Include="Resources\artifacts\" />
     <Folder Include="Resources\artifacts\rocks.atlas\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build_hover.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack_hover.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -891,8 +893,12 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\smallrockround_640.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build.imageset\Build.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build_hover.imageset\Build.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build_hover.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack_hover.imageset\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
