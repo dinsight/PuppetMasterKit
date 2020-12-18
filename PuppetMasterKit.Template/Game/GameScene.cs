@@ -50,16 +50,16 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="evt">Evt.</param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
-      bool attackTouched = evt.AllTouches.Select(x => ((UITouch)x).LocationInNode(this))
+      bool controlTouched = evt.AllTouches.Select(x => ((UITouch)x).LocationInNode(this))
         .Select(x => this.GetNodeAtPoint(x))
-        .Any(x => x.Name == "attack");
+        .Any(x => x.Name == "ctrl");
 
       foreach (UITouch touch in touches) {
         var positionInScene = touch.LocationInNode(this);
         //Debug.WriteLine($"{{\"X\":{positionInScene.X},\"Y\":{positionInScene.Y}}}");
         var touchedNode = this.GetNodeAtPoint(positionInScene);
 
-        if (attackTouched) {
+        if (controlTouched) {
           OnAttackLocation(positionInScene);
         } else {
           var entity = GetEntityFromNode(touchedNode);

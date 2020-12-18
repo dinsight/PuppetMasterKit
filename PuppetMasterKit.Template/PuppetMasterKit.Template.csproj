@@ -334,8 +334,12 @@
     <Folder Include="Resources\artifacts\" />
     <Folder Include="Resources\artifacts\rocks.atlas\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\" />
+    <Folder Include="Game\Controls\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -397,6 +401,7 @@
     <Compile Include="Game\Character\Beaver\BeaverBuilder.cs" />
     <Compile Include="Game\Character\Beaver\BeaverStates.cs" />
     <Compile Include="Game\Character\Beaver\BeaverRulesBuilder.cs" />
+    <Compile Include="Game\Controls\HoverButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -893,6 +898,16 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\build.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\build_hover.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\wood-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\build-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\paw-normal.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\build_hover.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\paw-selected.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

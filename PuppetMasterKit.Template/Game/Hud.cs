@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
+using PuppetMasterKit.Utility.Configuration;
 using SpriteKit;
 using UIKit;
 
@@ -17,9 +18,30 @@ namespace PuppetMasterKit.Template.Game
     {
 
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="cameraNode"></param>
+    public void UpdateLayout(SKScene scene, SKCameraNode cameraNode) {
+      var sz = new CGPoint(scene.View.Bounds.Width, scene.View.Bounds.Height);
+      var s = scene.ConvertPointFromView(sz);
+      var t = cameraNode.ConvertPointFromNode(s, scene);
+      this.Position = new CGPoint(-Math.Abs(t.X), -Math.Abs(t.Y));
+
+      var scoreControl = this.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
+      var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="touches"></param>
+    /// <param name="evt"></param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
-      foreach (UITouch touch in touches) {
+      foreach (UITouch touch in touches) {  
         var positionInScene = touch.LocationInNode(this);
         var node = this.GetNodeAtPoint(positionInScene);
         if (node.Name == "build" && OnBuildingGranaryClick != null) {
@@ -41,6 +63,7 @@ namespace PuppetMasterKit.Template.Game
       var hud = scn.Children.FirstOrDefault(x => x.Name == controlName) as Hud;
       hud.RemoveFromParent();
       hud.UserInteractionEnabled = true;
+      Container.GetContainer().RegisterInstance<Hud>(hud);
       return hud;
     }
 

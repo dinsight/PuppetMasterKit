@@ -16,6 +16,7 @@ using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility.Subscript;
+using UIKit;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -187,16 +188,9 @@ namespace PuppetMasterKit.Template.Game.Level
     /// </summary>
     private void AddHud(SKCameraNode cameraNode)
     {
-      var frameRect = scene.GetViewFrame();
       hudDisplay = Hud.Create("Hud", "control");
       cameraNode.AddChild(hudDisplay);
-
-      var sz = new CGPoint(scene.View.Bounds.Width, scene.View.Bounds.Height);
-      var s = scene.ConvertPointFromView(sz);
-      var t = cameraNode.ConvertPointFromNode(s, scene);
-      hudDisplay.Position = new CGPoint(-Math.Abs(t.X),-Math.Abs(t.Y) );
-
-      Container.GetContainer().RegisterInstance<Hud>(hudDisplay);
+      hudDisplay.UpdateLayout(scene, cameraNode);
     }
 
 
