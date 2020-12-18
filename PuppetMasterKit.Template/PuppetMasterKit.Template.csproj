@@ -334,19 +334,12 @@
     <Folder Include="Resources\artifacts\" />
     <Folder Include="Resources\artifacts\rocks.atlas\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\" />
-<<<<<<< HEAD
     <Folder Include="Game\Controls\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\" />
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\" />
-=======
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build_hover.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack_hover.imageset\" />
->>>>>>> 1d318af0d4f7a31255b2392634b73365c2affb87
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -903,11 +896,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\smallrockround_640.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\Contents.json" />
-<<<<<<< HEAD
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack.imageset\build.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\attack_hover.imageset\build_hover.png" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\wood-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\build-1.png" />
@@ -916,14 +904,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\build_hover.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\paw-selected.png" />
-=======
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build.imageset\Build.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build_hover.imageset\Build.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_build_hover.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\btn_attack_hover.imageset\Contents.json" />
->>>>>>> 1d318af0d4f7a31255b2392634b73365c2affb87
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
