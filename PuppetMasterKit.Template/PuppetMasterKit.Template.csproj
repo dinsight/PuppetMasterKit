@@ -340,6 +340,8 @@
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer_hover.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -897,13 +899,17 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\SmallRock.imageset\smallrockround_640.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\wood-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\build-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\paw-normal.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\build_hover.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\paw-selected.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\paw-selected-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\paw.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Wood.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer_hover.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer.imageset\hammer.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer_hover.imageset\hammer-selected.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
