@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
+using PuppetMasterKit.Template.Game.Controls;
 using PuppetMasterKit.Utility.Configuration;
 using SpriteKit;
 using UIKit;
@@ -12,11 +13,60 @@ namespace PuppetMasterKit.Template.Game
   
   public class Hud : SKSpriteNode
   {
-    public event EventHandler OnBuildingGranaryClick;
+    public bool IsControlPressed { get; set; }
 
+    public event EventHandler<String> OnHudButtonClick;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="handle"></param>
     public Hud(IntPtr handle) : base(handle)
     {
+      IsControlPressed = false;
 
+      WireUpButtons();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void WireUpButtons()
+    {
+      foreach (var item in this.Children.OfType<HoverButton>()) {
+        item.OnButtonPressed += Item_OnButtonPressed;
+        item.OnButtonReleased += Item_OnButtonReleased;
+      }
+      foreach (var item in this.Children.OfType<MenuButton>()) {
+        item.OnItemPressed += Item_OnButtonPressed;
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Item_OnButtonPressed(object sender, EventArgs e)
+    {
+      var button = sender as HoverButton;
+      if (button.Name == "ctrl") {
+        IsControlPressed = true;
+      }
+      OnHudButtonClick?.Invoke(sender, button.Name);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Item_OnButtonReleased(object sender, EventArgs e)
+    {
+      var button = sender as HoverButton;
+      if (button.Name == "ctrl") {
+        IsControlPressed = false;
+      }
     }
 
     /// <summary>
@@ -32,23 +82,6 @@ namespace PuppetMasterKit.Template.Game
 
       var scoreControl = this.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
       var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="touches"></param>
-    /// <param name="evt"></param>
-    public override void TouchesBegan(NSSet touches, UIEvent evt)
-    {
-      foreach (UITouch touch in touches) {  
-        var positionInScene = touch.LocationInNode(this);
-        var node = this.GetNodeAtPoint(positionInScene);
-        if (node.Name == "build" && OnBuildingGranaryClick != null) {
-          OnBuildingGranaryClick(this, null);
-        }
-      }
-      base.TouchesBegan(touches, evt);
     }
 
     /// <summary>

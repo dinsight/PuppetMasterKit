@@ -35,8 +35,9 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public static void OnBuildGranaryClick(object sender, Entity entity)
+    public static void OnBuildGranary(Entity entity, Point location)
     {
+      Debug.WriteLine("Building the granary...");
       var agent = entity.GetComponent<Agent>();
       var state = entity.GetComponent<StateComponent<BeaverStates>>();
       agent.Remove<GoalToFollowPath>();
@@ -64,6 +65,11 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// <param name="location">Location.</param>
     public static void OnMoveToPoint(Entity entity, Point location)
     {
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      if (hud.IsControlPressed) {
+        OnAttackPoint(entity, location);
+        return;
+      }
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
         return;

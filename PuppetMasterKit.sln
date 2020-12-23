@@ -1,8 +1,6 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.UnitTest", "PuppetMasterKit.UnitTest\PuppetMasterKit.UnitTest.csproj", "{1C988740-B8CC-421A-ADCF-F2A103394DAE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.Utility", "PuppetMasterKit.Utility\PuppetMasterKit.Utility.csproj", "{F3270C94-52FB-4C33-9640-93F991A67BB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.Graphics", "PuppetMasterKit.Graphics.Geometry\PuppetMasterKit.Graphics.csproj", "{45B21CFE-ACDA-4934-8DF7-605195503007}"
@@ -23,14 +21,6 @@ Global
 		Debug|iPhone = Debug|iPhone
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Release|iPhone.ActiveCfg = Release|iPhone
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Release|iPhone.Build.0 = Release|iPhone
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{1C988740-B8CC-421A-ADCF-F2A103394DAE}.Debug|iPhone.Build.0 = Debug|iPhone
 		{F3270C94-52FB-4C33-9640-93F991A67BB0}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{F3270C94-52FB-4C33-9640-93F991A67BB0}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
 		{F3270C94-52FB-4C33-9640-93F991A67BB0}.Release|iPhone.ActiveCfg = Release|Any CPU

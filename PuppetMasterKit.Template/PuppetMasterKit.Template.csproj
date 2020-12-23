@@ -17,7 +17,7 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>Apple Development: office.digital.insight@gmail.com (378HH7W98X)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchFastDev>true</MtouchFastDev>
@@ -27,6 +27,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchVerbosity></MtouchVerbosity>
+    <CodesignProvision>iOS Team Provisioning Profile: Digital-Insight--LLC.PuppetMasterKit-Template</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -65,7 +66,7 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>Apple Development: office.digital.insight@gmail.com (378HH7W98X)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
@@ -340,8 +341,10 @@
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer.imageset\" />
-    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer_hover.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\build.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\build_hover.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\selected.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -404,6 +407,7 @@
     <Compile Include="Game\Character\Beaver\BeaverStates.cs" />
     <Compile Include="Game\Character\Beaver\BeaverRulesBuilder.cs" />
     <Compile Include="Game\Controls\HoverButton.cs" />
+    <Compile Include="Game\Controls\MenuButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -901,15 +905,14 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\build-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\build_hover.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl_hover.imageset\paw-selected-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\build.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\selected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\bk-neutral-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\selected.imageset\bk-selected-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\paw.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Wood.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer_hover.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer.imageset\hammer.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\hammer_hover.imageset\hammer-selected.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\build.imageset\build-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Wood-1.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

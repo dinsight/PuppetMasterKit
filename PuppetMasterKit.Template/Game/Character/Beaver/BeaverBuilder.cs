@@ -8,6 +8,7 @@ using PuppetMasterKit.AI.Rules;
 using SpriteKit;
 using System.Collections.Generic;
 using System;
+using UIKit;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -36,10 +37,10 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap),
                     RangeWeaponAtlas, RangeWeaponName, new Size(30, 30), 700, 10, 500),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(5, 12, 1, 3, 1),
+              new PhysicsComponent(5, 7, 1, 3, 1),
               new CommandComponent(BeaverHandlers.OnTouched,
                     BeaverHandlers.OnMoveToPoint,
-                    BeaverHandlers.OnAttackPoint),
+                    BeaverHandlers.OnBuildGranary),
               new CollisionComponent(GetCollisions(flightMap),
                     BeaverHandlers.HandleCollision, 80),
               new Agent())
@@ -54,10 +55,13 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
 
-      hud.OnBuildingGranaryClick += (sender, e) => BeaverHandlers.OnBuildGranaryClick(sender, entity);
-      return entity;
+      hud.OnHudButtonClick += (sender, btnName) => {
+        if (btnName == "build_granary") {
+          BeaverHandlers.OnBuildGranary(entity, Point.Zero);
+        }
+      };
 
-      
+      return entity;
     }
 
     /// <summary>

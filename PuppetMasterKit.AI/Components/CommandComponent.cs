@@ -7,11 +7,11 @@ namespace PuppetMasterKit.AI.Components
   {
     public Action<Entity> OnTouched { get; private set; }
 
-    public Action<Entity,Point> OnMoveToPoint { get; private set; }
-
-    public Action<Entity, Point> OnAttackPoint { get; private set; }
+    public Action<Entity,Point> OnUserTouchedPoint { get; private set; }
 
     public Action<Entity> OnMoveToEntity { get; private set; }
+
+    public Action<Entity, Point> OnBuild { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.TouchComponent"/> class.
@@ -19,12 +19,12 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="onTouched">Target touched.</param>
     /// <param name="onMoveToPoint">Scene touched.</param>
     public CommandComponent(Action<Entity> onTouched, 
-                            Action<Entity,Point> onMoveToPoint,
-                            Action<Entity, Point> onAttackPoint)
+                            Action<Entity,Point> onUserTouchedPoint,
+                            Action<Entity, Point> onBuild)
     {
       OnTouched = onTouched;
-      OnMoveToPoint = onMoveToPoint;
-      OnAttackPoint = onAttackPoint;
+      OnUserTouchedPoint = onUserTouchedPoint;
+      OnBuild = onBuild;
     }
   }
 }

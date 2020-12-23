@@ -7,7 +7,6 @@ using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Template.Game.Level;
-using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Utility.Extensions;
 using SpriteKit;
 using UIKit;
@@ -41,7 +40,11 @@ namespace PuppetMasterKit.Template.Game
     public override void DidMoveToView(SKView view)
     {
       flightMap = new LevelBuilder(this, componentSystem).Build() as GameFlightMap;
+      this.View.MultipleTouchEnabled = true;
+      flightMap.GetHeroes().ForEach(x => {
+        x.GetComponent<StateComponent>().IsSelected = true; });
     }
+
 
     /// <summary>
     /// Toucheses the began.
@@ -50,85 +53,27 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="evt">Evt.</param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
-      bool controlTouched = evt.AllTouches.Select(x => ((UITouch)x).LocationInNode(this))
-        .Select(x => this.GetNodeAtPoint(x))
-        .Any(x => x.Name == "ctrl");
-
       foreach (UITouch touch in touches) {
         var positionInScene = touch.LocationInNode(this);
-        //Debug.WriteLine($"{{\"X\":{positionInScene.X},\"Y\":{positionInScene.Y}}}");
         var touchedNode = this.GetNodeAtPoint(positionInScene);
-
-        if (controlTouched) {
-          OnAttackLocation(positionInScene);
-        } else {
-          var entity = GetEntityFromNode(touchedNode);
-          if (entity != null) {
-            OnEntityTouched(entity);
-          } else {
-            OnSceneTouched(positionInScene);
-          }
-        }
+        //var entity = GetEntityFromNode(touchedNode);
+        OnTouchLocation(positionInScene);
       }
-    }
-
-    /// <summary>
-    /// On selected entity.
-    /// </summary>
-    /// <param name="entity">Entity.</param>
-    private void OnEntityTouched(Entity entity)
-    {
-      if (entity == null)
-        return;
-
-      var command = entity.GetComponent<CommandComponent>();
-      if (!isMultiSelect) {
-        //if multisect is disabled, clear existing selections
-        flightMap.GetEntities(x => {
-          var state = x.GetComponent<StateComponent>();
-          return state != null && state.IsSelected;
-        }).ForEach(x => {
-          var state = x.GetComponent<StateComponent>();
-          state.IsSelected = false;
-        });
-      }
-      //send touched event to the entity's command component
-      if (command != null) {
-        command.OnTouched(entity);
-      }
-
-
-      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
-      
-      flightMap.GetHeroes()
-        .ForEach(e => e.GetComponent<CommandComponent>()?
-                 .OnMoveToPoint(e, mapper.ToScene(entity.GetComponent<Agent>().Position)));
-    }
-
-    /// <summary>
-    /// On selected scene.
-    /// </summary>
-    /// <param name="location">Touched node.</param>
-    private void OnSceneTouched(CGPoint location)
-    {
-      Point point = new Point((float)location.X, (float)location.Y);
-
-      flightMap.GetHeroes()
-        .ForEach(e => e.GetComponent<CommandComponent>()?
-          .OnMoveToPoint(e, point));
     }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="location"></param>
-    private void OnAttackLocation(CGPoint location)
+    private void OnTouchLocation(CGPoint location)
     {
       Point point = new Point((float)location.X, (float)location.Y);
-
       flightMap.GetHeroes()
-        .ForEach(e => e.GetComponent<CommandComponent>()?
-          .OnAttackPoint(e, point));
+        .Where(x => x.GetComponent<StateComponent>().IsSelected)
+        .ForEach(c => {
+          var cmd = c.GetComponent<CommandComponent>();
+          cmd?.OnUserTouchedPoint(c, point);
+        });
     }
 
     /// <summary>
