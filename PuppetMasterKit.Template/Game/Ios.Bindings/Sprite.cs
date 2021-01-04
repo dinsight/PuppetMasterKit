@@ -32,14 +32,20 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// <summary>
     /// Adds the debug border.
     /// </summary>
-    private void AddDebugBorder(){
+    public void SetBorder(){
       var frame = CGRect.FromLTRB(0, node.Size.Height, node.Size.Width, 0);
 
       var border = SKShapeNode.FromRect(frame);
+      border.ZPosition = node.ZPosition;
       node.AddChild(border);
       border.StrokeColor = UIKit.UIColor.Red;
       border.LineWidth = 2;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool IsDebug { get; set; }
 
     /// <summary>
     /// Gets or sets the alpha.
@@ -69,6 +75,8 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// <value>The position.</value>
     public Point Position {
       get {
+        if (node.Position.IsEmpty)
+          return null;
         return mapper.FromScene(
           new Point((float)node.Position.X, (float)node.Position.Y));
       }

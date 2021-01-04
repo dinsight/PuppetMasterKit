@@ -55,7 +55,6 @@
     <Compile Include="Goals\GoalToWander.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Components\IAgentDelegate.cs" />
-    <Compile Include="EntityBuilder.cs" />
     <Compile Include="EntityBucket.cs" />
     <Compile Include="FlightMap.cs" />
     <Compile Include="EntityBucketId.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="CircularObstacle.cs" />
     <Compile Include="PolygonalObstacle.cs" />
     <Compile Include="Components\RangeWeaponComponent.cs" />
+    <Compile Include="Components\UpdateableSpriteComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

@@ -4,11 +4,12 @@ using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
 using LightInject;
-using PuppetMasterKit.AI.Rules;
 using SpriteKit;
 using System.Collections.Generic;
 using System;
-using UIKit;
+using PuppetMasterKit.Ios.Tiles.Tilemap;
+using static PuppetMasterKit.AI.Entity;
+using static PuppetMasterKit.AI.Components.Agent;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -23,41 +24,37 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// </summary>
     /// <returns>The build.</returns>
     /// <param name="componentSystem">Component system.</param>
-    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries)
+    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries, TileMap tileMap )
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var hud = Container.GetContainer().GetInstance<Hud>();
 
-      var entity = EntityBuilder.Build()
+      var entity = EntityBuilder.Builder()
         .With(componentSystem,
               //new RuleSystemComponent<FlightMap, RabbitHandlers>(
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<BeaverStates>(BeaverStates.idle),
-              new SpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f, 0.2f)),
-              new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap),
-                    RangeWeaponAtlas, RangeWeaponName, new Size(30, 30), 700, 10, 500),
+              new UpdateableSpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f, 0.2f)),
+              new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap), RangeWeaponAtlas, RangeWeaponName,
+                new Size(30, 30), 700, 10, 500),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 7, 1, 3, 1),
-              new CommandComponent(BeaverHandlers.OnTouched,
-                    BeaverHandlers.OnMoveToPoint,
-                    BeaverHandlers.OnBuildGranary),
-              new CollisionComponent(GetCollisions(flightMap),
-                    BeaverHandlers.HandleCollision, 80),
-              new Agent())
+              new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint),
+              new CollisionComponent(GetCollisions(flightMap),BeaverHandlers.HandleCollision, 80),
+              AgentBuilder.Builder()
+                .With(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(x, p => p.Name == CharacterName), 150), 0.001f)
+                .With(new GoalToSeparateFrom(x => flightMap.GetAdjacentEntities(x, p => p.Name == CharacterName), 50), 0.005f)
+                .With(new ConstraintToStayWithin(boundaries))
+                .With(new GoalToAvoidObstacles(x => ((GameFlightMap)flightMap).GetObstacles(x), 30))
+              .Build())
         .WithName(CharacterName)
-        .GetEntity();
-
-      entity.GetComponent<Agent>()
-          .Add(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 150), 0.001f)
-          .Add(new GoalToSeparateFrom(x => flightMap.GetAdjacentEntities(entity, p => p.Name == CharacterName), 50), 0.005f)
-          .Add(new ConstraintToStayWithin(boundaries))
-          .Add(new GoalToAvoidObstacles(x => ((GameFlightMap)flightMap).GetObstacles(entity), 30));
+        .Build();
 
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
 
       hud.OnHudButtonClick += (sender, btnName) => {
         if (btnName == "build_granary") {
-          BeaverHandlers.OnBuildGranary(entity, Point.Zero);
+          BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
         }
       };
 

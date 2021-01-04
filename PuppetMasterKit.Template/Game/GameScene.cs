@@ -56,7 +56,6 @@ namespace PuppetMasterKit.Template.Game
       foreach (UITouch touch in touches) {
         var positionInScene = touch.LocationInNode(this);
         var touchedNode = this.GetNodeAtPoint(positionInScene);
-        //var entity = GetEntityFromNode(touchedNode);
         OnTouchLocation(positionInScene);
       }
     }

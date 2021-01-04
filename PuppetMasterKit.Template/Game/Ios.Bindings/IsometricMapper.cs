@@ -46,8 +46,10 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// </summary>
     /// <returns>The scene orientation.</returns>
     /// <param name="orientation">Orientation.</param>
-    public String ToSceneOrientation(String orientation)
+    public Orientation? ToSceneOrientation(Orientation? orientation)
     {
+      if (!orientation.HasValue)
+        return null;
       
       if(Orientation.N == orientation ){
         return Orientation.SE;

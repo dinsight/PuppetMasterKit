@@ -13,6 +13,8 @@ using PuppetMasterKit.Template.Game.Components;
 using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Sprites;
 using SpriteKit;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
+using PuppetMasterKit.Ios.Tiles.Tilemap;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -35,13 +37,19 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public static void OnBuildGranary(Entity entity, Point location)
-    {
+    public static void OnBuildGranary(Entity entity, Point location,
+      TileMap tileMap,
+      ComponentSystem componentSystem,
+      Polygon boundaries)
+    { 
       Debug.WriteLine("Building the granary...");
       var agent = entity.GetComponent<Agent>();
       var state = entity.GetComponent<StateComponent<BeaverStates>>();
       agent.Remove<GoalToFollowPath>();
       state.CurrentState = BeaverStates.build;
+      StoreBuilder.Builder(componentSystem, StoreStates.building)
+          .AtLocation(agent.Position.X, agent.Position.Y)
+          .Build();
     }
 
     /// <summary>
@@ -116,13 +124,27 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
                               CollisionState state)
     {
       if(entity.Name == "store"){
+        var storeState = entity.GetComponent<StateComponent<StoreStates>>();
+        
+        var storeAgent = entity.GetComponent<Agent>();
+        var beaverAgent = beaver.GetComponent<Agent>();
+        var beaverState = beaver.GetComponent<StateComponent<BeaverStates>>();
         if (state.Status == CollisionStatus.INIT) {
-          var beaverAgent = beaver.GetComponent<Agent>();
-          var stateComponent = beaver.GetComponent<StateComponent<BeaverStates>>();
           beaverAgent.Remove<GoalToFollowPath>();
-          stateComponent.CurrentState = BeaverStates.chop;
+          if (storeState.CurrentState == StoreStates.building) {
+            beaverState.CurrentState = BeaverStates.build;
+          } else {
+            beaverState.CurrentState = BeaverStates.chop;
+            GatherFood(beaver, entity, state);
+          }
         }
-        GatherFood(beaver, entity, state);
+
+        if (state.Status == CollisionStatus.IN_PROGRESS && state.StopWatchValue > 20) {
+          storeState.CurrentState = StoreStates.full;
+          beaverState.CurrentState = BeaverStates.idle;
+          var storeSprite = entity.GetComponent<SpriteComponent>();
+          storeSprite.OnSetEntity();
+        }
       }
 
       if(entity.Name == "hole"){

@@ -22,7 +22,7 @@ namespace PuppetMasterKit.AI.Components
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.Agent"/> class.
     /// </summary>
-    public Agent()
+    private Agent()
     {
       position = Point.Zero;
       Velocity = Vector.Zero;
@@ -140,6 +140,47 @@ namespace PuppetMasterKit.AI.Components
     public override void Cleanup()
     {
       base.Cleanup();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AgentBuilder
+    {
+      private Agent agent;
+
+      private AgentBuilder()
+      {
+        agent = new Agent();
+      }
+
+      public static AgentBuilder Builder()
+      {
+        return new AgentBuilder();
+      }
+
+      public AgentBuilder With(Goal goal, float weight = 1)
+      {
+        agent.Add(goal, weight);
+        return this;
+      }
+
+      public AgentBuilder With(Constraint constraint)
+      {
+        agent.Add(constraint);
+        return this;
+      }
+
+      public AgentBuilder AtLocation(Point position)
+      {
+        agent.Position = position;
+        return this;
+      }
+
+      public Agent Build()
+      {
+        return agent;
+      }
     }
   }
 }

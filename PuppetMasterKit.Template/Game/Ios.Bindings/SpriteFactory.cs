@@ -45,7 +45,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// </summary>
     /// <returns>The texture.</returns>
     /// <param name="atlasName">Atlas name.</param>
-    public ISprite FromTexture(String atlasName, double secondsPerFrame)
+    public ISprite CreateFromTexture(String atlasName, double secondsPerFrame)
     {
       var node = new SKSpriteNode();
       node.UserData = new Foundation.NSMutableDictionary();
@@ -60,7 +60,7 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// <param name="atlasName"></param>
     /// <param name="imageName"></param>
     /// <returns></returns>
-    public ISprite FromTexture(String atlasName, String imageName) {
+    public ISprite CreateFromTexture(String atlasName, String imageName) {
       var node = new SKSpriteNode();
       node.UserData = new Foundation.NSMutableDictionary();
       node.PhysicsBody = null;

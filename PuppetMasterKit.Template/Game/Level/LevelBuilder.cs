@@ -116,7 +116,7 @@ namespace PuppetMasterKit.Template.Game.Level
     /// <summary>
     /// Adds the entities.
     /// </summary>
-    private void AddEntities()
+    private void AddEntities(TileMap tileMap)
     {
       var frame = new Polygon(
         new Point(0, 0),
@@ -126,7 +126,7 @@ namespace PuppetMasterKit.Template.Game.Level
       );
 
       for (int i = 0; i < 1 ; i++) {
-        var beaver = BeaverBuilder.Build(componentSystem, frame);
+        var beaver = BeaverBuilder.Build(componentSystem, frame, tileMap);
         var agent = beaver.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
@@ -137,8 +137,8 @@ namespace PuppetMasterKit.Template.Game.Level
         flightMap.AddHero(beaver);
       }
 
-      for (int i = 0; i < 1 ; i++) {
-        var wolf = WolfBuilder.Build(componentSystem, frame);
+      for (int i = 0; i < 0 ; i++) {
+        var wolf = WolfBuilder.Build(componentSystem, frame, tileMap);
         var agent = wolf.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         var x = random.Next(10, 300);
@@ -148,19 +148,15 @@ namespace PuppetMasterKit.Template.Game.Level
       }
 
       for (int i = 0; i < 1 ; i++) {
-        var store = StoreBuilder.Build(componentSystem, frame);
-        var agent = store.GetComponent<Agent>();
-        var random = new Random(Guid.NewGuid().GetHashCode());
-        //var x = random.Next(10, 300);
-        //var y = random.Next(100, 600);
-        var x = 300;
-        var y = 500;
-        agent.Position = new Point(x, y);
-        flightMap.Add(store);
+        StoreBuilder.Builder(componentSystem, StoreStates.full)
+          .WithBoundary(frame)
+          .WithMap(tileMap)
+          .AtLocation(300, 500)
+          .Build();
       }
 
       for (int i = 0; i < 0 ; i++) {
-        var hole = HoleBuilder.Build(componentSystem, frame);
+        var hole = HoleBuilder.Build(componentSystem, frame, tileMap);
         var agent = hole.GetComponent<Agent>();
         var x = 250;
         var y = 395;
@@ -193,7 +189,6 @@ namespace PuppetMasterKit.Template.Game.Level
       hudDisplay.UpdateLayout(scene, cameraNode);
     }
 
-
     /// <summary>
     /// Build this instance.
     /// </summary>
@@ -202,8 +197,12 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var camera = AddCamera();
       AddHud(camera);
-      AddEntities();
+      var data = LoadSceneData();
+      //scene.DrawObstacles(flightMap.Obstacles);
+      //scene.DrawEnclosure();
+      var tileMap = GenerateMap();
 
+      AddEntities(tileMap);
       var player = flightMap
         .GetHeroes()
         .Select(a => a.GetComponent<SpriteComponent>())
@@ -211,19 +210,14 @@ namespace PuppetMasterKit.Template.Game.Level
 
       player.AddChild(camera);
 
-      var data = LoadSceneData();
-      //scene.DrawObstacles(flightMap.Obstacles);
-      //scene.DrawEnclosure();
-      GenerateMap();
-      
       return flightMap;
     }
 
-    
+
     /// <summary>
     /// Generates the map1.
     /// </summary>
-    private void GenerateMap()
+    private TileMap GenerateMap()
     {
       
       var existing = scene.Children.OfType<SKTileMapNode>();
@@ -284,6 +278,8 @@ namespace PuppetMasterKit.Template.Game.Level
       });
 
       PrintMap(builder);
+
+      return tileMap;
     }
 
     private static void PrintMap(I2DSubscript<int?> i2)

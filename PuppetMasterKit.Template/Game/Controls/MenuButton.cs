@@ -15,6 +15,8 @@ namespace PuppetMasterKit.Template.Game.Controls
 
     private bool isPressed = false;
 
+    private int itemSpacing = 0;
+
     /// <summary>
     /// 
     /// </summary>
@@ -32,14 +34,15 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     private void SetupChildButtons()
     {
-      var padding = 5;
       for (int i = 0; i < this.Children.Count(); i++) {
         var item = this.Children[i] as HoverButton;
         if (item!=null) {
-          var xpos = (i + 1) * (padding + item.Size.Width + HoverButton.Padding * 2);
-          item.Position = new CGPoint(xpos, item.Position.Y);
+          var xpos = (i + 1) * (itemSpacing + item.Size.Width + HoverButton.Padding * 2);
+          item.Position = new CGPoint(0, 0);
           item.OnButtonPressed += Item_OnButtonPressed;
           item.OnButtonReleased += Item_OnButtonReleased;
+          item.Alpha = 0;
+          
         }
       }
     }
@@ -101,14 +104,22 @@ namespace PuppetMasterKit.Template.Game.Controls
     private void ShowMenu(bool show)
     {
       var hide = SKAction.FadeOutWithDuration(1);
-      var unhide = SKAction.FadeInWithDuration(1);
-      this.Children.OfType<HoverButton>().ToList().ForEach(x => {
+      var reveal = SKAction.FadeInWithDuration(1);
+      var list = this.Children.OfType<HoverButton>().ToList();
+      for (int i = 0; i < list.Count; i++) {
+        var x = list[i];
         if (show) {
           x.Hidden = false;
+          var xpos = (i + 1) * (itemSpacing + x.Size.Width + HoverButton.Padding * 2);
+          var slide = SKAction.MoveTo(new CGPoint(xpos,0), 0.5);
+          var group = SKAction.Group( reveal, slide);
+          x.RunAction(group);
         } else {
-          x.Hidden = true;
+          var slide = SKAction.MoveTo(new CGPoint(0,0), 0.5);
+          var group = SKAction.Group(slide, hide, SKAction.Run(() => x.Hidden = true));
+          x.RunAction(group);
         }
-      });
+      }
     }
   }
 }

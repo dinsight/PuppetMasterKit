@@ -4,46 +4,47 @@ using LightInject;
 using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
+using PuppetMasterKit.Utility.Attributes;
 
 namespace PuppetMasterKit.AI.Components
 {
-  public class SpriteComponent : Component, IAgentDelegate
+  public class SpriteComponent : Component
   {
-    private ISprite theSprite;
-
-    private string currentOrientation = Orientation.S;
-
-    private string currentState = null;
-
-    private string atlasName = null;
-
-    private Size size = Size.Zero;
-
-    private Point anchorPoint;
-
     public const string ENTITY_ID_PPROPERTY = "id";
+    private ISprite theSprite;
+    private string currentState = null;
+    private Orientation? currentOrientation = null;
+    private string atlasName = null;
+    private Size size = Size.Zero;
+    private Point anchorPoint;
+    private ICoordinateMapper mapper;
 
-    ICoordinateMapper mapper;
+    #region Properties
+    public ISprite Sprite { get => theSprite; protected set => theSprite = value; }
+
+    public string CurrentState { get => currentState; protected set => currentState = value; }
+
+    public string AtlasName { get => atlasName; private set => atlasName = value; }
+
+    public Orientation? CurrentOrientation { get => currentOrientation; protected set => currentOrientation = value; }
+    #endregion
 
     /// <summary>
-    /// Gets the sprite.
+    /// 
     /// </summary>
-    /// <value>The sprite.</value>
-    public ISprite Sprite {
-      get {
-        return theSprite;
-      }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.Components.SpriteComponent"/> class.
-    /// </summary>
-    /// <param name="atlasName">Atlas name.</param>
-    public SpriteComponent(string atlasName, Size size = null, Point anchorPoint = null)
+    /// <param name="atlasName"></param>
+    /// <param name="size"></param>
+    /// <param name="anchorPoint"></param>
+    /// <param name="initialOrientation"></param>
+    public SpriteComponent(string atlasName,
+      Size size = null,
+      Point anchorPoint = null,
+      Orientation? initialOrientation = Orientation.S)
     {
       this.atlasName = atlasName;
       this.size = size;
-      this.anchorPoint = anchorPoint ?? new Point(0.5f, 0.5f);//default anchor point is the middle of the sprite
+      //default anchor point is the middle of the sprite
+      this.anchorPoint = anchorPoint ?? new Point(0.5f, 0.5f);
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
     }
 
@@ -56,20 +57,25 @@ namespace PuppetMasterKit.AI.Components
       if (state == null)
         throw new Exception("The state component has to be created before the sprite component");
 
-      currentState = state.ToString();
-      theSprite = GetSprite(atlasName, currentOrientation, currentState);
-      if (theSprite == null)
-        throw new Exception("The sprite could not be created");
-
-      theSprite.AddProperty(ENTITY_ID_PPROPERTY, Entity.Id);
-      theSprite.AddToScene();
+      CurrentState = state.ToString();
+      if (Sprite == null) {
+        Sprite = CreateSprite(atlasName, CurrentOrientation, CurrentState);
+        if (Sprite == null)
+          throw new Exception("The sprite could not be created");
+        Sprite.SetBorder();
+        Sprite.AddProperty(ENTITY_ID_PPROPERTY, Entity.Id);
+        Sprite.AddToScene();
+      } else {
+        ChangeTexture(AtlasName, CurrentOrientation, CurrentState, GetFps(Entity));
+      }
+      
       if (size != null) {
-        theSprite.Size = size;
+        Sprite.Size = size;
       }
 
       var agent = Entity.GetComponent<Agent>();
       if (agent != null) {
-        theSprite.Position = agent.Position;
+        UpdatePositionFromAgent(agent);
       }
       base.OnSetEntity();
     }
@@ -81,12 +87,12 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="atlas">Atlas.</param>
     /// <param name="orientation">Orientation.</param>
     /// <param name="state">State.</param>
-    private String GetTextureName(String atlas, string orientation,
+    private String GetTextureName(String atlas, Orientation? orientation,
                               string state)
     {
       orientation = mapper.ToSceneOrientation(orientation);
       var strState = String.IsNullOrEmpty(state) ? "" : $"-{state}";
-      var strOrientation = String.IsNullOrEmpty(orientation) ? "" : $"-{orientation}";
+      var strOrientation = orientation.HasValue ? $"-{orientation.GetStringValue()}" : "";
       var suffix = $"{atlas}/{atlas}{strState}{strOrientation}.atlas";
       return suffix;
     }
@@ -97,26 +103,11 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="atlas">Atlas.</param>
     /// <param name="orientation">Orientation.</param>
     /// <param name="state">State.</param>
-    private ISprite GetSprite(String atlas, string orientation, string state)
+    private ISprite CreateSprite(String atlas, Orientation? orientation, string state)
     {
       var factory = Container.GetContainer().GetInstance<ISpriteFactory>();
       var texture = GetTextureName(atlas, orientation, state);
-      return factory.FromTexture(texture);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="entity"></param>
-    /// <returns></returns>
-    private float GetFps(Entity entity) {
-      PhysicsComponent physics = entity.GetComponent<PhysicsComponent>();
-      var agent = entity.GetComponent<Agent>();
-      var maxSpeed = physics?.MaxSpeed ?? 1;
-      //var currentSpeed = agent.Velocity.Magnitude() > 0 ? Math.Min(maxSpeed, agent.Velocity.Magnitude()) : maxSpeed;
-      var currentSpeed = maxSpeed;
-      var fps = currentSpeed * 24 / maxSpeed;
-      return fps;
+      return factory.CreateFromTexture(texture);
     }
 
     /// <summary>
@@ -126,58 +117,43 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="atlas">Atlas.</param>
     /// <param name="orientation">Orientation.</param>
     /// <param name="state">State.</param>
-    private ISprite ChangeTexture(String atlas, string orientation, string state, float fps)
+    protected ISprite ChangeTexture(String atlas, Orientation? orientation, string state, float fps)
     {
       var factory = Container.GetContainer().GetInstance<ISpriteFactory>();
       var texture = GetTextureName(atlas, orientation, state);
       var speed = 1 / fps;
-      var sprite = factory.ChangeTexture(theSprite, texture, speed);
+      var sprite = factory.ChangeTexture(Sprite, texture, speed);
       if (sprite != null) {
         sprite.AnchorPoint = anchorPoint;
+        if (size != null) {
+          sprite.Size = size;
+        }
       }
       return sprite;
     }
 
     /// <summary>
-    /// Agent will update.
+    /// 
     /// </summary>
-    /// <param name="agent">Agent.</param>
-    public void AgentWillUpdate(Agent agent)
+    /// <param name="entity"></param>
+    /// <returns></returns>
+    protected float GetFps(Entity entity)
     {
-      agent.Position.X = theSprite.Position.X;
-      agent.Position.Y = theSprite.Position.Y;
+      PhysicsComponent physics = entity.GetComponent<PhysicsComponent>();
+      var maxSpeed = physics?.MaxSpeed ?? 1;
+      //var currentSpeed = agent.Velocity.Magnitude() > 0 ? Math.Min(maxSpeed, agent.Velocity.Magnitude()) : maxSpeed;
+      var currentSpeed = maxSpeed;
+      var fps = currentSpeed * 24 / maxSpeed;
+      return fps;
     }
 
     /// <summary>
-    /// Agent did update.
+    /// 
     /// </summary>
-    /// <param name="agent">Agent.</param>
-    public void AgentDidUpdate(Agent agent)
+    /// <param name="agent"></param>
+    protected void UpdatePositionFromAgent(Agent agent)
     {
-      if (theSprite.Position != null) {
-        var direction = agent.Position - theSprite.Position;
-        var orientation = Orientation.GetOrientation(direction);
-        var state = Entity.GetComponent<StateComponent>();
-        PhysicsComponent physics = Entity.GetComponent<PhysicsComponent>();
-        
-        if (direction == Vector.Zero && currentState == state.ToString())
-          return;
-
-        if (orientation != currentOrientation || currentState != state.ToString()) {
-          currentState = state.ToString();
-          if (orientation != null) {
-            currentOrientation = orientation;
-          }
-
-          var fps = GetFps(Entity);
-          var newTexture = ChangeTexture(atlasName, currentOrientation, currentState, fps);
-          if (newTexture != null) {
-            theSprite = newTexture;
-          }
-          SetSelection(state);
-        }
-      }
-      theSprite.Position = agent.Position;
+      Sprite.Position = agent.Position;
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var x = agent.Position.X;
       var y = agent.Position.Y;
@@ -185,21 +161,15 @@ namespace PuppetMasterKit.AI.Components
       var my = flightMap.MapHeight;
       var d = (float)Math.Sqrt(x * x + y * y);
       var D = (float)Math.Sqrt(mx * mx + my * my);
-      theSprite.ZOrder = d / D;
+      Sprite.ZOrder = d / D;
     }
 
     /// <summary>
-    /// Sets the selection.
+    /// 
     /// </summary>
-    /// <param name="stateComponent">State component.</param>
-    private void SetSelection(StateComponent stateComponent)
-    {
-      //theSprite.Alpha = stateComponent.IsSelected ? 0.7f : 1f;
-    }
-
     public override void Cleanup()
     {
-      theSprite.RemoveFromParent();
+      Sprite.RemoveFromParent();
       base.Cleanup();
     }
   }

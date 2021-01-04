@@ -1,10 +1,11 @@
 ﻿using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
 using PuppetMasterKit.Utility.Configuration;
-using PuppetMasterKit.AI.Goals;
 using PuppetMasterKit.Graphics.Geometry;
 using LightInject;
-using PuppetMasterKit.AI.Rules;
+using PuppetMasterKit.Ios.Tiles.Tilemap;
+using static PuppetMasterKit.AI.Entity;
+using static PuppetMasterKit.AI.Components.Agent;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -16,7 +17,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// </summary>
     /// <returns>The build.</returns>
     /// <param name="componentSystem">Component system.</param>
-    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries)
+    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries, TileMap tileMap)
     {
       return Build(null, componentSystem, boundaries);
     }
@@ -32,16 +33,16 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
 
-      entity = EntityBuilder.Build(entity)
+      entity = EntityBuilder.Builder(entity)
         .With(componentSystem,
               new StateComponent<HoleStates>(HoleStates.open),
               new SpriteComponent(CharacterName, new Size(25, 25)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 15),
-              new CommandComponent(HoleHandlers.OnTouched, HoleHandlers.OnMoveToPoint, null),
-              new Agent())
+              new CommandComponent(HoleHandlers.OnTouched, HoleHandlers.OnMoveToPoint),
+              AgentBuilder.Builder().Build())
         .WithName(CharacterName)
-        .GetEntity();
+        .Build();
 
       return entity;
     }

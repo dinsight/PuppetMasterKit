@@ -9,6 +9,6 @@ namespace PuppetMasterKit.Graphics.Sprites
 
     Point ToScene(Point point);
 
-    String ToSceneOrientation(String orientation);
+    Orientation? ToSceneOrientation(Orientation? orientation);
   }
 }

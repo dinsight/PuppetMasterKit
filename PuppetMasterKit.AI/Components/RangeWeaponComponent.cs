@@ -67,7 +67,7 @@ namespace PuppetMasterKit.AI.Components
 
       var agent = Entity.GetComponent<Agent>();
       var factory = Container.GetContainer().GetInstance<ISpriteFactory>();
-      weaponSprite = factory.FromTexture(atlasName, spriteName);
+      weaponSprite = factory.CreateFromTexture(atlasName, spriteName);
       weaponSprite.AddToScene();
       weaponSprite.Position = agent.Position;
       weaponSprite.Size = size;

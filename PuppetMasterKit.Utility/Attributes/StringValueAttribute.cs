@@ -31,7 +31,7 @@ namespace PuppetMasterKit.Utility.Attributes
 		/// </summary>
 		/// <returns>The string value.</returns>
 		/// <param name="value">Value.</param>
-		public static string GetStringValue(this Enum value)
+	public static string GetStringValue(this Enum value)
 	{
 		Type type = value.GetType();	
 		FieldInfo fi = type.GetRuntimeField(value.ToString());

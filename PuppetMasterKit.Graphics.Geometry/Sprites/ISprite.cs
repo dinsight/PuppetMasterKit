@@ -29,5 +29,7 @@ namespace PuppetMasterKit.Graphics.Sprites
     String GetProperty(String name);
 
     object GetNativeSprite();
+
+    void SetBorder();
   }
 }

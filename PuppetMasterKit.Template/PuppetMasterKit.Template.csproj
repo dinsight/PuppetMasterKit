@@ -345,6 +345,8 @@
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\build_hover.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\selected.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\BuildSite.imageset\" />
+    <Folder Include="Resources\store\store-building.atlas\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -1265,8 +1267,8 @@
     <AtlasTexture Include="Resources\beaver\beaver-idle-se.atlas\frame_2_0001.png" />
     <AtlasTexture Include="Resources\beaver\beaver-idle-sw.atlas\frame_8_0001.png" />
     <AtlasTexture Include="Resources\beaver\beaver-idle-w.atlas\frame_7_0001.png" />
-    <AtlasTexture Include="Resources\store\store-depleted-nw.atlas\Granary-1.png" />
-    <AtlasTexture Include="Resources\store\store-full-nw.atlas\Granary-1.png" />
+    <AtlasTexture Include="Resources\store\store-depleted.atlas\Granary-1.png" />
+    <AtlasTexture Include="Resources\store\store-full.atlas\Granary-1.png" />
     <AtlasTexture Include="Resources\beaver\beaver-walk-e.atlas\frame_3_0014.png" />
     <AtlasTexture Include="Resources\beaver\beaver-walk-e.atlas\frame_3_0015.png" />
     <AtlasTexture Include="Resources\beaver\beaver-walk-e.atlas\frame_3_0001.png" />
@@ -1804,6 +1806,7 @@
     <AtlasTexture Include="Resources\wolf\wolf-attack-w.atlas\frame_7_0007.png" />
     <AtlasTexture Include="Resources\wolf\wolf-attack-w.atlas\frame_7_0013.png" />
     <AtlasTexture Include="Resources\artifacts\rocks.atlas\pebble.png" />
+    <AtlasTexture Include="Resources\store\store-building.atlas\tmp0001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
