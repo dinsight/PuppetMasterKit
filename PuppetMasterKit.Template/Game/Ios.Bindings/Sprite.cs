@@ -33,7 +33,8 @@ namespace PuppetMasterKit.Template.Game.Ios.Bindings
     /// Adds the debug border.
     /// </summary>
     public void SetBorder(){
-      var frame = CGRect.FromLTRB(0, node.Size.Height, node.Size.Width, 0);
+      var frame = CGRect.FromLTRB(-node.Size.Width/2,
+        -node.Size.Height/2, node.Size.Width/2, node.Size.Height/2);
 
       var border = SKShapeNode.FromRect(frame);
       border.ZPosition = node.ZPosition;

@@ -1,53 +1,56 @@
-﻿using PuppetMasterKit.AI;
-using PuppetMasterKit.AI.Components;
-using PuppetMasterKit.Utility.Configuration;
-using PuppetMasterKit.Graphics.Geometry;
+﻿using System;
+using PuppetMasterKit.AI;
 using LightInject;
+using PuppetMasterKit.AI.Components;
+using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using static PuppetMasterKit.AI.Entity;
 using static PuppetMasterKit.AI.Components.Agent;
+using PuppetMasterKit.Utility.Configuration;
 
-namespace PuppetMasterKit.Template.Game.Character.Rabbit
+namespace PuppetMasterKit.Template.Game.Character.Tower
 {
-  public class StoreBuilder
+  public class TowerBuilder
   {
-    private static string CharacterName = "store";
+    private static string CharacterName = "tower";
 
     private ComponentSystem componentSystem;
-    private StoreStates initialState = StoreStates.full;
+    private TowerStates initialState = TowerStates.ready;
     private Polygon boundaries;
     private TileMap tileMap;
     private Point location;
     private FlightMap flightMap;
 
-    public static StoreBuilder Builder(ComponentSystem componentSystem, StoreStates initialState = StoreStates.full) {
-      var builder = new StoreBuilder {
+    public static TowerBuilder Builder(ComponentSystem componentSystem, TowerStates initialState = TowerStates.building)
+    {
+      var builder = new TowerBuilder {
         componentSystem = componentSystem,
         initialState = initialState
       };
       return builder;
     }
 
-    public StoreBuilder WithBoundary(Polygon boundaries) {
+    public TowerBuilder WithBoundary(Polygon boundaries)
+    {
       this.boundaries = boundaries;
       return this;
     }
 
-    public StoreBuilder WithMap(TileMap tileMap)
+    public TowerBuilder WithMap(TileMap tileMap)
     {
       this.tileMap = tileMap;
       return this;
     }
 
-    public StoreBuilder AtLocation(Point location)
+    public TowerBuilder AtLocation(Point location)
     {
       this.location = location;
       return this;
     }
 
-    public StoreBuilder AtLocation(float x, float y)
+    public TowerBuilder AtLocation(float x, float y)
     {
-      this.location = new Point(x,y);
+      this.location = new Point(x, y);
       return this;
     }
 
@@ -62,11 +65,11 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       var entity = EntityBuilder.Builder()
         .With(componentSystem,
-              new StateComponent<StoreStates>(initialState),
-              new SpriteComponent(CharacterName, new Size(150, 150), new Point(0.5f,0.5f), null),
+              new StateComponent<TowerStates>(initialState),
+              new SpriteComponent(CharacterName, new Size(150, 150), new Point(0.5f, 0.5f), null),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 15),
-              new CommandComponent(StoreHandlers.OnTouched, StoreHandlers.OnMoveToPoint),
+              new CommandComponent(TowerHandlers.OnTouched, null),
               AgentBuilder.Builder()
                 .AtLocation(location)
               .Build())
@@ -74,7 +77,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         .Build();
 
       var sprite = entity.GetComponent<SpriteComponent>();
-      
+
       flightMap.Add(entity);
 
       return entity;

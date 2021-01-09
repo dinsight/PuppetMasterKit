@@ -347,6 +347,7 @@
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\" />
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\BuildSite.imageset\" />
     <Folder Include="Resources\store\store-building.atlas\" />
+    <Folder Include="Game\Character\Tower\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -410,6 +411,10 @@
     <Compile Include="Game\Character\Beaver\BeaverRulesBuilder.cs" />
     <Compile Include="Game\Controls\HoverButton.cs" />
     <Compile Include="Game\Controls\MenuButton.cs" />
+    <Compile Include="Game\Character\Tower\TowerBuilder.cs" />
+    <Compile Include="Game\Character\Tower\TowerHandlers.cs" />
+    <Compile Include="Game\Character\Tower\TowerRulesBuilder.cs" />
+    <Compile Include="Game\Character\Tower\TowerStates.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -1267,8 +1272,6 @@
     <AtlasTexture Include="Resources\beaver\beaver-idle-se.atlas\frame_2_0001.png" />
     <AtlasTexture Include="Resources\beaver\beaver-idle-sw.atlas\frame_8_0001.png" />
     <AtlasTexture Include="Resources\beaver\beaver-idle-w.atlas\frame_7_0001.png" />
-    <AtlasTexture Include="Resources\store\store-depleted.atlas\Granary-1.png" />
-    <AtlasTexture Include="Resources\store\store-full.atlas\Granary-1.png" />
     <AtlasTexture Include="Resources\beaver\beaver-walk-e.atlas\frame_3_0014.png" />
     <AtlasTexture Include="Resources\beaver\beaver-walk-e.atlas\frame_3_0015.png" />
     <AtlasTexture Include="Resources\beaver\beaver-walk-e.atlas\frame_3_0001.png" />
@@ -1807,6 +1810,8 @@
     <AtlasTexture Include="Resources\wolf\wolf-attack-w.atlas\frame_7_0013.png" />
     <AtlasTexture Include="Resources\artifacts\rocks.atlas\pebble.png" />
     <AtlasTexture Include="Resources\store\store-building.atlas\tmp0001.png" />
+    <AtlasTexture Include="Resources\store\store-depleted.atlas\tmp0001.png" />
+    <AtlasTexture Include="Resources\store\store-full.atlas\tmp0001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />

@@ -62,7 +62,7 @@ namespace PuppetMasterKit.AI.Components
         Sprite = CreateSprite(atlasName, CurrentOrientation, CurrentState);
         if (Sprite == null)
           throw new Exception("The sprite could not be created");
-        Sprite.SetBorder();
+
         Sprite.AddProperty(ENTITY_ID_PPROPERTY, Entity.Id);
         Sprite.AddToScene();
       } else {
