@@ -14,8 +14,6 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
     #region Private members
     private readonly Dictionary<int, IRegionPainter> regionPainter = new Dictionary<int, IRegionPainter>();
 
-    private readonly Random random = new Random(Guid.NewGuid().GetHashCode());
-
     private readonly List<TileMapLayer> layers = new List<TileMapLayer>();
 
     private readonly IRegionPainter defaultPainter;

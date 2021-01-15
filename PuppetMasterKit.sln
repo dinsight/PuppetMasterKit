@@ -95,5 +95,7 @@ Global
 		$2.NewLineForMembersInAnonymousTypes = False
 		$2.NewLineForClausesInQuery = False
 		$2.scope = text/x-csharp
+		$0.DotNetNamingPolicy = $3
+		$3.DirectoryNamespaceAssociation = PrefixedHierarchical
 	EndGlobalSection
 EndGlobal

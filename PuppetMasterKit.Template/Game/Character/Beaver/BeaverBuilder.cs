@@ -62,6 +62,11 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
         }
       };
+      hud.OnHudButtonClick += (sender, btnName) => {
+        if (btnName == "build_fence") {
+          BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries);
+        }
+      };
 
       return entity;
     }

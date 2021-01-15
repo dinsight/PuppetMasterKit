@@ -80,6 +80,19 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// 
     /// </summary>
     /// <param name="entity"></param>
+    /// <param name="zero"></param>
+    /// <param name="tileMap"></param>
+    /// <param name="componentSystem"></param>
+    /// <param name="boundaries"></param>
+    internal static void OnBuildFence(Entity entity, Point zero, TileMap tileMap, ComponentSystem componentSystem, Polygon boundaries)
+    {
+      
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
     /// <param name="location"></param>
     public static void OnAttackPoint(Entity entity, Point location)
     {
