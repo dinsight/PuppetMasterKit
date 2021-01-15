@@ -6,6 +6,7 @@ namespace PuppetMasterKit.Template.Game.Character.Tower
   public enum TowerStates
   {
     [StringValue("building")] building,
-    [StringValue("ready")] ready
+    [StringValue("ready")] ready,
+    [StringValue("attack")] attack
   }
 }

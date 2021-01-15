@@ -348,6 +348,11 @@
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\BuildSite.imageset\" />
     <Folder Include="Resources\store\store-building.atlas\" />
     <Folder Include="Game\Character\Tower\" />
+    <Folder Include="Resources\tower\" />
+    <Folder Include="Resources\tower\tower-building.atlas\" />
+    <Folder Include="Resources\tower\tower-ready.atlas\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\" />
+    <Folder Include="Resources\tower\tower-attack.atlas\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -415,6 +420,7 @@
     <Compile Include="Game\Character\Tower\TowerHandlers.cs" />
     <Compile Include="Game\Character\Tower\TowerRulesBuilder.cs" />
     <Compile Include="Game\Character\Tower\TowerStates.cs" />
+    <Compile Include="Game\Facts\Attack.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -920,6 +926,8 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\paw.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\build.imageset\build-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Wood-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\0001.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
@@ -1812,6 +1820,9 @@
     <AtlasTexture Include="Resources\store\store-building.atlas\tmp0001.png" />
     <AtlasTexture Include="Resources\store\store-depleted.atlas\tmp0001.png" />
     <AtlasTexture Include="Resources\store\store-full.atlas\tmp0001.png" />
+    <AtlasTexture Include="Resources\tower\tower-building.atlas\0001.png" />
+    <AtlasTexture Include="Resources\tower\tower-ready.atlas\0001.png" />
+    <AtlasTexture Include="Resources\tower\tower-attack.atlas\0001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />

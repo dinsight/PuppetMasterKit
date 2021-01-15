@@ -7,6 +7,8 @@ namespace PuppetMasterKit.AI.Rules
 
     private Action<Entity, S, FactSet> action;
 
+    private Action<Entity, S, FactSet> onFalse;
+
     internal bool IsExecuted { get; set;}
 
     /// <summary>
@@ -14,10 +16,11 @@ namespace PuppetMasterKit.AI.Rules
     /// </summary>
     /// <param name="predicate">Predicate.</param>
     /// <param name="action">Action.</param>
-    public Rule(Func<Entity, S, FactSet, bool> predicate, Action<Entity, S, FactSet> action)
+    public Rule(Func<Entity, S, FactSet, bool> predicate, Action<Entity, S, FactSet> action, Action<Entity, S, FactSet> onFalse=null)
     {
       this.predicate = predicate;
       this.action = action;
+      this.onFalse = onFalse;
       this.IsExecuted = false;
     }
 
@@ -32,6 +35,8 @@ namespace PuppetMasterKit.AI.Rules
       if (predicate(entity, state, factSet)) {
         action(entity, state, factSet);
         IsExecuted = true;
+      } else {
+        onFalse?.Invoke(entity, state, factSet);
       }
     }
   }

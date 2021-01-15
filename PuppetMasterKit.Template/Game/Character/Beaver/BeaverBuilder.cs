@@ -57,6 +57,11 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
         }
       };
+      hud.OnHudButtonClick += (sender, btnName) => {
+        if (btnName == "build_tower") {
+          BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
+        }
+      };
 
       return entity;
     }
@@ -68,7 +73,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// <returns></returns>
     static Func<Entity, IEnumerable<Entity>> GetCollisions(FlightMap flightMap)
     {
-      return (e) =>flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "hole");
+      return (e) =>flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "tower");
     }
 
     /// <summary>

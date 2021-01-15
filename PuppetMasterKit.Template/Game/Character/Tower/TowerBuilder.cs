@@ -7,12 +7,15 @@ using PuppetMasterKit.Ios.Tiles.Tilemap;
 using static PuppetMasterKit.AI.Entity;
 using static PuppetMasterKit.AI.Components.Agent;
 using PuppetMasterKit.Utility.Configuration;
+using System.Collections.Generic;
 
 namespace PuppetMasterKit.Template.Game.Character.Tower
 {
   public class TowerBuilder
   {
     private static string CharacterName = "tower";
+    private static string RangeWeaponAtlas = "artifacts/rocks.atlas";
+    private static string RangeWeaponName = "pebble.png";
 
     private ComponentSystem componentSystem;
     private TowerStates initialState = TowerStates.ready;
@@ -65,9 +68,12 @@ namespace PuppetMasterKit.Template.Game.Character.Tower
 
       var entity = EntityBuilder.Builder()
         .With(componentSystem,
+              new RuleSystemComponent<FlightMap, TowerHandlers>(TowerRulesBuilder.Build(flightMap), new TowerHandlers(), TimeSpan.FromSeconds(3)),
               new StateComponent<TowerStates>(initialState),
               new SpriteComponent(CharacterName, new Size(150, 150), new Point(0.5f, 0.5f), null),
               new HealthComponent(100, 20, 3),
+              new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap), RangeWeaponAtlas, RangeWeaponName,
+                new Size(30, 30), 700, 10, 500),
               new PhysicsComponent(5, 5, 1, 15),
               new CommandComponent(TowerHandlers.OnTouched, null),
               AgentBuilder.Builder()
@@ -81,6 +87,16 @@ namespace PuppetMasterKit.Template.Game.Character.Tower
       flightMap.Add(entity);
 
       return entity;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="flightMap"></param>
+    /// <returns></returns>
+    static Func<Entity, IEnumerable<Entity>> GetRangeWeaponCollisions(FlightMap flightMap)
+    {
+      return (e) => flightMap.GetAdjacentEntities(e, p => p.Name == "wolf");
     }
   }
 }

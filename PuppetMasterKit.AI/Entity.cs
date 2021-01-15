@@ -48,7 +48,7 @@ namespace PuppetMasterKit.AI
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public void Remove<T>()
     {
-      var toRemove = components.Where(x => x is T).ToList();
+      var toRemove = components?.Where(x => x is T).ToList();
       foreach (var item in toRemove) {
         item.System = null;
         components.Remove(item);
@@ -62,7 +62,7 @@ namespace PuppetMasterKit.AI
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public T GetComponent<T>() where T : Component
     {
-      return components.FirstOrDefault(x => x is T) as T;
+      return components?.FirstOrDefault(x => x is T) as T;
     }
 
     /// <summary>

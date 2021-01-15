@@ -15,6 +15,7 @@ using PuppetMasterKit.Graphics.Sprites;
 using SpriteKit;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
+using PuppetMasterKit.Template.Game.Character.Tower;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -41,13 +42,36 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       TileMap tileMap,
       ComponentSystem componentSystem,
       Polygon boundaries)
-    { 
+    {
       Debug.WriteLine("Building the granary...");
       var agent = entity.GetComponent<Agent>();
       var state = entity.GetComponent<StateComponent<BeaverStates>>();
       agent.Remove<GoalToFollowPath>();
       state.CurrentState = BeaverStates.build;
       StoreBuilder.Builder(componentSystem, StoreStates.building)
+          .AtLocation(agent.Position.X, agent.Position.Y)
+          .Build();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="location"></param>
+    /// <param name="tileMap"></param>
+    /// <param name="componentSystem"></param>
+    /// <param name="boundaries"></param>
+    public static void OnBuildTower(Entity entity, Point location,
+      TileMap tileMap,
+      ComponentSystem componentSystem,
+      Polygon boundaries)
+    {
+      Debug.WriteLine("Building tower...");
+      var agent = entity.GetComponent<Agent>();
+      var state = entity.GetComponent<StateComponent<BeaverStates>>();
+      agent.Remove<GoalToFollowPath>();
+      state.CurrentState = BeaverStates.build;
+      TowerBuilder.Builder(componentSystem, TowerStates.building)
           .AtLocation(agent.Position.X, agent.Position.Y)
           .Build();
     }
@@ -84,7 +108,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
       var flightMap = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
-               
+
       var state = entity.GetComponent<StateComponent<BeaverStates>>();
       state.CurrentState = BeaverStates.walk;
       //remove existing follow path command
@@ -95,8 +119,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival
-      var goToPoint = new GoalToFollowPath(newPath.ToArray(), 10  ).WhenArrived((x, p) => {
-          state.CurrentState = BeaverStates.idle;
+      var goToPoint = new GoalToFollowPath(newPath.ToArray(), 10).WhenArrived((x, p) => {
+        state.CurrentState = BeaverStates.idle;
       });
       agent.Add(goToPoint, 3);
     }
@@ -123,9 +147,19 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
                               Entity entity,
                               CollisionState state)
     {
-      if(entity.Name == "store"){
+      if (entity.Name == "tower") {
+        var towerState = entity.GetComponent<StateComponent<TowerStates>>();
+        var beaverState = beaver.GetComponent<StateComponent<BeaverStates>>();
+        if (state.Status == CollisionStatus.IN_PROGRESS && state.StopWatchValue > 20) {
+          towerState.CurrentState = TowerStates.ready;
+          beaverState.CurrentState = BeaverStates.idle;
+          var towerSprite = entity.GetComponent<SpriteComponent>();
+          towerSprite.OnSetEntity();
+        }
+      }
+      if (entity.Name == "store") {
         var storeState = entity.GetComponent<StateComponent<StoreStates>>();
-        
+
         var storeAgent = entity.GetComponent<Agent>();
         var beaverAgent = beaver.GetComponent<Agent>();
         var beaverState = beaver.GetComponent<StateComponent<BeaverStates>>();
@@ -147,7 +181,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         }
       }
 
-      if(entity.Name == "hole"){
+      if (entity.Name == "hole") {
         if (state.Status == CollisionStatus.INIT) {
           var beaverAgent = beaver.GetComponent<Agent>();
           var stateComponent = beaver.GetComponent<StateComponent<BeaverStates>>();
@@ -175,13 +209,13 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       var agent = rabbit.GetComponent<Agent>();
 
       var travel = hole.GetComponent<TravelComponent>();
-      if(travel!=null){
+      if (travel != null) {
         var dest = travel.Destinations.FirstOrDefault();
-        if(dest!=null){
+        if (dest != null) {
           var flightMap = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
           var hud = Container.GetContainer().GetInstance<Hud>();
           var otherHole = flightMap.GetEntityById(dest);
-          if(otherHole!=null){
+          if (otherHole != null) {
             var pos = otherHole.GetComponent<Agent>().Position;
             agent.Remove<GoalToFollowPath>();
             agent.Position = pos;
@@ -211,7 +245,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         var hud = Container.GetContainer().GetInstance<Hud>();
         var flightMap = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
 
-        if(health.Damage < health.MaxHealth){
+        if (health.Damage < health.MaxHealth) {
           health.Damage += foodUnits;
           flightMap.AddToScore(rabbit.Id, foodUnits);
           hud.UpdateScore(flightMap.GetScore(rabbit.Id));
