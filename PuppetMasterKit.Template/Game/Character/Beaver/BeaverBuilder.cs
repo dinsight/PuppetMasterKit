@@ -10,6 +10,7 @@ using System;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using static PuppetMasterKit.AI.Entity;
 using static PuppetMasterKit.AI.Components.Agent;
+using PuppetMasterKit.Template.Game.Controls;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -24,7 +25,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// </summary>
     /// <returns>The build.</returns>
     /// <param name="componentSystem">Component system.</param>
-    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries, TileMap tileMap )
+    public static Entity Build(ComponentSystem componentSystem, Polygon boundaries, TileMap tileMap, SKScene scene)
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var hud = Container.GetContainer().GetInstance<Hud>();
@@ -64,7 +65,9 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       };
       hud.OnHudButtonClick += (sender, btnName) => {
         if (btnName == "build_fence") {
-          BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries);
+          var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
+          ctrl.Edit();
+          //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries);
         }
       };
 

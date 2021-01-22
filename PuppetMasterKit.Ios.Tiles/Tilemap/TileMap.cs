@@ -25,6 +25,8 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
     public int Cols { get; }
 
     public int TileSize { get; }
+
+    public int LayerCount { get { return layers.Count; } }
     #endregion
 
     /// <summary>
@@ -42,16 +44,18 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
     }
 
     /// <summary>
-    /// Build the specified regions, paths and order.
+    /// 
     /// </summary>
-    /// <param name="regions">Regions.</param>
-    /// <param name="order">Order.</param>
-    public void Build(IReadOnlyCollection<Region> regions, params int[] order)
+    /// <param name="layerCount"></param>
+    /// <param name="regions"></param>
+    /// <param name="order"></param>
+    public void Build(int layerCount, IReadOnlyCollection<Region> regions, params int[] order)
     {
-      var baseTileLayer = CreateLayer(-1);
-      var topTileLayer = CreateLayer(0);
-      var thirdLayer = CreateLayer(1);
-
+      var zOrder = -1;
+      for (int i = 0; i < layerCount; i++) {
+        CreateLayer(zOrder++);
+      }
+      var baseTileLayer = GetLayer(0);
       //if a preferred build order is given, apply it to the region list
       if (order != null) {
         var orderedList = order.ToList();

@@ -421,6 +421,7 @@
     <Compile Include="Game\Character\Tower\TowerRulesBuilder.cs" />
     <Compile Include="Game\Character\Tower\TowerStates.cs" />
     <Compile Include="Game\Facts\Attack.cs" />
+    <Compile Include="Game\Controls\PlotControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">

@@ -22,6 +22,8 @@ namespace PuppetMasterKit.Template.Game.Level
 {
   public class LevelBuilder
   {
+    private const int LAYER_COUNT = 3;
+
     private SKScene scene;
 
     private Hud hudDisplay;
@@ -126,7 +128,7 @@ namespace PuppetMasterKit.Template.Game.Level
       );
 
       for (int i = 0; i < 1 ; i++) {
-        var beaver = BeaverBuilder.Build(componentSystem, frame, tileMap);
+        var beaver = BeaverBuilder.Build(componentSystem, frame, tileMap, this.scene);
         var agent = beaver.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
@@ -249,7 +251,7 @@ namespace PuppetMasterKit.Template.Game.Level
 
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
-        tileMap.Build(regions, 0,  1, 2, 3);
+        tileMap.Build(LAYER_COUNT, regions, 0,  1, 2, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
         RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(1), new Random(0));
       });
