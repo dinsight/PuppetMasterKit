@@ -68,6 +68,18 @@ namespace PuppetMasterKit.Template.Game.Controls
     public void Close() {
       scene.Camera.Position = initialPosition;
       this.RemoveFromParent();
+
+      foreach (var item in selected.Values) {
+        item.RemoveFromParent();
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<Pair> GetSelectedTiles() {
+      return selected.Keys.ToList();
     }
 
     /// <summary>

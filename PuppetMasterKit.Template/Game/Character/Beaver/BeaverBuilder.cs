@@ -67,7 +67,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         if (btnName == "build_fence") {
           var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
           ctrl.Edit();
-          //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries);
+          var selection = ctrl.GetSelectedTiles();
+          BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
         }
       };
 

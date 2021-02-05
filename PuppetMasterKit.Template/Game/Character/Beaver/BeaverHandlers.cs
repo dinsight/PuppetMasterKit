@@ -84,9 +84,15 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// <param name="tileMap"></param>
     /// <param name="componentSystem"></param>
     /// <param name="boundaries"></param>
-    internal static void OnBuildFence(Entity entity, Point zero, TileMap tileMap, ComponentSystem componentSystem, Polygon boundaries)
+    /// <param name="tuples"></param>
+    internal static void OnBuildFence(Entity entity,
+      Point zero,
+      TileMap tileMap,
+      ComponentSystem componentSystem,
+      Polygon boundaries,
+      List<Tuple<int,int>> tuples)
     {
-      
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
     }
 
     /// <summary>
