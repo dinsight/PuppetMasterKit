@@ -17,6 +17,8 @@ namespace PuppetMasterKit.Template.Game.Controls
 {
   public class PlotControl : SKSpriteNode
   {
+    private bool isPanning = false;
+    private CGPoint initialPosition;
     private SKScene scene;
     private TileMap tileMap;
     private Dictionary<Pair, SKShapeNode> selected = new Dictionary<Pair, SKShapeNode>();
@@ -34,6 +36,38 @@ namespace PuppetMasterKit.Template.Game.Controls
       this.Position = new CGPoint(0.5, 0.5);
       this.AnchorPoint = new CGPoint(0.5, 0.5);
       this.ZPosition = 1000;
+      initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
+
+      var buildButton = this.Children.FirstOrDefault(x => x.Name == "Build") as HoverButton;
+      //buildButton.ZPosition = this.ZPosition = 1;
+      buildButton.Position = new CGPoint(this.Position.X,
+                                         this.Position.Y +
+                                         this.scene.Frame.Height/3 -
+                                         buildButton.Size.Height );
+      buildButton.OnButtonPressed += BuildButton_OnButtonPressed;
+
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      hud.Hidden = true;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void BuildButton_OnButtonPressed(object sender, EventArgs e)
+    {
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      hud.Hidden = false;
+      Close();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Close() {
+      scene.Camera.Position = initialPosition;
+      this.RemoveFromParent();
     }
 
     /// <summary>
@@ -59,7 +93,37 @@ namespace PuppetMasterKit.Template.Game.Controls
       return ctrl;
     }
 
-    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="touches"></param>
+    /// <param name="evt"></param>
+    public override void TouchesBegan(NSSet touches, UIEvent evt)
+    {
+      isPanning = false;
+      base.TouchesBegan(touches, evt);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="touches"></param>
+    /// <param name="evt"></param>
+    public override void TouchesMoved(NSSet touches, UIEvent evt)
+    {
+      isPanning = true;
+      var cameraParent = scene.Camera.Parent;
+      var touch = touches.AnyObject as UITouch;
+      var positionInScene = touch.LocationInNode(this);
+      var previousPosition = touch.PreviousLocationInNode(this);
+      //var positionInScene = touch.LocationInNode(cameraParent);
+      //var previousPosition = touch.PreviousLocationInNode(cameraParent);
+      var translation = new CGPoint(x: positionInScene.X - previousPosition.X,
+        y: positionInScene.Y - previousPosition.Y);
+      scene.Camera.Position = new CGPoint(scene.Camera.Position.X - translation.X,
+        scene.Camera.Position.Y - translation.Y);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -67,14 +131,25 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="evt"></param>
     public override void TouchesEnded(NSSet touches, UIEvent evt)
     {
+      if (isPanning)
+        return;
+
       var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
       foreach (UITouch touch in touches) {
         var layer = tileMap.GetLayer(0);
         var positionInScene = touch.LocationInNode(layer);
         var coord2d = mapper.FromScene(new Point((float)positionInScene.X, (float)positionInScene.Y));
 
+        if (coord2d.X < 0 || coord2d.Y < 0) {
+          break;
+        }
+
         var row = (int) (coord2d.Y / tileMap.TileSize);
         var col = (int) (coord2d.X / tileMap.TileSize);
+
+        if (row < 0 || col < 0 || row >= tileMap.Rows || col >= tileMap.Cols) {
+          break;
+        }
 
         var key = selected.Keys.Where(x => x.Item1 == row && x.Item2 == col).FirstOrDefault();
         if (key!=null) {
