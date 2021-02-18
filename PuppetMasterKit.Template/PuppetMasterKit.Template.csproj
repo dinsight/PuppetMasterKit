@@ -66,7 +66,7 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>Apple Development: office.digital.insight@gmail.com (378HH7W98X)</CodesignKey>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
@@ -77,7 +77,6 @@
     <MtouchArch>ARM64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchVerbosity></MtouchVerbosity>
-    <CodesignProvision>iOS Team Provisioning Profile: Digital-Insight--LLC.PuppetMasterKit-Template</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -353,6 +352,8 @@
     <Folder Include="Resources\tower\tower-ready.atlas\" />
     <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\" />
     <Folder Include="Resources\tower\tower-attack.atlas\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -422,6 +423,9 @@
     <Compile Include="Game\Character\Tower\TowerStates.cs" />
     <Compile Include="Game\Facts\Attack.cs" />
     <Compile Include="Game\Controls\PlotControl.cs" />
+    <Compile Include="Game\Controls\PlainButton.cs" />
+    <Compile Include="Game\Controls\CustomButton.cs" />
+    <Compile Include="Game\Controls\ToggleButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -929,6 +933,10 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\HudTexture.imageset\Wood-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\Ok.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\Cancel.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

@@ -54,26 +54,34 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
 
       hud.OnHudButtonClick += (sender, btnName) => {
-        if (btnName == "build_granary") {
-          BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
-        }
-      };
-      hud.OnHudButtonClick += (sender, btnName) => {
-        if (btnName == "build_tower") {
-          BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
-        }
-      };
-      hud.OnHudButtonClick += (sender, btnName) => {
-        if (btnName == "build_fence") {
+        if (btnName == "build")
+        {
           var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
+          ctrl.OnOk = (c) => {
+            //var selection = ctrl.GetSelectedTiles();
+            //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
+          };
+          ctrl.OnItemButtonClick += (string name) => {
+            var selection = ctrl.GetSelectedTiles();
+            if (selection.Count == 0) {
+              return false;
+            }
+
+            if (name == "build_granary") {
+              BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
+            }
+            if (name == "build_tower") {
+              BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
+            }
+            return true;
+          };
           ctrl.Edit();
-          var selection = ctrl.GetSelectedTiles();
-          BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
         }
       };
 
       return entity;
     }
+
 
     /// <summary>
     /// 

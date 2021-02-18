@@ -38,7 +38,7 @@ namespace PuppetMasterKit.Template.Game
         item.OnButtonReleased += Item_OnButtonReleased;
       }
       foreach (var item in this.Children.OfType<MenuButton>()) {
-        item.OnItemPressed += Item_OnButtonPressed;
+        item.OnButtonPressed += Item_OnButtonPressed;
       }
     }
 

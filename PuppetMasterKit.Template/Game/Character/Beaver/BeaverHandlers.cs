@@ -93,6 +93,15 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       List<Tuple<int,int>> tuples)
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
+      var obstacles = new List<Obstacle>();
+      tuples.ForEach(x=> {
+        //x.Item1
+        var rowc = x.Item1 * tileMap.TileSize + tileMap.TileSize / 2;
+        var colc = x.Item2 * tileMap.TileSize + tileMap.TileSize / 2;
+        var rad = tileMap.TileSize;
+        obstacles.Add(new CircularObstacle(new Point(colc, rowc), rad));
+      });
+      ((GameFlightMap)flightMap).Obstacles.AddRange(obstacles);
     }
 
     /// <summary>

@@ -139,7 +139,7 @@ namespace PuppetMasterKit.Template.Game.Level
         flightMap.AddHero(beaver);
       }
 
-      for (int i = 0; i < 1 ; i++) {
+      for (int i = 0; i < 0 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame, tileMap);
         var agent = wolf.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());

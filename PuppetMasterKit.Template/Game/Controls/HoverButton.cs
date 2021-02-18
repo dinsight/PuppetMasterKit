@@ -6,12 +6,9 @@ using UIKit;
 
 namespace PuppetMasterKit.Template.Game.Controls
 {
-  public class HoverButton : SKSpriteNode
+  public class HoverButton : CustomButton
   {
-    public readonly static int Padding = 5;
-
-    public event EventHandler OnButtonPressed;
-    public event EventHandler OnButtonReleased;
+    public readonly static int Padding = 65;
     protected SKTexture selectedTexture;
     protected SKTexture neutralTexture;
     private SKSpriteNode selection;
@@ -25,17 +22,17 @@ namespace PuppetMasterKit.Template.Game.Controls
       selectedTexture = SKTexture.FromImageNamed("selected");
       neutralTexture = SKTexture.FromImageNamed("neutral");
 
-      selection = new SKSpriteNode();
-      selection.Texture = neutralTexture;
-      selection.AnchorPoint = new CGPoint(0.5, 0.5);
-      selection.Position = new CGPoint(0, 0);
-      selection.Size = new CGSize(this.Size.Width + Padding, this.Size.Height + Padding);
-      selection.UserInteractionEnabled = false;
-      selection.ZPosition = -1;
+      selection = new SKSpriteNode {
+        Texture = neutralTexture,
+        AnchorPoint = new CGPoint(0.5, 0.5),
+        Position = new CGPoint(0, 0),
+        Size = new CGSize(this.Size.Width + Padding, this.Size.Height + Padding),
+        UserInteractionEnabled = false,
+        ZPosition = -1
+      };
       this.AddChild(selection);
       this.UserInteractionEnabled = true;
     }
-
 
     /// <summary>
     /// 
@@ -46,7 +43,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     {
       base.TouchesBegan(touches, evt);
       SetHighlightedTexture();
-      OnButtonPressed?.Invoke(this, null);
+      NotifyButtonPressed(this, null);
     }
 
     /// <summary>
@@ -58,7 +55,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     {
       base.TouchesEnded(touches, evt);
       SetNormalTexture();
-      OnButtonReleased?.Invoke(this, null);
+      NotifyButtonReleased(this, null);
     }
 
     /// <summary>

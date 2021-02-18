@@ -12,11 +12,18 @@ using PuppetMasterKit.Utility.Configuration;
 using System.Diagnostics;
 using Pair = System.Tuple<int, int>;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace PuppetMasterKit.Template.Game.Controls
 {
   public class PlotControl : SKSpriteNode
   {
+    private readonly NSString IS_MULTISELECT = new NSString("isMultiselect");
+
+    public event Func<String, bool> OnItemButtonClick;
+    public Action<PlotControl> OnClosing { get; set; }
+    public Action<PlotControl> OnOk { get; set; }
+
     private bool isPanning = false;
     private CGPoint initialPosition;
     private SKScene scene;
@@ -33,18 +40,20 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     public void Edit() {
       scene.Camera.AddChild(this);
-      this.Position = new CGPoint(0.5, 0.5);
+      var size = scene.Frame;
+      this.Position = new CGPoint(0, 0);
       this.AnchorPoint = new CGPoint(0.5, 0.5);
       this.ZPosition = 1000;
+      this.Size = new CGSize(size.Width, size.Height);
       initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
 
-      var buildButton = this.Children.FirstOrDefault(x => x.Name == "Build") as HoverButton;
-      //buildButton.ZPosition = this.ZPosition = 1;
-      buildButton.Position = new CGPoint(this.Position.X,
-                                         this.Position.Y +
-                                         this.scene.Frame.Height/3 -
-                                         buildButton.Size.Height );
-      buildButton.OnButtonPressed += BuildButton_OnButtonPressed;
+      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      var calcFrame = menuNode.CalculateAccumulatedFrame();
+      menuNode.Position = new CGPoint(0, size.Height/4 );
+
+      foreach(var item in menuNode.Children.OfType<CustomButton>()) {
+        item.OnButtonPressed += Item_OnButtonPressed;
+      }
 
       var hud = Container.GetContainer().GetInstance<Hud>();
       hud.Hidden = true;
@@ -53,24 +62,57 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void BuildButton_OnButtonPressed(object sender, EventArgs e)
-    {
-      var hud = Container.GetContainer().GetInstance<Hud>();
-      hud.Hidden = false;
-      Close();
+    /// <param name="buttonName"></param>
+    private void TurnOffOtherToggleButtons(string buttonName) {
+      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      foreach (var item in menuNode.Children.OfType<ToggleButton>()) {
+        if (item.Name != buttonName) {
+          item.ToggleState(false);
+        }
+      }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public void Close() {
-      scene.Camera.Position = initialPosition;
-      this.RemoveFromParent();
+    /// <returns></returns>
+    private bool HasButtonPressed() {
+      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      return menuNode.Children.OfType<ToggleButton>().Any(btn => btn.IsPressed);
+    }
 
-      foreach (var item in selected.Values) {
-        item.RemoveFromParent();
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    private ToggleButton GetSelectedButton()
+    {
+      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      return menuNode.Children.OfType<ToggleButton>().FirstOrDefault(btn => btn.IsPressed);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Item_OnButtonPressed(object sender, EventArgs e)
+    {
+      var button = sender as CustomButton;
+      TurnOffOtherToggleButtons(button.Name);
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      if (OnItemButtonClick != null) {
+        var isOk = button.Name == "Ok";
+        var isCancel = button.Name == "Cancel";
+        var isItemClick = false;
+        if (isOk || isCancel || (isItemClick = OnItemButtonClick(button.Name))) {
+          hud.Hidden = false;
+          scene.Camera.Position = initialPosition;
+          this.RemoveFromParent();
+        }
+
+        if (isOk || isItemClick) OnOk?.Invoke(this);
+        if (isCancel) OnClosing?.Invoke(this);
       }
     }
 
@@ -100,8 +142,6 @@ namespace PuppetMasterKit.Template.Game.Controls
       ctrl.tileMap = tileMap;
       ctrl.RemoveFromParent();
       ctrl.UserInteractionEnabled = true;
-      var size = UIScreen.MainScreen.Bounds;
-      ctrl.Size = new CGSize(size.Width, size.Height);
       return ctrl;
     }
 
@@ -124,12 +164,9 @@ namespace PuppetMasterKit.Template.Game.Controls
     public override void TouchesMoved(NSSet touches, UIEvent evt)
     {
       isPanning = true;
-      var cameraParent = scene.Camera.Parent;
       var touch = touches.AnyObject as UITouch;
       var positionInScene = touch.LocationInNode(this);
       var previousPosition = touch.PreviousLocationInNode(this);
-      //var positionInScene = touch.LocationInNode(cameraParent);
-      //var previousPosition = touch.PreviousLocationInNode(cameraParent);
       var translation = new CGPoint(x: positionInScene.X - previousPosition.X,
         y: positionInScene.Y - previousPosition.Y);
       scene.Camera.Position = new CGPoint(scene.Camera.Position.X - translation.X,
@@ -143,7 +180,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="evt"></param>
     public override void TouchesEnded(NSSet touches, UIEvent evt)
     {
-      if (isPanning)
+      if (isPanning || !HasButtonPressed())
         return;
 
       var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
@@ -162,6 +199,8 @@ namespace PuppetMasterKit.Template.Game.Controls
         if (row < 0 || col < 0 || row >= tileMap.Rows || col >= tileMap.Cols) {
           break;
         }
+
+        var isMulti = GetSelectedButton()?.UserData?.ContainsKey(IS_MULTISELECT);
 
         var key = selected.Keys.Where(x => x.Item1 == row && x.Item2 == col).FirstOrDefault();
         if (key!=null) {

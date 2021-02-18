@@ -9,10 +9,6 @@ namespace PuppetMasterKit.Template.Game.Controls
 {
   public class MenuButton : HoverButton
   {
-    public event EventHandler OnItemPressed;
-
-    public event EventHandler OnItemReleased;
-
     private bool isPressed = false;
 
     private int itemSpacing = 0;
@@ -54,7 +50,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="e"></param>
     private void Item_OnButtonPressed(object sender, EventArgs e)
     {
-      OnItemPressed?.Invoke(sender, e);
+      NotifyButtonPressed(sender, e);
       ShowMenu(false);
       SetNormalTexture();
       isPressed = false;
@@ -67,7 +63,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="e"></param>
     private void Item_OnButtonReleased(object sender, EventArgs e)
     {
-      OnItemReleased?.Invoke(sender, e);
+      NotifyButtonReleased(sender, e);
     }
 
     /// <summary>
