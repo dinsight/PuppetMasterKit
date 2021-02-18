@@ -38,6 +38,27 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="tileMap"></param>
+    /// <param name="fromFile"></param>
+    /// <param name="controlName"></param>
+    /// <returns></returns>
+    public static PlotControl Create(SKScene scene, TileMap tileMap,
+      string fromFile,
+      string controlName)
+    {
+      var scn = SKNode.FromFile<SKScene>(fromFile);
+      var ctrl = scn.Children.FirstOrDefault(x => x.Name == controlName) as PlotControl;
+      ctrl.scene = scene;
+      ctrl.tileMap = tileMap;
+      ctrl.RemoveFromParent();
+      ctrl.UserInteractionEnabled = true;
+      return ctrl;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public void Edit() {
       scene.Camera.AddChild(this);
       var size = scene.Frame;
@@ -122,27 +143,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <returns></returns>
     public List<Pair> GetSelectedTiles() {
       return selected.Keys.ToList();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="scene"></param>
-    /// <param name="tileMap"></param>
-    /// <param name="fromFile"></param>
-    /// <param name="controlName"></param>
-    /// <returns></returns>
-    public static PlotControl Create(SKScene scene, TileMap tileMap,
-      string fromFile,
-      string controlName)
-    {
-      var scn = SKNode.FromFile<SKScene>(fromFile);
-      var ctrl = scn.Children.FirstOrDefault(x => x.Name == controlName) as PlotControl;
-      ctrl.scene = scene;
-      ctrl.tileMap = tileMap;
-      ctrl.RemoveFromParent();
-      ctrl.UserInteractionEnabled = true;
-      return ctrl;
     }
 
     /// <summary>

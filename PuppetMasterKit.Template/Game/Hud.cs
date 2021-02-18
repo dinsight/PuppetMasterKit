@@ -29,6 +29,22 @@ namespace PuppetMasterKit.Template.Game
     }
 
     /// <summary>
+    /// Create the specified fromFile, contolName and inScene.
+    /// </summary>
+    /// <returns>The create.</returns>
+    /// <param name="fromFile">From file.</param>
+    /// <param name="controlName">Contol name.</param>
+    public static Hud Create(string fromFile, string controlName)
+    {
+      var scn = SKNode.FromFile<SKScene>(fromFile);
+      var hud = scn.Children.FirstOrDefault(x => x.Name == controlName) as Hud;
+      hud.RemoveFromParent();
+      hud.UserInteractionEnabled = true;
+      Container.GetContainer().RegisterInstance<Hud>(hud);
+      return hud;
+    }
+
+    /// <summary>
     /// 
     /// </summary>
     private void WireUpButtons()
@@ -82,22 +98,10 @@ namespace PuppetMasterKit.Template.Game
 
       var scoreControl = this.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
       var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
-    }
 
-    /// <summary>
-    /// Create the specified fromFile, contolName and inScene.
-    /// </summary>
-    /// <returns>The create.</returns>
-    /// <param name="fromFile">From file.</param>
-    /// <param name="controlName">Contol name.</param>
-    public static Hud Create(string fromFile, string controlName)
-    {
-      var scn = SKNode.FromFile<SKScene>(fromFile);
-      var hud = scn.Children.FirstOrDefault(x => x.Name == controlName) as Hud;
-      hud.RemoveFromParent();
-      hud.UserInteractionEnabled = true;
-      Container.GetContainer().RegisterInstance<Hud>(hud);
-      return hud;
+      foreach (var item in this.Children.OfType<CustomButton>()) {
+        item.UpdateLayout();
+      }
     }
 
     /// <summary>

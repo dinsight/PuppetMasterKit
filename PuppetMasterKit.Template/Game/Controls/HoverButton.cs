@@ -8,7 +8,7 @@ namespace PuppetMasterKit.Template.Game.Controls
 {
   public class HoverButton : CustomButton
   {
-    public readonly static int Padding = 65;
+    public readonly static int Padding = 5;
     protected SKTexture selectedTexture;
     protected SKTexture neutralTexture;
     private SKSpriteNode selection;
@@ -26,12 +26,21 @@ namespace PuppetMasterKit.Template.Game.Controls
         Texture = neutralTexture,
         AnchorPoint = new CGPoint(0.5, 0.5),
         Position = new CGPoint(0, 0),
-        Size = new CGSize(this.Size.Width + Padding, this.Size.Height + Padding),
         UserInteractionEnabled = false,
         ZPosition = -1
       };
       this.AddChild(selection);
       this.UserInteractionEnabled = true;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="newSize"></param>
+    public override void UpdateLayout()
+    {
+      selection.Size = new CGSize(this.Size.Width + Padding, this.Size.Height + Padding);
+      base.UpdateLayout();
     }
 
     /// <summary>

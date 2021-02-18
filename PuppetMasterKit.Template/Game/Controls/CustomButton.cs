@@ -11,6 +11,7 @@ namespace PuppetMasterKit.Template.Game.Controls
   {
     public event EventHandler OnButtonPressed;
     public event EventHandler OnButtonReleased;
+    NSMutableDictionary _dict;
 
     public CustomButton(IntPtr handle) : base(handle)
     {
@@ -25,14 +26,14 @@ namespace PuppetMasterKit.Template.Game.Controls
       OnButtonReleased?.Invoke(sender, args);
     }
 
-
-    NSMutableDictionary _dict;
-
     public override NSMutableDictionary UserData {
       [Export("userData", ArgumentSemantic.Copy)]
       get => _dict;
       [Export("setUserData:", ArgumentSemantic.Copy)]
       set => _dict = value;
+    }
+
+    public virtual void UpdateLayout() {
     }
   }
 }
