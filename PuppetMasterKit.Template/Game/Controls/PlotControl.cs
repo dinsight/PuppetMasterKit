@@ -81,8 +81,8 @@ namespace PuppetMasterKit.Template.Game.Controls
       var size = scene.Frame;
       var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       var calcFrame = this.CalculateAccumulatedFrame();
-      var scalex = size.Width/calcFrame.Width;
-      var scaley = size.Height/calcFrame.Height;
+      var scalex = size.Width/ calcFrame.Width;
+      var scaley = size.Height/ calcFrame.Height;
 
       foreach (var item in menuNode.Children.OfType<CustomButton>()) {
         item.OnButtonPressed += Item_OnButtonPressed;
