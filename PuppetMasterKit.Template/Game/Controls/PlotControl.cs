@@ -9,7 +9,7 @@ using PuppetMasterKit.Ios.Tiles.Tilemap;
 using SpriteKit;
 using UIKit;
 using PuppetMasterKit.Utility.Configuration;
-using System.Diagnostics;
+using PuppetMasterKit.Utility.Extensions;
 using Pair = System.Tuple<int, int>;
 using System.Collections.Generic;
 using System.Reflection;
@@ -68,16 +68,33 @@ namespace PuppetMasterKit.Template.Game.Controls
       this.Size = new CGSize(size.Width, size.Height);
       initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
 
-      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
-      var calcFrame = menuNode.CalculateAccumulatedFrame();
-      menuNode.Position = new CGPoint(0, size.Height/4 );
-
-      foreach(var item in menuNode.Children.OfType<CustomButton>()) {
-        item.OnButtonPressed += Item_OnButtonPressed;
-      }
+      RepositionControls();
 
       var hud = Container.GetContainer().GetInstance<Hud>();
       hud.Hidden = true;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void RepositionControls() {
+      var size = scene.Frame;
+      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      var calcFrame = this.CalculateAccumulatedFrame();
+      var scalex = size.Width/calcFrame.Width;
+      var scaley = size.Height/calcFrame.Height;
+
+      foreach (var item in menuNode.Children.OfType<CustomButton>()) {
+        item.OnButtonPressed += Item_OnButtonPressed;
+        item.Position = new CGPoint(item.Position.X * scalex, item.Position.Y * scaley);
+        item.UpdateLayout();
+      }
+
+      var okButton = menuNode.Children.OfType<PlainButton>().Where(x => x.Name == "Ok").First();
+      var cancelButton = menuNode.Children.OfType<PlainButton>().Where(x => x.Name == "Cancel").First();
+
+      //okButton.Position = new CGPoint( okButton.Position.X, 100);
+      //cancelButton.Position = new CGPoint(cancelButton.Position.X, 100);
     }
 
     /// <summary>
@@ -200,7 +217,11 @@ namespace PuppetMasterKit.Template.Game.Controls
           break;
         }
 
-        var isMulti = GetSelectedButton()?.UserData?.ContainsKey(IS_MULTISELECT);
+        var isMulti = GetSelectedButton()?.UserData?.ContainsKey(IS_MULTISELECT) ?? false;
+        if (!isMulti) {
+          selected.Values.ForEach(x=>x.RemoveFromParent());
+          selected.Clear();
+        }
 
         var key = selected.Keys.Where(x => x.Item1 == row && x.Item2 == col).FirstOrDefault();
         if (key!=null) {
@@ -246,5 +267,6 @@ namespace PuppetMasterKit.Template.Game.Controls
       
       return square;
     }
+
   }
 }
