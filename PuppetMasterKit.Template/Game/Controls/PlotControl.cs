@@ -18,7 +18,10 @@ namespace PuppetMasterKit.Template.Game.Controls
 {
   public class PlotControl : SKSpriteNode
   {
-    private readonly NSString IS_MULTISELECT = new NSString("isMultiselect");
+    private readonly int MenuWidth = 1024;
+    private readonly int MenuHeight = 1366;
+    private readonly NSString IsMultiselect = new NSString("isMultiselect");
+    private readonly int Padding = 10;
 
     public event Func<String, bool> OnItemButtonClick;
     public Action<PlotControl> OnClosing { get; set; }
@@ -29,6 +32,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     private SKScene scene;
     private TileMap tileMap;
     private Dictionary<Pair, SKShapeNode> selected = new Dictionary<Pair, SKShapeNode>();
+    private CustomButton menuNode = null;
 
 #pragma warning disable IDE0051 // Remove unused private members
     private PlotControl(IntPtr handle) : base(handle) {
@@ -61,40 +65,52 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     public void Edit() {
       scene.Camera.AddChild(this);
-      var size = scene.Frame;
-      this.Position = new CGPoint(0, 0);
-      this.AnchorPoint = new CGPoint(0.5, 0.5);
-      this.ZPosition = 1000;
-      this.Size = new CGSize(size.Width, size.Height);
-      initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
-
-      RepositionControls();
 
       var hud = Container.GetContainer().GetInstance<Hud>();
+      var size = UIScreen.MainScreen.Bounds.Size;
+      var factor = GetAspectFillScaleFactor();
+      this.Position = new CGPoint(0,0);
+      this.AnchorPoint = new CGPoint(0.5, 0.5);
+      this.ZPosition = 1000;
+      this.Size = new CGSize(size.Width/factor - Padding, size.Height/factor - Padding);
+      initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
+
+      menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      foreach (var item in menuNode.Children.OfType<CustomButton>()) {
+        item.OnButtonPressed += Item_OnButtonPressed;
+      }
+
+      RepositionControls();
       hud.Hidden = true;
     }
 
     /// <summary>
     /// 
     /// </summary>
+    /// <returns></returns>
+    private double GetAspectFillScaleFactor() {
+      var screenSize = UIScreen.MainScreen.Bounds.Size;
+      var sceneSize = scene.Frame.Size;
+      var factor = 1.0;
+      if (screenSize.Height > sceneSize.Height) {
+        factor = screenSize.Height / sceneSize.Height;
+      } else if (screenSize.Width > sceneSize.Width) {
+        factor = screenSize.Width / sceneSize.Width;
+      }
+      return factor;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     private void RepositionControls() {
-      var size = scene.Frame;
-      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
-      var calcFrame = this.CalculateAccumulatedFrame();
-      var scalex = size.Width/ calcFrame.Width;
-      var scaley = size.Height/ calcFrame.Height;
+      var factorX = this.Size.Width / MenuWidth;
+      var factorY = this.Size.Height / MenuHeight;
 
       foreach (var item in menuNode.Children.OfType<CustomButton>()) {
-        item.OnButtonPressed += Item_OnButtonPressed;
-        item.Position = new CGPoint(item.Position.X * scalex, item.Position.Y * scaley);
+        item.Position = new CGPoint(item.Position.X * factorX, item.Position.Y * factorY);
         item.UpdateLayout();
       }
-
-      var okButton = menuNode.Children.OfType<PlainButton>().Where(x => x.Name == "Ok").First();
-      var cancelButton = menuNode.Children.OfType<PlainButton>().Where(x => x.Name == "Cancel").First();
-
-      //okButton.Position = new CGPoint( okButton.Position.X, 100);
-      //cancelButton.Position = new CGPoint(cancelButton.Position.X, 100);
     }
 
     /// <summary>
@@ -102,7 +118,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <param name="buttonName"></param>
     private void TurnOffOtherToggleButtons(string buttonName) {
-      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       foreach (var item in menuNode.Children.OfType<ToggleButton>()) {
         if (item.Name != buttonName) {
           item.ToggleState(false);
@@ -115,7 +130,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <returns></returns>
     private bool HasButtonPressed() {
-      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       return menuNode.Children.OfType<ToggleButton>().Any(btn => btn.IsPressed);
     }
 
@@ -125,7 +139,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <returns></returns>
     private ToggleButton GetSelectedButton()
     {
-      var menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       return menuNode.Children.OfType<ToggleButton>().FirstOrDefault(btn => btn.IsPressed);
     }
 
@@ -217,7 +230,7 @@ namespace PuppetMasterKit.Template.Game.Controls
           break;
         }
 
-        var isMulti = GetSelectedButton()?.UserData?.ContainsKey(IS_MULTISELECT) ?? false;
+        var isMulti = GetSelectedButton()?.UserData?.ContainsKey(IsMultiselect) ?? false;
         if (!isMulti) {
           selected.Values.ForEach(x=>x.RemoveFromParent());
           selected.Clear();
