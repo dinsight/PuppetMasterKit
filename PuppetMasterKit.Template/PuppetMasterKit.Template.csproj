@@ -926,7 +926,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\build.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\selected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\bk-neutral-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\selected.imageset\bk-selected-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ctrl.imageset\paw.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\build.imageset\build-1.png" />
@@ -935,8 +934,9 @@
     <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Tower.imageset\0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\Ok.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\Cancel-1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\Ok-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\Neutral.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
