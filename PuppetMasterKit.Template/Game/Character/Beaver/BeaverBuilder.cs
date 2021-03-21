@@ -53,10 +53,10 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
 
+      var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
       hud.OnHudButtonClick += (sender, btnName) => {
         if (btnName == "build")
         {
-          var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
           ctrl.OnOk = (c) => {
             //var selection = ctrl.GetSelectedTiles();
             //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
@@ -73,6 +73,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
             if (name == "build_tower") {
               BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
             }
+            ctrl.ClearSelectedTiles();
             return true;
           };
           ctrl.Edit();

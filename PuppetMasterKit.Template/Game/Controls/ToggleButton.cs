@@ -13,12 +13,17 @@ namespace PuppetMasterKit.Template.Game.Controls
 
     public bool IsPressed { get => isPressed; }
 
+    SKShader on = SKShader.FromFile("Shaders/Selected.fsh");
+
+    
     /// <summary>
     /// 
     /// </summary>
     /// <param name="handle"></param>
     public ToggleButton(IntPtr handle) : base(handle)
     {
+      //selectedTexture = SKTexture.FromImageNamed("selected");
+      //neutralTexture = SKTexture.FromImageNamed("neutral");
     }
 
     /// <summary>
@@ -53,6 +58,16 @@ namespace PuppetMasterKit.Template.Game.Controls
     public override void TouchesEnded(NSSet touches, UIEvent evt)
     {
       
+    }
+
+    protected override void SetNormalTexture()
+    {
+      this.Shader = null;
+    }
+
+    protected override void SetHighlightedTexture()
+    {
+      this.Shader = on;
     }
   }
 }

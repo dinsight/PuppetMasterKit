@@ -27,7 +27,7 @@ namespace PuppetMasterKit.Template.Game.Controls
         AnchorPoint = new CGPoint(0.5, 0.5),
         Position = new CGPoint(0, 0),
         UserInteractionEnabled = false,
-        ZPosition = -1
+        ZPosition = this.ZPosition-1
       };
       this.AddChild(selection);
       this.UserInteractionEnabled = true;
@@ -70,14 +70,14 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <summary>
     /// 
     /// </summary>
-    protected void SetNormalTexture() {
+    protected virtual void SetNormalTexture() {
       selection.Texture = neutralTexture;
     }
 
     /// <summary>
     /// 
     /// </summary>
-    protected void SetHighlightedTexture() {
+    protected virtual void SetHighlightedTexture() {
       selection.Texture = selectedTexture;
     }
   }

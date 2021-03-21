@@ -27,7 +27,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
       base.TouchesBegan(touches, evt);
-      NotifyButtonPressed(this, null);
     }
 
     /// <summary>
@@ -38,7 +37,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     public override void TouchesEnded(NSSet touches, UIEvent evt)
     {
       base.TouchesEnded(touches, evt);
-      NotifyButtonReleased(this, null);
     }
   }
 }

@@ -9,10 +9,10 @@ namespace PuppetMasterKit.Template.Game.Controls
 {
   public class CustomButton : SKSpriteNode
   {
-    public event EventHandler OnButtonPressed;
+    public event EventHandler   OnButtonPressed;
     public event EventHandler OnButtonReleased;
     NSMutableDictionary _dict;
-
+      
     public CustomButton(IntPtr handle) : base(handle)
     {
     }

@@ -33,6 +33,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     private TileMap tileMap;
     private Dictionary<Pair, SKShapeNode> selected = new Dictionary<Pair, SKShapeNode>();
     private CustomButton menuNode = null;
+    private bool isPositioned = false;
 
 #pragma warning disable IDE0051 // Remove unused private members
     private PlotControl(IntPtr handle) : base(handle) {
@@ -57,6 +58,8 @@ namespace PuppetMasterKit.Template.Game.Controls
       ctrl.tileMap = tileMap;
       ctrl.RemoveFromParent();
       ctrl.UserInteractionEnabled = true;
+      ctrl.menuNode = ctrl.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      ctrl.WireUpButtons(ctrl.menuNode);
       return ctrl;
     }
 
@@ -75,18 +78,42 @@ namespace PuppetMasterKit.Template.Game.Controls
       this.Size = new CGSize(size.Width/factor - Padding, size.Height/factor - Padding);
       initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
 
-      menuNode = this.Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
-      foreach (var item in menuNode.Children.OfType<CustomButton>()) {
-        item.OnButtonPressed += Item_OnButtonPressed;
+      if (!isPositioned) {
+        RepositionControls();
+        isPositioned = true;
       }
-
-      RepositionControls();
       hud.Hidden = true;
+    }
+
+    /// <summary>
+    ///  d
+    /// </summary>
+    /// <param name="node"></param>
+    private void WireUpButtons(SKNode node) {
+      GetAllButtonsForNode(node).ForEach(button=> {
+        button.OnButtonPressed += Item_OnButtonPressed;
+      });
     }
 
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    private IEnumerable<CustomButton> GetAllButtonsForNode(SKNode node) {
+      foreach (var item in node.Children.OfType<SKNode>()) {
+        var button = item as CustomButton;
+        if (button != null)
+          yield return button;
+        foreach (var item2 in GetAllButtonsForNode(item)) {
+          yield return item2;
+        }
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>xx
     /// <returns></returns>
     private double GetAspectFillScaleFactor() {
       var screenSize = UIScreen.MainScreen.Bounds.Size;
@@ -118,11 +145,11 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <param name="buttonName"></param>
     private void TurnOffOtherToggleButtons(string buttonName) {
-      foreach (var item in menuNode.Children.OfType<ToggleButton>()) {
+      GetAllButtonsForNode(menuNode).OfType<ToggleButton>().ForEach(item => {
         if (item.Name != buttonName) {
           item.ToggleState(false);
         }
-      }
+      });
     }
 
     /// <summary>
@@ -130,7 +157,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <returns></returns>
     private bool HasButtonPressed() {
-      return menuNode.Children.OfType<ToggleButton>().Any(btn => btn.IsPressed);
+      return GetAllButtonsForNode(menuNode).OfType<ToggleButton>().Any(btn => btn.IsPressed);
     }
 
     /// <summary>
@@ -156,14 +183,17 @@ namespace PuppetMasterKit.Template.Game.Controls
         var isOk = button.Name == "Ok";
         var isCancel = button.Name == "Cancel";
         var isItemClick = false;
+
         if (isOk || isCancel || (isItemClick = OnItemButtonClick(button.Name))) {
           hud.Hidden = false;
           scene.Camera.Position = initialPosition;
           this.RemoveFromParent();
+          
         }
-
         if (isOk || isItemClick) OnOk?.Invoke(this);
         if (isCancel) OnClosing?.Invoke(this);
+
+        this.ClearSelectedTiles();
       }
     }
 
@@ -173,6 +203,14 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <returns></returns>
     public List<Pair> GetSelectedTiles() {
       return selected.Keys.ToList();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void ClearSelectedTiles()
+    {
+      selected.Clear();
     }
 
     /// <summary>
@@ -280,6 +318,5 @@ namespace PuppetMasterKit.Template.Game.Controls
       
       return square;
     }
-
   }
 }
