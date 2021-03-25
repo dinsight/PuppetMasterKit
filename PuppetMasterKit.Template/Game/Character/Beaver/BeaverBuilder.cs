@@ -11,6 +11,7 @@ using PuppetMasterKit.Ios.Tiles.Tilemap;
 using static PuppetMasterKit.AI.Entity;
 using static PuppetMasterKit.AI.Components.Agent;
 using PuppetMasterKit.Template.Game.Controls;
+using PuppetMasterKit.Graphics.Sprites;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -29,6 +30,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     {
       var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       var hud = Container.GetContainer().GetInstance<Hud>();
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
 
       var entity = EntityBuilder.Builder()
         .With(componentSystem,
@@ -56,28 +58,39 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
       hud.OnHudButtonClick += (sender, btnName) => {
         if (btnName == "build")
-        {
-          ctrl.OnOk = (c) => {
-            //var selection = ctrl.GetSelectedTiles();
-            //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
-          };
-          ctrl.OnItemButtonClick += (string name) => {
-            var selection = ctrl.GetSelectedTiles();
-            if (selection.Count == 0) {
-              return false;
-            }
-
-            if (name == "build_granary") {
-              BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
-            }
-            if (name == "build_tower") {
-              BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
-            }
-            ctrl.ClearSelectedTiles();
-            return true;
-          };
+        { 
           ctrl.Edit();
         }
+      };
+
+      ctrl.OnOk = (c) => {
+        var selection = ctrl.GetSelectedTiles();
+        if (selection.Count == 0) {
+          return;
+        }
+        var row = selection[0].Item1;
+        var col = selection[0].Item2;
+        var y = tileMap.TileSize * row + tileMap.TileSize / 2;
+        var x = tileMap.TileSize * col + tileMap.TileSize / 2;
+
+        var coord2d = mapper.ToScene(new Point(x, y));
+
+        BeaverHandlers.GoToLocation(entity, coord2d,
+          (agent, location) => {
+            var state = entity.GetComponent<StateComponent<BeaverStates>>();
+            state.CurrentState = BeaverStates.idle;
+            BeaverHandlers.OnBuildGranary(entity,
+              Point.Zero, tileMap,
+              componentSystem, boundaries);
+          });
+      };
+      ctrl.OnItemButtonClick += (string name) => {
+        var selection = ctrl.GetSelectedTiles();
+        if (selection.Count == 0) {
+          return false;
+        }
+        ctrl.ClearSelectedTiles();
+        return true;
       };
 
       return entity;
