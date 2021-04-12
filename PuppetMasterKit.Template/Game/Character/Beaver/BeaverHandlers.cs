@@ -130,6 +130,22 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         OnAttackPoint(entity, location);
         return;
       }
+      GoToLocation(entity, location, (x, p) => {
+        var state = entity.GetComponent<StateComponent<BeaverStates>>();
+        state.CurrentState = BeaverStates.idle;
+      });
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="location"></param>
+    /// <param name="whenArrivedHandler"></param>
+    public static void GoToLocation(Entity entity,
+      Point location,
+      Action<Agent,Point> whenArrivedHandler)
+    {
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
         return;
@@ -147,9 +163,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival
-      var goToPoint = new GoalToFollowPath(newPath.ToArray(), 10).WhenArrived((x, p) => {
-        state.CurrentState = BeaverStates.idle;
-      });
+      var goToPoint = new GoalToFollowPath(newPath.ToArray(), 10)
+        .WhenArrived(whenArrivedHandler);
       agent.Add(goToPoint, 3);
     }
 

@@ -13,7 +13,7 @@ namespace PuppetMasterKit.Template.Game.Controls
 
     public bool IsPressed { get => isPressed; }
 
-    SKShader on = SKShader.FromFile("Shaders/Selected.fsh");
+    private static SKShader on = SKShader.FromFile("Shaders/Selected.fsh");
 
     
     /// <summary>
@@ -22,8 +22,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="handle"></param>
     public ToggleButton(IntPtr handle) : base(handle)
     {
-      //selectedTexture = SKTexture.FromImageNamed("selected");
-      //neutralTexture = SKTexture.FromImageNamed("neutral");
     }
 
     /// <summary>

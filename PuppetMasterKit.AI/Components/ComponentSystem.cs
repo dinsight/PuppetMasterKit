@@ -32,7 +32,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime">The time interval between subsequent update calls</param>
     public void Update(double deltaTime)
     {
-      foreach (var component in components) {
+      foreach (var component in components.ToList()) {
         component.Update(deltaTime);
       }
     }
