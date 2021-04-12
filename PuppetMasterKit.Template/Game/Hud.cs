@@ -17,6 +17,14 @@ namespace PuppetMasterKit.Template.Game
 
     public event EventHandler<String> OnHudButtonClick;
 
+    public event EventHandler<UISwipeGestureRecognizer> OnShowMenu;
+
+    public event EventHandler<UISwipeGestureRecognizer> OnHideMenu;
+
+    private UISwipeGestureRecognizer onShowMenuGesture;
+
+    private UISwipeGestureRecognizer onHideMenuGesture;
+
     /// <summary>
     /// 
     /// </summary>
@@ -26,6 +34,16 @@ namespace PuppetMasterKit.Template.Game
       IsControlPressed = false;
 
       WireUpButtons();
+
+      onShowMenuGesture = new UISwipeGestureRecognizer(gesture=>
+          OnShowMenu?.Invoke(this, gesture)) {
+        Direction = UISwipeGestureRecognizerDirection.Down
+      };
+
+      onHideMenuGesture = new UISwipeGestureRecognizer(gesture =>
+          OnHideMenu?.Invoke(this, gesture)) {
+        Direction = UISwipeGestureRecognizerDirection.Up
+      };
     }
 
     /// <summary>
@@ -102,6 +120,9 @@ namespace PuppetMasterKit.Template.Game
       foreach (var item in this.Children.OfType<CustomButton>()) {
         item.UpdateLayout();
       }
+
+      scene.View.AddGestureRecognizer(onShowMenuGesture);
+      scene.View.AddGestureRecognizer(onHideMenuGesture);
     }
 
     /// <summary>

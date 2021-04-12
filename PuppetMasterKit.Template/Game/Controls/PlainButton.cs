@@ -14,7 +14,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="handle"></param>
     public PlainButton(IntPtr handle) : base(handle)
     {
-      neutralTexture = null;
       SetNormalTexture();
       this.UserInteractionEnabled = true;
     }

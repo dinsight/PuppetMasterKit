@@ -25,6 +25,8 @@ namespace PuppetMasterKit.Template.Game
 
     private ComponentSystem componentSystem = new ComponentSystem();
 
+    private UITapGestureRecognizer tap;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.GameScene"/> class.
     /// </summary>
@@ -43,22 +45,36 @@ namespace PuppetMasterKit.Template.Game
       this.View.MultipleTouchEnabled = true;
       flightMap.GetHeroes().ForEach(x => {
         x.GetComponent<StateComponent>().IsSelected = true; });
+
+      tap = new UITapGestureRecognizer(OnTapGesture) {
+        
+      };
+      view.AddGestureRecognizer(tap);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="gesture"></param>
+    private void OnTapGesture(UITapGestureRecognizer gesture) {
+      var viewPos = gesture.LocationInView(this.View);
+      var positionInScene = this.ConvertPointFromView(viewPos);
+      OnTouchLocation(positionInScene);
+    }
 
     /// <summary>
     /// Toucheses the began.
     /// </summary>
     /// <param name="touches">Touches.</param>
     /// <param name="evt">Evt.</param>
-    public override void TouchesBegan(NSSet touches, UIEvent evt)
-    {
-      foreach (UITouch touch in touches) {
-        var positionInScene = touch.LocationInNode(this);
-        var touchedNode = this.GetNodeAtPoint(positionInScene);
-        OnTouchLocation(positionInScene);
-      }
-    }
+    //public override void TouchesBegan(NSSet touches, UIEvent evt)
+    //{
+    //  foreach (UITouch touch in touches) {
+    //    var positionInScene = touch.LocationInNode(this);
+    //    var touchedNode = this.GetNodeAtPoint(positionInScene);
+    //    OnTouchLocation(positionInScene);
+    //  }
+    //}
 
     /// <summary>
     /// 

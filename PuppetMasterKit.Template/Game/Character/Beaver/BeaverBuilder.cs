@@ -53,35 +53,43 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       AddShadow(entity.GetComponent<SpriteComponent>().Sprite.GetNativeSprite() as SKSpriteNode);
 
-      var ctrl = PlotControl.Create(scene, tileMap, "Hud", "plotter");
-      hud.OnHudButtonClick += (sender, btnName) => {
-        if (btnName == "build")
-        {
-          ctrl.OnOk = (c) => {
-            //var selection = ctrl.GetSelectedTiles();
-            //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
-          };
-          ctrl.OnItemButtonClick += (string name) => {
-            var selection = ctrl.GetSelectedTiles();
-            if (selection.Count == 0) {
-              return false;
-            }
-
-            if (name == "build_granary") {
-              BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
-            }
-            if (name == "build_tower") {
-              BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
-            }
-            ctrl.ClearSelectedTiles();
-            return true;
-          };
-          ctrl.Edit();
-        }
+      var plotter = PlotControl.CreateFromFile(scene, tileMap, "Hud", "plotter");
+      hud.OnShowMenu += (sender, gesture) => {
+        plotter.Open();
       };
+      hud.OnHideMenu += (sender, gesture) => {
+        plotter.Close();
+      };
+      
+      //hud.OnHudButtonClick += (sender, btnName) => {
+      //  if (btnName == "build")
+      //  {
+      //    ctrl.OnOk = (c) => {
+      //      //var selection = ctrl.GetSelectedTiles();
+      //      //BeaverHandlers.OnBuildFence(entity, Point.Zero, tileMap, componentSystem, boundaries, selection);
+      //    };
+      //    ctrl.OnItemButtonClick += (string name) => {
+      //      var selection = ctrl.GetSelectedTiles();
+      //      if (selection.Count == 0) {
+      //        return false;
+      //      }
+
+      //      if (name == "build_granary") {
+      //        BeaverHandlers.OnBuildGranary(entity, Point.Zero, tileMap, componentSystem, boundaries);
+      //      }
+      //      if (name == "build_tower") {
+      //        BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
+      //      }
+      //      //ctrl.ClearSelectedTiles();
+      //      return true;
+      //    };
+      //    //ctrl.Show();
+      //  }
+      //};
 
       return entity;
     }
+
 
 
     /// <summary>

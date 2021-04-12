@@ -9,9 +9,7 @@ namespace PuppetMasterKit.Template.Game.Controls
   public class HoverButton : CustomButton
   {
     public readonly static int Padding = 5;
-    protected SKTexture selectedTexture;
-    protected SKTexture neutralTexture;
-    private SKSpriteNode selection;
+    private SKShader on = SKShader.FromFile("Shaders/Wind.fsh");
 
     /// <summary>
     /// 
@@ -19,28 +17,8 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="handle"></param>
     public HoverButton(IntPtr handle) : base(handle)
     {
-      selectedTexture = SKTexture.FromImageNamed("selected");
-      neutralTexture = SKTexture.FromImageNamed("neutral");
-
-      selection = new SKSpriteNode {
-        Texture = neutralTexture,
-        AnchorPoint = new CGPoint(0.5, 0.5),
-        Position = new CGPoint(0, 0),
-        UserInteractionEnabled = false,
-        ZPosition = this.ZPosition-1
-      };
-      this.AddChild(selection);
+      
       this.UserInteractionEnabled = true;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="newSize"></param>
-    public override void UpdateLayout()
-    {
-      selection.Size = new CGSize(this.Size.Width + Padding, this.Size.Height + Padding);
-      base.UpdateLayout();
     }
 
     /// <summary>
@@ -67,18 +45,25 @@ namespace PuppetMasterKit.Template.Game.Controls
       NotifyButtonReleased(this, null);
     }
 
+    public override void TouchesCancelled(NSSet touches, UIEvent evt)
+    {
+      base.TouchesCancelled(touches, evt);
+      SetNormalTexture();
+      NotifyButtonReleased(this, null);
+    }
+
     /// <summary>
     /// 
     /// </summary>
     protected virtual void SetNormalTexture() {
-      selection.Texture = neutralTexture;
+      this.Shader = null;
     }
 
     /// <summary>
     /// 
     /// </summary>
     protected virtual void SetHighlightedTexture() {
-      selection.Texture = selectedTexture;
+      this.Shader = on;
     }
   }
 }

@@ -356,6 +356,7 @@
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\" />
     <Folder Include="Shaders\" />
+    <Folder Include="Game\Gestures\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -429,6 +430,8 @@
     <Compile Include="Game\Controls\PlainButton.cs" />
     <Compile Include="Game\Controls\CustomButton.cs" />
     <Compile Include="Game\Controls\ToggleButton.cs" />
+    <Compile Include="Game\Gestures\LongPressWithTouchGestureRecognizer.cs" />
+    <Compile Include="Game\Gestures\SwipeOverControlGestureRecognizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
