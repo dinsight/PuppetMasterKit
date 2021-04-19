@@ -8,20 +8,20 @@ using UIKit;
 
 namespace PuppetMasterKit.Template.Game.Gestures
 {
-  public class SwipeOverControlGestureRecognizer: UISwipeGestureRecognizer
+  public class SwipeOverSpriteGestureRecognizer: UISwipeGestureRecognizer
   {
     private int minGestureSize = 15;
     private SKSpriteNode target;
     private CGPoint startLocation;
-    private Action<SwipeOverControlGestureRecognizer> action;
+    private Action<SwipeOverSpriteGestureRecognizer> action;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="target"></param>
     /// <param name="action"></param>
-    public SwipeOverControlGestureRecognizer(SKSpriteNode target,
-      Action<SwipeOverControlGestureRecognizer> action) 
+    public SwipeOverSpriteGestureRecognizer(SKSpriteNode target,
+      Action<SwipeOverSpriteGestureRecognizer> action) 
     {
       this.target = target;
       this.action = action;

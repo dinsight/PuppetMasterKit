@@ -13,17 +13,15 @@ namespace PuppetMasterKit.Template.Game
   
   public class Hud : SKSpriteNode
   {
+    private const string CONTROL_BUTTON = "ctrl";
+
     public bool IsControlPressed { get; set; }
 
     public event EventHandler<String> OnHudButtonClick;
 
     public event EventHandler<UISwipeGestureRecognizer> OnShowMenu;
 
-    public event EventHandler<UISwipeGestureRecognizer> OnHideMenu;
-
     private UISwipeGestureRecognizer onShowMenuGesture;
-
-    private UISwipeGestureRecognizer onHideMenuGesture;
 
     /// <summary>
     /// 
@@ -38,11 +36,6 @@ namespace PuppetMasterKit.Template.Game
       onShowMenuGesture = new UISwipeGestureRecognizer(gesture=>
           OnShowMenu?.Invoke(this, gesture)) {
         Direction = UISwipeGestureRecognizerDirection.Down
-      };
-
-      onHideMenuGesture = new UISwipeGestureRecognizer(gesture =>
-          OnHideMenu?.Invoke(this, gesture)) {
-        Direction = UISwipeGestureRecognizerDirection.Up
       };
     }
 
@@ -84,7 +77,7 @@ namespace PuppetMasterKit.Template.Game
     private void Item_OnButtonPressed(object sender, EventArgs e)
     {
       var button = sender as HoverButton;
-      if (button.Name == "ctrl") {
+      if (button.Name == CONTROL_BUTTON) {
         IsControlPressed = true;
       }
       OnHudButtonClick?.Invoke(sender, button.Name);
@@ -98,7 +91,7 @@ namespace PuppetMasterKit.Template.Game
     private void Item_OnButtonReleased(object sender, EventArgs e)
     {
       var button = sender as HoverButton;
-      if (button.Name == "ctrl") {
+      if (button.Name == CONTROL_BUTTON) {
         IsControlPressed = false;
       }
     }
@@ -122,7 +115,6 @@ namespace PuppetMasterKit.Template.Game
       }
 
       scene.View.AddGestureRecognizer(onShowMenuGesture);
-      scene.View.AddGestureRecognizer(onHideMenuGesture);
     }
 
     /// <summary>

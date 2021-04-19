@@ -5,7 +5,7 @@ using UIKit;
 
 namespace PuppetMasterKit.Template
 {
-  public partial class GameViewController : UIViewController
+  public partial class GameViewController : UIViewController, IUIGestureRecognizerDelegate
   {
     protected GameViewController(IntPtr handle) : base(handle)
     {

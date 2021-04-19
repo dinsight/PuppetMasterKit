@@ -24,6 +24,9 @@ namespace PuppetMasterKit.Template.Game.Controls
     public Action<PlotControl> OnOk { get; set; }
 
     private readonly int Padding = 10;
+    private readonly NSString IsMultiselect = new NSString("isMultiselect");
+
+
     private CGPoint initialPosition;
     private SKScene scene;
     private TileMap tileMap;
@@ -31,11 +34,15 @@ namespace PuppetMasterKit.Template.Game.Controls
     private CustomButton menuNode = null;
     private SKSpriteNode floatMenu = null;
     private bool isPositioned = false;
+    
+    #region Gesture Recognizers
+    private UIGestureRecognizer[] savedRecognizers;
     private UILongPressGestureRecognizer longPress;
     private UIPanGestureRecognizer pan;
-      
+    private UISwipeGestureRecognizer swipeUpGesture;
+    #endregion
+
     private Dictionary<Pair, SKShapeNode> selected = new Dictionary<Pair, SKShapeNode>();
-    private readonly NSString IsMultiselect = new NSString("isMultiselect");
 
     /// <summary>
     /// 
@@ -57,14 +64,19 @@ namespace PuppetMasterKit.Template.Game.Controls
       return ctrl;
     }
 
-#pragma warning disable IDE0051 // Remove unused private members
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="handle"></param>
     private PlotControl(IntPtr handle) : base(handle) {
-#pragma warning restore IDE0051 // Remove unused private members
       UserInteractionEnabled = true;
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      swipeUpGesture = new UISwipeGestureRecognizer(OnSwipeUp) {
+        Direction = UISwipeGestureRecognizerDirection.Up
+      };
       pan = new UIPanGestureRecognizer(OnPan);
       longPress = new LongPressWithTouchGestureRecognizer(OnLongPress);
-
+      
       menuNode = Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == "float") as SKSpriteNode;
       
@@ -81,26 +93,37 @@ namespace PuppetMasterKit.Template.Game.Controls
     {
       scene.Camera.AddChild(this);
       UpdateControlPosition();
-      AddGestureRecognizers();
+      SetGestureRecognizers();
       //Container.GetContainer().GetInstance<Hud>().Hidden = true;
     }
 
     /// <summary>
     /// 
     /// </summary>
-    private void AddGestureRecognizers()
+    private void SetGestureRecognizers()
     {
+      savedRecognizers = scene.View.GestureRecognizers;
+      savedRecognizers.ForEach(rec => scene.View.RemoveGestureRecognizer(rec));
       scene.View.AddGestureRecognizer(longPress);
       scene.View.AddGestureRecognizer(pan);
+      scene.View.AddGestureRecognizer(swipeUpGesture);
+
+      pan.ShouldRequireFailureOf = (gesture, otherGesture) =>
+        gesture == pan && otherGesture == swipeUpGesture;
+
+
+      
     }
 
     /// <summary>
     /// 
     /// </summary>
-    private void RemoveGestureRecognizers()
+    private void RestoreGestureRecognizers()
     {
       scene.View.RemoveGestureRecognizer(longPress);
       scene.View.RemoveGestureRecognizer(pan);
+      scene.View.RemoveGestureRecognizer(swipeUpGesture);
+      savedRecognizers.ForEach(rec => scene.View.AddGestureRecognizer(rec));
     }
 
     /// <summary>
@@ -125,7 +148,7 @@ namespace PuppetMasterKit.Template.Game.Controls
       var hud = Container.GetContainer().GetInstance<Hud>();
       DoLongPressHapticEffect();
       SelectTouchedTiles(gesture.Touches);
-      RemoveGestureRecognizers();
+      RestoreGestureRecognizers();
       OnOk?.Invoke(this);
       //hud.Hidden = false;
       scene.Camera.Position = initialPosition;
@@ -135,9 +158,18 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="gesture"></param>
+    private void OnSwipeUp(UISwipeGestureRecognizer gesture)
+    {
+      Close();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public void Close() {
       var hud = Container.GetContainer().GetInstance<Hud>();
-      RemoveGestureRecognizers();
+      RestoreGestureRecognizers();
       OnClosing?.Invoke(this);
       selected.Clear();
       //hud.Hidden = false;
