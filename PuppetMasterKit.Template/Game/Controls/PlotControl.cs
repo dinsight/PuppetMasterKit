@@ -8,6 +8,7 @@ using LightInject;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
+using PuppetMasterKit.Template.Game.Controls.Buttons;
 using PuppetMasterKit.Template.Game.Gestures;
 using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Utility.Extensions;
@@ -20,8 +21,7 @@ namespace PuppetMasterKit.Template.Game.Controls
   public class PlotControl : SKSpriteNode
   {
     public event Func<String, bool> OnItemButtonClick;
-    public Action<PlotControl> OnClosing { get; set; }
-    public Action<PlotControl> OnOk { get; set; }
+    public Action<PlotControl,String> OnOk { get; set; }
 
     private readonly int Padding = 10;
     private readonly NSString IsMultiselect = new NSString("isMultiselect");
@@ -71,15 +71,22 @@ namespace PuppetMasterKit.Template.Game.Controls
     private PlotControl(IntPtr handle) : base(handle) {
       UserInteractionEnabled = true;
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      Initialize();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void Initialize() {
       swipeUpGesture = new UISwipeGestureRecognizer(OnSwipeUp) {
         Direction = UISwipeGestureRecognizerDirection.Up
       };
       pan = new UIPanGestureRecognizer(OnPan);
       longPress = new LongPressWithTouchGestureRecognizer(OnLongPress);
-      
+
       menuNode = Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == "float") as SKSpriteNode;
-      
+
       floatMenu.BecomeFirstResponder();
       GetAllButtonsForNode(menuNode).ForEach(button => {
         button.OnButtonPressed += Item_OnButtonPressed;
@@ -94,7 +101,6 @@ namespace PuppetMasterKit.Template.Game.Controls
       scene.Camera.AddChild(this);
       UpdateControlPosition();
       SetGestureRecognizers();
-      //Container.GetContainer().GetInstance<Hud>().Hidden = true;
     }
 
     /// <summary>
@@ -110,9 +116,6 @@ namespace PuppetMasterKit.Template.Game.Controls
 
       pan.ShouldRequireFailureOf = (gesture, otherGesture) =>
         gesture == pan && otherGesture == swipeUpGesture;
-
-
-      
     }
 
     /// <summary>
@@ -145,14 +148,12 @@ namespace PuppetMasterKit.Template.Game.Controls
     private void OnLongPress(UILongPressGestureRecognizer uiGesture)
     {
       var gesture = uiGesture as LongPressWithTouchGestureRecognizer;
-      var hud = Container.GetContainer().GetInstance<Hud>();
-      DoLongPressHapticEffect();
-      SelectTouchedTiles(gesture.Touches);
-      RestoreGestureRecognizers();
-      OnOk?.Invoke(this);
-      //hud.Hidden = false;
-      scene.Camera.Position = initialPosition;
-      this.RemoveFromParent();
+      if (uiGesture.State == UIGestureRecognizerState.Ended) {
+        DoLongPressHapticEffect();
+        SelectTouchedTiles(gesture.Touches);
+        OnOk?.Invoke(this, GetSelectedButton()?.Name);
+        Close();
+      }
     }
 
     /// <summary>
@@ -162,19 +163,27 @@ namespace PuppetMasterKit.Template.Game.Controls
     private void OnSwipeUp(UISwipeGestureRecognizer gesture)
     {
       Close();
+      ClearSelection();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public void Close() {
-      var hud = Container.GetContainer().GetInstance<Hud>();
+    public void Close()
+    {
       RestoreGestureRecognizers();
-      OnClosing?.Invoke(this);
-      selected.Clear();
-      //hud.Hidden = false;
       scene.Camera.Position = initialPosition;
       this.RemoveFromParent();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void ClearSelection() {
+      selected.ForEach(sel => {
+        sel.Value.RemoveFromParent();
+      });
+      selected.Clear();
     }
 
     /// <summary>
@@ -244,10 +253,11 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <param name="buttonName"></param>
     private void TurnOffOtherToggleButtons(string buttonName) {
-      GetAllButtonsForNode(menuNode).OfType<ToggleButton>().ForEach(item => {
-        if (item.Name != buttonName) {
-          item.ToggleState(false);
-        }
+      GetAllButtonsForNode(menuNode)
+        .OfType<ToggleButton>().ForEach(item => {
+          if (item.Name != buttonName) {
+            item.ToggleState(false);
+          }
       });
     }
 
@@ -256,7 +266,8 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <returns></returns>
     private bool HasButtonPressed() {
-      return GetAllButtonsForNode(menuNode).OfType<ToggleButton>().Any(btn => btn.IsPressed);
+      return GetAllButtonsForNode(menuNode)
+        .OfType<ToggleButton>().Any(btn => btn.IsPressed);
     }
 
     /// <summary>
@@ -265,7 +276,8 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <returns></returns>
     private ToggleButton GetSelectedButton()
     {
-      return menuNode.Children.OfType<ToggleButton>().FirstOrDefault(btn => btn.IsPressed);
+      return GetAllButtonsForNode(menuNode)
+        .OfType<ToggleButton>().FirstOrDefault(btn => btn.IsPressed);
     }
 
     /// <summary>
@@ -293,23 +305,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     {
       var button = sender as CustomButton;
       TurnOffOtherToggleButtons(button.Name);
-      var hud = Container.GetContainer().GetInstance<Hud>();
-      if (OnItemButtonClick != null) {
-        var isOk = button.Name == "Ok";
-        var isCancel = button.Name == "Cancel";
-        var isItemClick = false;
-
-        if (isOk || isCancel || (isItemClick = OnItemButtonClick(button.Name))) {
-          //hud.Hidden = false;
-          scene.Camera.Position = initialPosition;
-          this.RemoveFromParent();
-          
-        }
-        if (isOk || isItemClick) OnOk?.Invoke(this);
-        if (isCancel) OnClosing?.Invoke(this);
-
-        selected.Clear();
-      }
     }
 
     /// <summary>
@@ -354,8 +349,7 @@ namespace PuppetMasterKit.Template.Game.Controls
 
         var isMulti = GetSelectedButton()?.UserData?.ContainsKey(IsMultiselect) ?? false;
         if (!isMulti) {
-          selected.Values.ForEach(x => x.RemoveFromParent());
-          selected.Clear();
+          ClearSelection();
         }
 
         var key = selected.Keys.Where(x => x.Item1 == row && x.Item2 == col).FirstOrDefault();

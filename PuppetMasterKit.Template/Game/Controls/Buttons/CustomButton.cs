@@ -5,7 +5,7 @@ using Foundation;
 using ObjCRuntime;
 using SpriteKit;
 
-namespace PuppetMasterKit.Template.Game.Controls
+namespace PuppetMasterKit.Template.Game.Controls.Buttons
 {
   public class CustomButton : SKSpriteNode
   {

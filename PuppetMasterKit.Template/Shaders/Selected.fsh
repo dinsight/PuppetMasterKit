@@ -3,9 +3,7 @@
     vec2 coord = v_tex_coord;
     vec4 current = texture2D(u_texture, coord);
 
-    if(current[0]==current[1] && current[1]==current[2] && current[3] > 0.0){
-        float factor = abs(sin(u_time));
-        gl_FragColor = vec4(0.766, 0.448, 0.154, factor);
-    }
-    gl_FragColor = current;
+    float intensity = 0.17;
+    gl_FragColor = vec4(current[0]+intensity, current[1]+intensity, current[2]+intensity, current[3]);
+    
 }

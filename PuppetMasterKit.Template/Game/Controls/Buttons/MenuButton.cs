@@ -5,7 +5,7 @@ using SpriteKit;
 using UIKit;
 using CoreGraphics;
 
-namespace PuppetMasterKit.Template.Game.Controls
+namespace PuppetMasterKit.Template.Game.Controls.Buttons
 {
   public class MenuButton : HoverButton
   {

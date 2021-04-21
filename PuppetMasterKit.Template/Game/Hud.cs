@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using CoreGraphics;
-using Foundation;
-using PuppetMasterKit.Template.Game.Controls;
+using PuppetMasterKit.Template.Game.Controls.Buttons;
 using PuppetMasterKit.Utility.Configuration;
 using SpriteKit;
 using UIKit;
 
 namespace PuppetMasterKit.Template.Game
 {
-  
+
   public class Hud : SKSpriteNode
   {
     private const string CONTROL_BUTTON = "ctrl";

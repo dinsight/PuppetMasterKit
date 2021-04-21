@@ -357,6 +357,7 @@
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\" />
     <Folder Include="Shaders\" />
     <Folder Include="Game\Gestures\" />
+    <Folder Include="Game\Controls\Buttons\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -419,19 +420,19 @@
     <Compile Include="Game\Character\Beaver\BeaverBuilder.cs" />
     <Compile Include="Game\Character\Beaver\BeaverStates.cs" />
     <Compile Include="Game\Character\Beaver\BeaverRulesBuilder.cs" />
-    <Compile Include="Game\Controls\HoverButton.cs" />
-    <Compile Include="Game\Controls\MenuButton.cs" />
     <Compile Include="Game\Character\Tower\TowerBuilder.cs" />
     <Compile Include="Game\Character\Tower\TowerHandlers.cs" />
     <Compile Include="Game\Character\Tower\TowerRulesBuilder.cs" />
     <Compile Include="Game\Character\Tower\TowerStates.cs" />
     <Compile Include="Game\Facts\Attack.cs" />
     <Compile Include="Game\Controls\PlotControl.cs" />
-    <Compile Include="Game\Controls\PlainButton.cs" />
-    <Compile Include="Game\Controls\CustomButton.cs" />
-    <Compile Include="Game\Controls\ToggleButton.cs" />
     <Compile Include="Game\Gestures\LongPressWithTouchGestureRecognizer.cs" />
     <Compile Include="Game\Gestures\SwipeOverControlGestureRecognizer.cs" />
+    <Compile Include="Game\Controls\Buttons\CustomButton.cs" />
+    <Compile Include="Game\Controls\Buttons\HoverButton.cs" />
+    <Compile Include="Game\Controls\Buttons\MenuButton.cs" />
+    <Compile Include="Game\Controls\Buttons\PlainButton.cs" />
+    <Compile Include="Game\Controls\Buttons\ToggleButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -944,7 +945,7 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\Neutral.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\ok.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\tile-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\tile_bk.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

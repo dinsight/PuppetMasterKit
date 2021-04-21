@@ -4,7 +4,7 @@ using Foundation;
 using SpriteKit;
 using UIKit;
 
-namespace PuppetMasterKit.Template.Game.Controls
+namespace PuppetMasterKit.Template.Game.Controls.Buttons
 {
   public class PlainButton : HoverButton
   {
