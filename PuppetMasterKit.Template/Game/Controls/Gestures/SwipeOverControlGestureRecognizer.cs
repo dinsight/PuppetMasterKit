@@ -6,7 +6,7 @@ using Foundation;
 using SpriteKit;
 using UIKit;
 
-namespace PuppetMasterKit.Template.Game.Gestures
+namespace PuppetMasterKit.Template.Game.Controls.Gestures
 {
   public class SwipeOverSpriteGestureRecognizer: UISwipeGestureRecognizer
   {
@@ -47,6 +47,8 @@ namespace PuppetMasterKit.Template.Game.Gestures
           if (target.ContainsPoint(nodePos)) {
             action?.Invoke(this);
             State = UIGestureRecognizerState.Ended;
+          } else {
+            State = UIGestureRecognizerState.Failed;
           }
         }
       }

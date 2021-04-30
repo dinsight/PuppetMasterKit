@@ -2,7 +2,7 @@
 using Foundation;
 using UIKit;
 
-namespace PuppetMasterKit.Template.Game.Gestures
+namespace PuppetMasterKit.Template.Game.Controls.Gestures
 {
   public class LongPressWithTouchGestureRecognizer : UILongPressGestureRecognizer
   {

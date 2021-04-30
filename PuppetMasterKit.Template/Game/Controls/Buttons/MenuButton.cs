@@ -109,7 +109,7 @@ namespace PuppetMasterKit.Template.Game.Controls.Buttons
           var xpos = (i + 1) * (itemSpacing + x.Size.Width + HoverButton.Padding * 2);
           var slide = SKAction.MoveTo(new CGPoint(xpos,0), 0.5);
           var group = SKAction.Group( reveal, slide);
-          x.RunAction(group);
+          x.RunAction(group); 
         } else {
           var slide = SKAction.MoveTo(new CGPoint(0,0), 0.5);
           var group = SKAction.Group(slide, hide, SKAction.Run(() => x.Hidden = true));

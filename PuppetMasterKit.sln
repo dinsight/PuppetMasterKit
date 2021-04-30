@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.Terrain", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMasterKit.Ios.Tiles", "PuppetMasterKit.Ios.Tiles\PuppetMasterKit.Ios.Tiles.csproj", "{34896846-E1E4-47CB-AC4B-8B28A8057292}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB189199-3D97-4700-A054-8F4A87499835}"
+	ProjectSection(SolutionItems) = preProject
+		Selected.fsh = Selected.fsh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator

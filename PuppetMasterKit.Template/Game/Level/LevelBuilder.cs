@@ -133,13 +133,13 @@ namespace PuppetMasterKit.Template.Game.Level
         var random = new Random(Guid.NewGuid().GetHashCode());
         //var x = random.Next(10, 300);
         //var y = random.Next(100, 600);
-        var x = 0;
-        var y = 0;
+        var x = mapCols * tileSize/2;
+        var y = mapRows * tileSize/2;
         agent.Position = new Point(x, y);
         flightMap.AddHero(beaver);
       }
 
-      for (int i = 0; i < 0 ; i++) {
+      for (int i = 0; i < 2 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame, tileMap);
         var agent = wolf.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
@@ -211,7 +211,7 @@ namespace PuppetMasterKit.Template.Game.Level
         .Select(s => s.Sprite.GetNativeSprite() as SKNode).First();
 
       player.AddChild(camera);
-
+      //scene.AddChild(camera);
       return flightMap;
     }
 
@@ -221,7 +221,6 @@ namespace PuppetMasterKit.Template.Game.Level
     /// </summary>
     private TileMap GenerateMap()
     {
-      
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 

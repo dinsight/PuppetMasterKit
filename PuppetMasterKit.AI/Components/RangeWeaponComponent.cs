@@ -99,7 +99,7 @@ namespace PuppetMasterKit.AI.Components
     /// <param name="deltaTime"></param>
     public override void Update(double deltaTime)
     {
-      if (weaponSprite != null)
+      if (weaponSprite != null && directionUnit!=null)
       {
         var displacementInterval = (float)(this.velocity * deltaTime);
         currentPosition += (this.directionUnit * displacementInterval).ToPosition();

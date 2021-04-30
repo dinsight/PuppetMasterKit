@@ -188,8 +188,13 @@ namespace PuppetMasterKit.Graphics.Geometry
     /// <returns><c>true</c> if <c>lhs</c> and <c>rhs</c> are equal; otherwise, <c>false</c>.</returns>
     public static bool operator ==(Vector lhs, Vector rhs)
     {
-      return Math.Abs(lhs.Dx - rhs.Dx) < Float.EPSILON
-                 && Math.Abs(lhs.Dy - rhs.Dy) < Float.EPSILON;
+      return Object.ReferenceEquals(lhs,rhs) 
+          || (
+            !Object.Equals(lhs, null) &&
+            !Object.Equals(rhs, null) &&
+            Math.Abs(lhs.Dx - rhs.Dx) < Float.EPSILON &&
+            Math.Abs(lhs.Dy - rhs.Dy) < Float.EPSILON
+          );
     }
 
     /// <summary>

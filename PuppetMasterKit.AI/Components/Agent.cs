@@ -177,6 +177,12 @@ namespace PuppetMasterKit.AI.Components
         return this;
       }
 
+      public AgentBuilder AtLocation(float posX, float posY)
+      {
+        agent.Position = new Point(posX,posY);
+        return this;
+      }
+
       public Agent Build()
       {
         return agent;

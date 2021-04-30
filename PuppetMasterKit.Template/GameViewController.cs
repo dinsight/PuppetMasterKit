@@ -1,7 +1,9 @@
 ﻿using System;
 using PuppetMasterKit.Template.Game;
+using PuppetMasterKit.Utility.Configuration;
 using SpriteKit;
 using UIKit;
+using LightInject;
 
 namespace PuppetMasterKit.Template
 {
@@ -30,6 +32,17 @@ namespace PuppetMasterKit.Template
 
       // Present the scene.
       skView.PresentScene(scene);
+    }
+
+    public override void DidRotate(UIInterfaceOrientation fromInterfaceOrientation)
+    {
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      if (hud != null) {
+        var skView = (SKView)View;
+        hud.UpdateLayout(skView.Scene, skView.Scene.Camera);
+      }
+
+      base.DidRotate(fromInterfaceOrientation);
     }
 
     public override bool ShouldAutorotate()

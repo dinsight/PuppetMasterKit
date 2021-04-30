@@ -356,8 +356,9 @@
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\" />
     <Folder Include="Shaders\" />
-    <Folder Include="Game\Gestures\" />
     <Folder Include="Game\Controls\Buttons\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\" />
+    <Folder Include="Game\Controls\Gestures\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -371,6 +372,7 @@
     <BundleResource Include="Shaders\Shadow.fsh" />
     <BundleResource Include="Shaders\Water.fsh" />
     <BundleResource Include="Shaders\Selected.fsh" />
+    <BundleResource Include="Shaders\Glass.fsh" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -426,13 +428,15 @@
     <Compile Include="Game\Character\Tower\TowerStates.cs" />
     <Compile Include="Game\Facts\Attack.cs" />
     <Compile Include="Game\Controls\PlotControl.cs" />
-    <Compile Include="Game\Gestures\LongPressWithTouchGestureRecognizer.cs" />
-    <Compile Include="Game\Gestures\SwipeOverControlGestureRecognizer.cs" />
     <Compile Include="Game\Controls\Buttons\CustomButton.cs" />
     <Compile Include="Game\Controls\Buttons\HoverButton.cs" />
     <Compile Include="Game\Controls\Buttons\MenuButton.cs" />
     <Compile Include="Game\Controls\Buttons\PlainButton.cs" />
     <Compile Include="Game\Controls\Buttons\ToggleButton.cs" />
+    <Compile Include="Game\Controls\ControlsUtil.cs" />
+    <Compile Include="Game\Controls\Gestures\LongPressWithTouchGestureRecognizer.cs" />
+    <Compile Include="Game\Controls\Gestures\SwipeOverControlGestureRecognizer.cs" />
+    <Compile Include="Game\Controls\Gestures\TapWithTouchGestureRecognizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -946,6 +950,8 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\ok.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\tile_bk.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\PlotterBkxcf.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
@@ -1841,6 +1847,14 @@
     <AtlasTexture Include="Resources\tower\tower-building.atlas\0001.png" />
     <AtlasTexture Include="Resources\tower\tower-ready.atlas\0001.png" />
     <AtlasTexture Include="Resources\tower\tower-attack.atlas\0001.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-e.atlas\frame_3_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-n.atlas\frame_5_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-ne.atlas\frame_4_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-nw.atlas\frame_6_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-s.atlas\frame_1_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-se.atlas\frame_2_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-sw.atlas\frame_8_0002.png" />
+    <AtlasTexture Include="Resources\beaver\beaver-idle-w.atlas\frame_7_0002.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using CoreGraphics;
+using Foundation;
+using PuppetMasterKit.Template.Game.Controls;
 using PuppetMasterKit.Template.Game.Controls.Buttons;
 using PuppetMasterKit.Utility.Configuration;
 using SpriteKit;
@@ -108,6 +110,14 @@ namespace PuppetMasterKit.Template.Game
       var scoreControl = this.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
       var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
 
+      var isLandscape = UIApplication.SharedApplication.StatusBarOrientation.IsLandscape();
+      const int msgMargin = 35;
+      int topMargin = isLandscape ? 10: 30;
+      var visibleSize = ControlsUtil.GetVisibleScreenSize(scene);
+      
+      messageControl.PreferredMaxLayoutWidth = visibleSize.Width - 2 * msgMargin;
+      messageControl.Position = new CGPoint(visibleSize.Width/2, visibleSize.Height - topMargin);
+
       foreach (var item in this.Children.OfType<CustomButton>()) {
         item.UpdateLayout();
       }
@@ -131,8 +141,13 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="message">Message.</param>
     public void SetMessage(string message)
     {
+      if (String.IsNullOrEmpty(message))
+        message = " ";
       var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
-      messageControl.Text = message;
+
+      var mutable = new NSMutableAttributedString(messageControl.AttributedText);
+      mutable.MutableString.SetString(new NSString(message));
+      messageControl.AttributedText = mutable;
     }
 
     /// <summary>

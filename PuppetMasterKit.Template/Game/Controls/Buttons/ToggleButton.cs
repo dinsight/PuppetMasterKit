@@ -1,13 +1,13 @@
 ﻿using System;
-using CoreGraphics;
 using Foundation;
-using ObjCRuntime;
 using SpriteKit;
 using UIKit;
+using System.Linq;
+using PuppetMasterKit.Utility.Extensions;
 
 namespace PuppetMasterKit.Template.Game.Controls.Buttons
 {
-  public class ToggleButton : HoverButton
+  public class ToggleButton : CustomButton
   {
     private bool isPressed = false;
 
@@ -22,6 +22,7 @@ namespace PuppetMasterKit.Template.Game.Controls.Buttons
     /// <param name="handle"></param>
     public ToggleButton(IntPtr handle) : base(handle)
     {
+      this.UserInteractionEnabled = true;
     }
 
     /// <summary>
@@ -44,6 +45,11 @@ namespace PuppetMasterKit.Template.Game.Controls.Buttons
     /// <param name="evt"></param>
     public override void TouchesBegan(NSSet touches, UIEvent evt)
     {
+      //disable taps so they don't get confised with touches began
+      this.Scene.View.GestureRecognizers
+        .OfType<UITapGestureRecognizer>()
+        .ForEach(x=>x.Enabled=false);
+
       isPressed = !isPressed;
       ToggleState(isPressed);
       if (isPressed) {
@@ -55,15 +61,17 @@ namespace PuppetMasterKit.Template.Game.Controls.Buttons
 
     public override void TouchesEnded(NSSet touches, UIEvent evt)
     {
-      
+      this.Scene.View.GestureRecognizers
+        .OfType<UITapGestureRecognizer>()
+        .ForEach(x => x.Enabled = true);
     }
 
-    protected override void SetNormalTexture()
+    protected void SetNormalTexture()
     {
       this.Shader = null;
     }
 
-    protected override void SetHighlightedTexture()
+    protected void SetHighlightedTexture()
     {
       this.Shader = on;
     }
