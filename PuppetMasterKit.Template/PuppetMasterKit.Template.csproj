@@ -359,6 +359,7 @@
     <Folder Include="Game\Controls\Buttons\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\" />
     <Folder Include="Game\Controls\Gestures\" />
+    <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\help.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -373,6 +374,7 @@
     <BundleResource Include="Shaders\Water.fsh" />
     <BundleResource Include="Shaders\Selected.fsh" />
     <BundleResource Include="Shaders\Glass.fsh" />
+    <BundleResource Include="Shaders\Neutral.fsh" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -948,10 +950,8 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\cancel.imageset\cancel-1.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\neutral.imageset\Neutral.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\ok.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\tile_bk.imageset\tile_bk.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\PlotterBkxcf.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\help.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\help.imageset\Help.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

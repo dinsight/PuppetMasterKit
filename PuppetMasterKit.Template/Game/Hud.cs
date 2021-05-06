@@ -112,10 +112,10 @@ namespace PuppetMasterKit.Template.Game
 
       var isLandscape = UIApplication.SharedApplication.StatusBarOrientation.IsLandscape();
       const int msgMargin = 35;
-      int topMargin = isLandscape ? 10: 30;
+      int topMargin = isLandscape ? 5: 30;
       var visibleSize = ControlsUtil.GetVisibleScreenSize(scene);
       
-      messageControl.PreferredMaxLayoutWidth = visibleSize.Width - 2 * msgMargin;
+      messageControl.PreferredMaxLayoutWidth = visibleSize.Width - 1f * msgMargin;
       messageControl.Position = new CGPoint(visibleSize.Width/2, visibleSize.Height - topMargin);
 
       foreach (var item in this.Children.OfType<CustomButton>()) {

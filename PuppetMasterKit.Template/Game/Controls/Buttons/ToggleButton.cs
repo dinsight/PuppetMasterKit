@@ -14,8 +14,9 @@ namespace PuppetMasterKit.Template.Game.Controls.Buttons
     public bool IsPressed { get => isPressed; }
 
     private static SKShader on = SKShader.FromFile("Shaders/Selected.fsh");
+    private static SKShader off = SKShader.FromFile("Shaders/Neutral.fsh");
 
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -68,7 +69,7 @@ namespace PuppetMasterKit.Template.Game.Controls.Buttons
 
     protected void SetNormalTexture()
     {
-      this.Shader = null;
+      this.Shader = off;
     }
 
     protected void SetHighlightedTexture()

@@ -6,6 +6,7 @@ using CoreGraphics;
 using CoreHaptics;
 using Foundation;
 using LightInject;
+using OpenTK;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
@@ -31,15 +32,15 @@ namespace PuppetMasterKit.Template.Game.Controls
     private ICoordinateMapper mapper;
     private CustomButton menuNode = null;
     private SKSpriteNode floatMenu = null;
-    private bool isPositioned = false;
-    
+    private ToggleButton helpNode = null;
+
     #region Gesture Recognizers
-    private UIGestureRecognizer[] savedRecognizers;
     private UILongPressGestureRecognizer longPress;
     private TapWithTouchGestureRecognizer tap;
     private UIPanGestureRecognizer pan;
     private UISwipeGestureRecognizer swipeUpGesture;
     private UISwipeGestureRecognizer swipeUpOverToolsGesture;
+    private UISwipeGestureRecognizer swipeDownOverToolsGesture;
     #endregion
 
     private Dictionary<Pair, SKShapeNode> selected = new Dictionary<Pair, SKShapeNode>();
@@ -61,6 +62,7 @@ namespace PuppetMasterKit.Template.Game.Controls
       ctrl.scene = scene;
       ctrl.tileMap = tileMap;
       ctrl.RemoveFromParent();
+      Container.GetContainer().RegisterInstance<PlotControl>(ctrl); 
       return ctrl;
     }
 
@@ -79,32 +81,61 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     private void Initialize() {
       menuNode = Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
+      helpNode = Children.FirstOrDefault(x => x.Name == "help") as ToggleButton;
       floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == "float") as SKSpriteNode;
       floatMenu.Paused = false;
-      floatMenu.AnchorPoint = new CGPoint(0,1);
       this.Paused = false;
 
       swipeUpGesture = new UISwipeGestureRecognizer(OnSwipeUp) {
         Direction = UISwipeGestureRecognizerDirection.Up
       };
-      swipeUpOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeUpOverMenu) {
-         Direction = UISwipeGestureRecognizerDirection.Up
+      swipeUpOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeOverMenu) {
+        Direction = UISwipeGestureRecognizerDirection.Up,
+        MinGestureSize = 25
+      };  
+      swipeDownOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeOverMenu) {
+        Direction = UISwipeGestureRecognizerDirection.Down,
+        MinGestureSize = 25
       };
       pan = new UIPanGestureRecognizer(OnPan);
       longPress = new LongPressWithTouchGestureRecognizer(OnLongPress);
-      tap = new TapWithTouchGestureRecognizer(OnTap) {
-          
-      };
-      
+      tap = new TapWithTouchGestureRecognizer(OnTap);
 
       floatMenu.UserInteractionEnabled = false;
       GetAllButtonsForNode(menuNode).ForEach(button => {
         button.OnButtonPressed += Item_OnButtonPressed;
         button.OnButtonReleased += Item_OnButtonReleased;
       });
+      helpNode.OnButtonPressed += HelpNode_OnButtonPressed;
+      helpNode.OnButtonReleased += HelpNode_OnButtonReleased;
+      Shader = null;
+    }
 
-      this.Shader = SKShader.FromFile("Shaders/Glass.fsh");
-  }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HelpNode_OnButtonReleased(object sender, EventArgs e)
+    {
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      hud.SetMessage(String.Empty);
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HelpNode_OnButtonPressed(object sender, EventArgs e)
+    {
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      hud.SetMessage("- <Swipe Up> to close the menu\n" +
+        "- <Touch and Hold> to start building\n" +
+        "- <Pan> to move the map ");
+      
+    }
 
     /// <summary>
     /// 
@@ -118,9 +149,16 @@ namespace PuppetMasterKit.Template.Game.Controls
         .OfType<ToggleButton>().ForEach(item => 
             item.ToggleState(false));
 
-      var hud = Container.GetContainer().GetInstance<Hud>();
-      hud.SetMessage("Swipe up to close the menu and confirm your changes. " +
-        "Double tap on the buttons to reset your changes. ");
+      if (Shader == null) {
+        var screenSize = ControlsUtil.GetVisibleScreenSize(scene);
+        this.Shader = SKShader.FromFile("Shaders/Glass.fsh");
+
+        Vector2 resolution = new Vector2((float)screenSize.Width, (float)screenSize.Height);
+        this.Shader.Uniforms = new SKUniform[] {
+         new SKUniform("i_resolution", resolution)
+        };
+      }
+      helpNode.ToggleState(false);
     }
 
     /// <summary>
@@ -133,22 +171,24 @@ namespace PuppetMasterKit.Template.Game.Controls
       scene.View.AddGestureRecognizer(pan);
       scene.View.AddGestureRecognizer(swipeUpGesture);
       scene.View.AddGestureRecognizer(swipeUpOverToolsGesture);
-
+      scene.View.AddGestureRecognizer(swipeDownOverToolsGesture);
+      
       swipeUpGesture.ShouldRequireFailureOf = (gesture, otherGesture) =>
         gesture == swipeUpGesture && (
-              otherGesture == swipeUpOverToolsGesture
-              );
+              otherGesture == swipeUpOverToolsGesture ||
+              otherGesture == swipeDownOverToolsGesture );
 
       tap.ShouldRequireFailureOf = (gesture, otherGesture) =>
         gesture == tap && (
               otherGesture == swipeUpOverToolsGesture ||
-              otherGesture == swipeUpGesture
-              );
+              otherGesture == swipeDownOverToolsGesture ||
+              otherGesture == swipeUpGesture);
 
       pan.ShouldRequireFailureOf = (gesture, otherGesture) =>
         gesture == pan && (
               otherGesture == swipeUpGesture ||
-              otherGesture == swipeUpOverToolsGesture);
+              otherGesture == swipeUpOverToolsGesture ||
+              otherGesture == swipeDownOverToolsGesture);
     }
 
     /// <summary>
@@ -161,6 +201,7 @@ namespace PuppetMasterKit.Template.Game.Controls
       scene.View.RemoveGestureRecognizer(pan);
       scene.View.RemoveGestureRecognizer(swipeUpGesture);
       scene.View.RemoveGestureRecognizer(swipeUpOverToolsGesture);
+      scene.View.RemoveGestureRecognizer(swipeDownOverToolsGesture);
     }
 
     /// <summary>
@@ -181,6 +222,10 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="gesture"></param>
     private void OnLongPress(UILongPressGestureRecognizer uiGesture)
     {
+      Close();
+      OnOk?.Invoke(this, GetSelectedButton()?.Name);
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      hud.SetMessage(String.Empty);
     }
 
     /// <summary>
@@ -205,29 +250,38 @@ namespace PuppetMasterKit.Template.Game.Controls
     private void OnSwipeUp(UISwipeGestureRecognizer gesture)
     {
       Close();
-      OnOk?.Invoke(this, GetSelectedButton()?.Name);
+      ClearSelection();
       var hud = Container.GetContainer().GetInstance<Hud>();
       hud.SetMessage(String.Empty);
     }
 
-    private void OnSwipeUpOverMenu(SwipeOverSpriteGestureRecognizer gesture)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="gesture"></param>
+    private void OnSwipeOverMenu(SwipeOverSpriteGestureRecognizer gesture)
     {
+      var actualStep = 0;
       floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == "float") as SKSpriteNode;
-      var p = this.ConvertPointFromNode(floatMenu.Position, floatMenu);
+      var step = gesture.GestureSize * 5;
 
-      const int step = 50;
-      var actualStep = floatMenu.Position.Y + step <= this.Size.Height ? step : this.Size.Height - floatMenu.Position.Y;
-
-      if (actualStep > 0) {
-        var action = SKAction.MoveBy(0, actualStep, 0.5);
-        var group = SKAction.Sequence(SKAction.Run(() =>
-          {
-              var check = floatMenu.Paused;
-          }), action);
-        System.Diagnostics.Debug.WriteLine($"OnSwipeUpOverMenu {actualStep}. Running action. Is paused {floatMenu.Paused}");
-        floatMenu.RunAction(group);
+      if(gesture.Direction == UISwipeGestureRecognizerDirection.Down) {
+        if ((int)floatMenu.Position.Y > this.Size.Height/2) {
+          actualStep = -(int)Math.Min(step,
+            Math.Abs(this.Size.Height/2 - floatMenu.Position.Y));
+        }
+      } else {
+        if ((int)floatMenu.Position.Y - floatMenu.Size.Height < -this.Size.Height / 2) {
+          actualStep = (int)Math.Min(step,
+            Math.Abs(floatMenu.Position.Y - floatMenu.Size.Height + this.Size.Height / 2));
+        }
       }
+
+      var action = SKAction.MoveBy(0, actualStep, 0.5);
+      var group = SKAction.Sequence(action );
+      floatMenu.RunAction(group);
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -286,6 +340,10 @@ namespace PuppetMasterKit.Template.Game.Controls
       floatMenu.Position = new CGPoint(
         -this.Size.Width / 2 ,
         this.Size.Height / 2 );
+
+      helpNode.Position = new CGPoint(
+        this.Size.Width / 2,
+        this.Size.Height / 2);
     }
 
 

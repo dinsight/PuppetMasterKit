@@ -13,7 +13,14 @@ namespace PuppetMasterKit.Template.Game.Controls.Gestures
     private int minGestureSize = 15;
     private SKSpriteNode target;
     private CGPoint startLocation;
+    private double gestureSize;
     private Action<SwipeOverSpriteGestureRecognizer> action;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public int GestureSize { get => (int)gestureSize; }
+    public int MinGestureSize { get => minGestureSize; set => minGestureSize = value; }
 
     /// <summary>
     /// 
@@ -38,20 +45,19 @@ namespace PuppetMasterKit.Template.Game.Controls.Gestures
       var touch = touches.Cast<UITouch>().First();
       var currentLocation = touch.LocationInView(this.View);
       var vertDiff = startLocation.Y - currentLocation.Y;
-      //swipe up
-      if (vertDiff > 0) {
-        var gestureSize = Math.Abs(vertDiff);
-        if (gestureSize >= minGestureSize)
-        {
-          var nodePos = touch.LocationInNode(target.Parent);
-          if (target.ContainsPoint(nodePos)) {
-            action?.Invoke(this);
-            State = UIGestureRecognizerState.Ended;
-          } else {
-            State = UIGestureRecognizerState.Failed;
-          }
+
+      gestureSize = Math.Abs(vertDiff);
+      if (gestureSize >= minGestureSize)
+      {
+        var nodePos = touch.LocationInNode(target.Parent);
+        if (target.ContainsPoint(nodePos)) {
+          action?.Invoke(this);
+          State = UIGestureRecognizerState.Ended;
+        } else {
+          State = UIGestureRecognizerState.Failed;
         }
       }
+      
       base.TouchesMoved(touches, evt);
     }
 
@@ -69,6 +75,7 @@ namespace PuppetMasterKit.Template.Game.Controls.Gestures
     /// 
     /// </summary>
     public override void Reset() {
+      gestureSize = 0;
       startLocation = new CGPoint(0, 0);
       if (State == UIGestureRecognizerState.Possible) {
         State = UIGestureRecognizerState.Failed;

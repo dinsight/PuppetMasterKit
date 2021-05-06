@@ -37,11 +37,11 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               //new RuleSystemComponent<FlightMap, RabbitHandlers>(
               //  RabbitRulesBuilder.Build(flightMap), new RabbitHandlers()),
               new StateComponent<BeaverStates>(BeaverStates.idle),
-              new UpdateableSpriteComponent(CharacterName, new Size(100, 120), new Point(0.5f, 0.2f)),
+              new UpdateableSpriteComponent(CharacterName, new Size(80, 100), new Point(0.5f, 0.2f)),
               new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap), RangeWeaponAtlas, RangeWeaponName,
                 new Size(30, 30), 700, 10, 500),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(5, 7, 1, 3, 1),
+              new PhysicsComponent(5, 3, 1, 3, 1),
               new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint),
               new CollisionComponent(GetCollisions(flightMap), BeaverHandlers.HandleCollision, 80),
               AgentBuilder.Builder()

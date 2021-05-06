@@ -4,6 +4,7 @@ using PuppetMasterKit.Utility.Configuration;
 using SpriteKit;
 using UIKit;
 using LightInject;
+using PuppetMasterKit.Template.Game.Controls;
 
 namespace PuppetMasterKit.Template
 {
@@ -40,8 +41,13 @@ namespace PuppetMasterKit.Template
       if (hud != null) {
         var skView = (SKView)View;
         hud.UpdateLayout(skView.Scene, skView.Scene.Camera);
+        hud.SetMessage(null);
       }
 
+      var plotter = Container.GetContainer().GetInstance<PlotControl>();
+      if (plotter != null) {
+        plotter.Close();
+      }
       base.DidRotate(fromInterfaceOrientation);
     }
 
@@ -52,7 +58,10 @@ namespace PuppetMasterKit.Template
 
     public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
     {
-      return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone ? UIInterfaceOrientationMask.AllButUpsideDown : UIInterfaceOrientationMask.All;
+      //return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone ?
+      //  UIInterfaceOrientationMask.AllButUpsideDown : UIInterfaceOrientationMask.All;
+
+      return UIInterfaceOrientationMask.LandscapeLeft | UIInterfaceOrientationMask.Portrait;
     }
 
     public override void DidReceiveMemoryWarning()
