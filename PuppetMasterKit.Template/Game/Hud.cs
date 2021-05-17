@@ -13,9 +13,7 @@ namespace PuppetMasterKit.Template.Game
 
   public class Hud : SKSpriteNode
   {
-    private const string CONTROL_BUTTON = "ctrl";
-
-    public bool IsControlPressed { get; set; }
+    private const string HELP_BUTTON = "help";
 
     public event EventHandler<String> OnHudButtonClick;
 
@@ -29,8 +27,6 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="handle"></param>
     public Hud(IntPtr handle) : base(handle)
     {
-      IsControlPressed = false;
-
       WireUpButtons();
 
       onShowMenuGesture = new UISwipeGestureRecognizer(gesture=>
@@ -67,6 +63,35 @@ namespace PuppetMasterKit.Template.Game
       foreach (var item in this.Children.OfType<MenuButton>()) {
         item.OnButtonPressed += Item_OnButtonPressed;
       }
+
+      var helpNode = this.Children.FirstOrDefault(x => x.Name == HELP_BUTTON) as ToggleButton;
+      if (helpNode != null) {
+        helpNode.OnButtonPressed += HelpNode_OnButtonPressed;
+        helpNode.OnButtonReleased += HelpNode_OnButtonReleased;
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HelpNode_OnButtonReleased(object sender, EventArgs e)
+    {
+      SetMessage(String.Empty);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HelpNode_OnButtonPressed(object sender, EventArgs e)
+    {
+      SetMessage(
+          "- <Swipe Down> to see the selected character's menu\n" +
+          "- <Tap> to move the selected character\n" +
+          "- <Double Tap> to attack location ");
     }
 
     /// <summary>
@@ -77,9 +102,6 @@ namespace PuppetMasterKit.Template.Game
     private void Item_OnButtonPressed(object sender, EventArgs e)
     {
       var button = sender as HoverButton;
-      if (button.Name == CONTROL_BUTTON) {
-        IsControlPressed = true;
-      }
       OnHudButtonClick?.Invoke(sender, button.Name);
     }
 
@@ -90,10 +112,6 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="e"></param>
     private void Item_OnButtonReleased(object sender, EventArgs e)
     {
-      var button = sender as HoverButton;
-      if (button.Name == CONTROL_BUTTON) {
-        IsControlPressed = false;
-      }
     }
 
     /// <summary>
@@ -109,6 +127,7 @@ namespace PuppetMasterKit.Template.Game
 
       var scoreControl = this.Children.FirstOrDefault(x => x.Name == "score") as SKLabelNode;
       var messageControl = this.Children.FirstOrDefault(x => x.Name == "message") as SKLabelNode;
+      var helpNode = this.Children.FirstOrDefault(x => x.Name == HELP_BUTTON) as ToggleButton;
 
       var isLandscape = UIApplication.SharedApplication.StatusBarOrientation.IsLandscape();
       const int msgMargin = 35;
@@ -121,6 +140,11 @@ namespace PuppetMasterKit.Template.Game
       foreach (var item in this.Children.OfType<CustomButton>()) {
         item.UpdateLayout();
       }
+
+      var marginTop = isLandscape ? 10 : 50;
+      helpNode.Position = new CGPoint(
+        visibleSize.Width,
+        visibleSize.Height - marginTop);
 
       scene.View.AddGestureRecognizer(onShowMenuGesture);
     }

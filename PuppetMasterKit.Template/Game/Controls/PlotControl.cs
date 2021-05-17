@@ -7,25 +7,28 @@ using CoreHaptics;
 using Foundation;
 using LightInject;
 using OpenTK;
+using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
 using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Template.Game.Controls.Buttons;
 using PuppetMasterKit.Template.Game.Controls.Gestures;
+using PuppetMasterKit.Utility;
 using PuppetMasterKit.Utility.Configuration;
 using PuppetMasterKit.Utility.Extensions;
 using SpriteKit;
 using UIKit;
-using Pair = System.Tuple<int, int>;
 
 namespace PuppetMasterKit.Template.Game.Controls
 {
   public class PlotControl : SKSpriteNode
   {
+    public event Func<PlotControl, GridCoord, bool> SelectionValidator;
     public event Func<String, bool> OnItemButtonClick;
     public Action<PlotControl,String> OnOk { get; set; }
-    private readonly NSString IsMultiselect = new NSString("isMultiselect");
 
+    private readonly NSString IsMultiselect = new NSString("isMultiselect");
+    private int marginTop;
     private CGPoint initialPosition;
     private SKScene scene;
     private TileMap tileMap;
@@ -33,6 +36,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     private CustomButton menuNode = null;
     private SKSpriteNode floatMenu = null;
     private ToggleButton helpNode = null;
+    private Dictionary<GridCoord, SKShapeNode> selected = new Dictionary<GridCoord, SKShapeNode>();
 
     #region Gesture Recognizers
     private UILongPressGestureRecognizer longPress;
@@ -42,8 +46,6 @@ namespace PuppetMasterKit.Template.Game.Controls
     private UISwipeGestureRecognizer swipeUpOverToolsGesture;
     private UISwipeGestureRecognizer swipeDownOverToolsGesture;
     #endregion
-
-    private Dictionary<Pair, SKShapeNode> selected = new Dictionary<Pair, SKShapeNode>();
 
     /// <summary>
     /// 
@@ -82,26 +84,17 @@ namespace PuppetMasterKit.Template.Game.Controls
     private void Initialize() {
       menuNode = Children.FirstOrDefault(x => x.Name == "menu") as CustomButton;
       helpNode = Children.FirstOrDefault(x => x.Name == "help") as ToggleButton;
-      floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == "float") as SKSpriteNode;
-      floatMenu.Paused = false;
+      
       this.Paused = false;
 
       swipeUpGesture = new UISwipeGestureRecognizer(OnSwipeUp) {
         Direction = UISwipeGestureRecognizerDirection.Up
       };
-      swipeUpOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeOverMenu) {
-        Direction = UISwipeGestureRecognizerDirection.Up,
-        MinGestureSize = 25
-      };  
-      swipeDownOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeOverMenu) {
-        Direction = UISwipeGestureRecognizerDirection.Down,
-        MinGestureSize = 25
-      };
+      
       pan = new UIPanGestureRecognizer(OnPan);
       longPress = new LongPressWithTouchGestureRecognizer(OnLongPress);
       tap = new TapWithTouchGestureRecognizer(OnTap);
 
-      floatMenu.UserInteractionEnabled = false;
       GetAllButtonsForNode(menuNode).ForEach(button => {
         button.OnButtonPressed += Item_OnButtonPressed;
         button.OnButtonReleased += Item_OnButtonReleased;
@@ -109,6 +102,9 @@ namespace PuppetMasterKit.Template.Game.Controls
       helpNode.OnButtonPressed += HelpNode_OnButtonPressed;
       helpNode.OnButtonReleased += HelpNode_OnButtonReleased;
       Shader = null;
+
+      var isLandscape = UIApplication.SharedApplication.StatusBarOrientation.IsLandscape();
+      marginTop = isLandscape ? 10 : 50;
     }
 
     /// <summary>
@@ -140,9 +136,34 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <summary>
     /// 
     /// </summary>
-    public void Open()
+    public void Open(Entity forEntity)
     {
+      floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == forEntity.Name) as SKSpriteNode;
+      if (floatMenu == null)
+        throw new Exception($"No context menu for {forEntity.Name}");
+
+      menuNode.Children.Where(x => x.Name != forEntity.Name).ForEach(c=>c.Hidden=true);
+
       scene.Camera.AddChild(this);
+      floatMenu.Paused = false;
+      floatMenu.UserInteractionEnabled = false;
+
+      if (swipeUpOverToolsGesture != null) {
+        scene.View.AddGestureRecognizer(swipeUpOverToolsGesture);
+      }
+      if (swipeDownOverToolsGesture != null) {
+        scene.View.AddGestureRecognizer(swipeDownOverToolsGesture);
+      }
+      
+      swipeUpOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeOverMenu) {
+        Direction = UISwipeGestureRecognizerDirection.Up,
+        MinGestureSize = 25
+      };
+      swipeDownOverToolsGesture = new SwipeOverSpriteGestureRecognizer(floatMenu, OnSwipeOverMenu) {
+        Direction = UISwipeGestureRecognizerDirection.Down,
+        MinGestureSize = 25
+      };
+
       UpdateControlPosition();
       SetGestureRecognizers();
       GetAllButtonsForNode(menuNode)
@@ -262,18 +283,17 @@ namespace PuppetMasterKit.Template.Game.Controls
     private void OnSwipeOverMenu(SwipeOverSpriteGestureRecognizer gesture)
     {
       var actualStep = 0;
-      floatMenu = menuNode.Children.FirstOrDefault(x => x.Name == "float") as SKSpriteNode;
       var step = gesture.GestureSize * 5;
 
       if(gesture.Direction == UISwipeGestureRecognizerDirection.Down) {
-        if ((int)floatMenu.Position.Y > this.Size.Height/2) {
+        if ((int)floatMenu.Position.Y + marginTop > this.Size.Height/2 ) {
           actualStep = -(int)Math.Min(step,
-            Math.Abs(this.Size.Height/2 - floatMenu.Position.Y));
+            Math.Abs(this.Size.Height/2 - (int)floatMenu.Position.Y - marginTop));
         }
       } else {
         if ((int)floatMenu.Position.Y - floatMenu.Size.Height < -this.Size.Height / 2) {
           actualStep = (int)Math.Min(step,
-            Math.Abs(floatMenu.Position.Y - floatMenu.Size.Height + this.Size.Height / 2));
+            Math.Abs(this.Size.Height / 2)- (int)floatMenu.Position.Y + floatMenu.Size.Height);
         }
       }
 
@@ -336,14 +356,15 @@ namespace PuppetMasterKit.Template.Game.Controls
       this.ZPosition = 1000;
       this.Size = ControlsUtil.GetVisibleScreenSize(scene);
 
+
       initialPosition = new CGPoint(scene.Camera.Position.X, scene.Camera.Position.Y);
       floatMenu.Position = new CGPoint(
         -this.Size.Width / 2 ,
-        this.Size.Height / 2 );
+        this.Size.Height / 2 - marginTop);
 
       helpNode.Position = new CGPoint(
         this.Size.Width / 2,
-        this.Size.Height / 2);
+        this.Size.Height / 2 - marginTop);
     }
 
 
@@ -418,7 +439,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// 
     /// </summary>
     /// <returns></returns>
-    public List<Pair> GetSelectedTiles() {
+    public List<GridCoord> GetSelectedTiles() {
       return selected.Keys.ToList();
     }
 
@@ -442,6 +463,8 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// <param name="touches"></param>
     private void SelectTileAtPositions(CGPoint[] positions)
     {
+      var hud = Container.GetContainer().GetInstance<Hud>();
+      hud.SetMessage(String.Empty);
       foreach (CGPoint positionInScene in positions) {
         var coord2d = mapper.FromScene(new Point((float)positionInScene.X, (float)positionInScene.Y));
         if (coord2d.X < 0 || coord2d.Y < 0) {
@@ -459,15 +482,19 @@ namespace PuppetMasterKit.Template.Game.Controls
           ClearSelection();
         }
 
-        var key = selected.Keys.Where(x => x.Item1 == row && x.Item2 == col).FirstOrDefault();
+        var key = selected.Keys.Where(x => x.Row == row && x.Col == col).FirstOrDefault();
         if (key != null) {
           var val = selected.Where(x => x.Key == key).First();
           selected.Remove(key);
           val.Value.RemoveFromParent();
         } else {
+          if (SelectionValidator != null && !SelectionValidator(this, new GridCoord(row, col))) {
+            hud.SetMessage("Cannot build there");
+            return;
+          }
           var square = HighlightTile(row, col, true);
           tileMap.GetLayer(tileMap.LayerCount - 1).AddChild(square);
-          selected.Add(new Pair(row, col), square);
+          selected.Add(new GridCoord(row, col), square);
         }
       }
     }

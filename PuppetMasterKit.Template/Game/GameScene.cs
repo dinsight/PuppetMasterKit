@@ -27,6 +27,8 @@ namespace PuppetMasterKit.Template.Game
 
     private UITapGestureRecognizer tap;
 
+    private UITapGestureRecognizer doubleTap;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.GameScene"/> class.
     /// </summary>
@@ -46,10 +48,17 @@ namespace PuppetMasterKit.Template.Game
       flightMap.GetHeroes().ForEach(x => {
         x.GetComponent<StateComponent>().IsSelected = true; });
 
-      tap = new UITapGestureRecognizer(OnTapGesture) {
-        
+      tap = new UITapGestureRecognizer(OnTapGesture);
+
+      doubleTap = new UITapGestureRecognizer(OnDoubleTapGesture) {
+        NumberOfTapsRequired = 2
       };
+
+      tap.ShouldRequireFailureOf = (gesture, otherGesture) =>
+        gesture == tap && otherGesture == doubleTap;
+
       view.AddGestureRecognizer(tap);
+      view.AddGestureRecognizer(doubleTap);
     }
 
     /// <summary>
@@ -63,18 +72,22 @@ namespace PuppetMasterKit.Template.Game
     }
 
     /// <summary>
-    /// Toucheses the began.
+    /// 
     /// </summary>
-    /// <param name="touches">Touches.</param>
-    /// <param name="evt">Evt.</param>
-    //public override void TouchesBegan(NSSet touches, UIEvent evt)
-    //{
-    //  foreach (UITouch touch in touches) {
-    //    var positionInScene = touch.LocationInNode(this);
-    //    var touchedNode = this.GetNodeAtPoint(positionInScene);
-    //    OnTouchLocation(positionInScene);
-    //  }
-    //}
+    /// <param name="gesture"></param>
+    private void OnDoubleTapGesture(UITapGestureRecognizer gesture)
+    {
+      var viewPos = gesture.LocationInView(this.View);
+      var positionInScene = this.ConvertPointFromView(viewPos);
+      Point point = new Point((float)positionInScene.X, (float)positionInScene.Y);
+
+      flightMap.GetHeroes()
+        .Where(x => x.GetComponent<StateComponent>().IsSelected)
+        .ForEach(c => {
+          var cmd = c.GetComponent<CommandComponent>();
+          cmd?.OnAttackPoint(c, point);
+        });
+    }
 
     /// <summary>
     /// 
@@ -87,7 +100,7 @@ namespace PuppetMasterKit.Template.Game
         .Where(x => x.GetComponent<StateComponent>().IsSelected)
         .ForEach(c => {
           var cmd = c.GetComponent<CommandComponent>();
-          cmd?.OnUserTouchedPoint(c, point);
+          cmd?.OnLocationTouched(c, point);
         });
     }
 

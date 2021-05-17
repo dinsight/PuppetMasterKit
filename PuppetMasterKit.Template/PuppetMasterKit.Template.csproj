@@ -360,6 +360,16 @@
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\plotter.imageset\" />
     <Folder Include="Game\Controls\Gestures\" />
     <Folder Include="Resources\Media.xcassets\Buttons.spriteatlas\help.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_0.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_3.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_0.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_0.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_1.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_2.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_3.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -952,6 +962,21 @@
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\ok.imageset\ok.png" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\help.imageset\Contents.json" />
     <ImageAsset Include="Resources\Media.xcassets\Buttons.spriteatlas\help.imageset\Help.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_0.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_0.imageset\fence-2_0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_1.imageset\fence-4_0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_0.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_0.imageset\corners-2_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_1.imageset\corners-4_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_2.imageset\corners-6_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Corner_3.imageset\corners-8_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_0.imageset\fence-2_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Fence.spriteatlas\Fence_1.imageset\fence-4_0001-2.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />

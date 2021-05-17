@@ -228,6 +228,7 @@ namespace PuppetMasterKit.Terrain.Map
       result.Add(TraceContourFrom(start, traceOutsideContour, N));
 
       //trace inner contours
+      //multiple contours can occur if the region is not contiguos and it is split in "isles" 
       var visited = new Dictionary<GridCoord, bool>();
       for (int row = MinRow; row <= MaxRow; row++) {
         int? col = ScanRow(row, MinCol, null);
@@ -324,8 +325,8 @@ namespace PuppetMasterKit.Terrain.Map
       var rightRow = current.Row + step[dir, 2, 0];
       var rightCol = current.Col + step[dir, 2, 1];
 
-      var fwd = this[fwdRow, fwdCol] != null;
-      var left = this[leftRow, leftCol] != null;
+      var fwd   = this[fwdRow, fwdCol] != null;
+      var left  = this[leftRow, leftCol] != null;
       var right = this[rightRow, rightCol] != null;
 
       if (traceOutsideContour) { // OUT SIDE CONTOUR 
@@ -336,7 +337,6 @@ namespace PuppetMasterKit.Terrain.Map
           dir = (dir + 1) % 4; // change direction
           return new GridCoord(rightRow, rightCol);
         }
-
         if (fwd && !left) { //change direction - turn left
           dir = dir - 1 >= 0 ? dir - 1 : W;
           return new GridCoord(leftRow, leftCol);
@@ -364,7 +364,6 @@ namespace PuppetMasterKit.Terrain.Map
           return current;
         }
       }
-
       throw new Exception("Region.TraceContour: Get next should not return null");
     }
 
@@ -384,67 +383,133 @@ namespace PuppetMasterKit.Terrain.Map
       }
 
       contours.ForEach(contour => {
-        var coords = contour.ContourLines.ToList();
-        for (int index = 0; index < contour.Count; index++) {
-
-          var tileType = TileType.Unknown;
-          var c = coords[index];
-          //get the prev and next tiles. Make sure to wrap around when the 
-          //one of the ends of the list is reached
-          var p = index == 0 ? coords[contour.ContourLines.Count - 1] : coords[index - 1];
-          var n = index == contour.Count - 1 ? coords[0] : coords[index + 1];
-
-          if (p.Col == c.Col && c.Col == n.Col && p.Row < c.Row && c.Row < n.Row) { //l
-            tileType = TileType.LeftSide;
-          }
-          if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
-            tileType = TileType.RightSide;
-          }
-          if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
-            tileType = TileType.TopSide;
-          }
-          if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b
-            tileType = TileType.BottomSide;
-          }
-          if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col > c.Col) { //tlc
-            tileType = TileType.TopLeftCorner;
-          }
-          if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row < c.Row) { //trc
-            tileType = TileType.TopRightCorner;
-          }
-          if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row > c.Row) { //blc *
-            tileType = TileType.BottomLeftCorner;
-          }
-          if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col < c.Col) { //brc
-            tileType = TileType.BottomRightCorner;
-          }
-          if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col < c.Col) { //blj
-            tileType = TileType.BottomLeftJoint;
-          }
-          if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row < c.Row) { //brj
-            tileType = TileType.BottomRightJoint;
-          }
-          if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col > c.Col) { //trj
-            tileType = TileType.TopRightJoint;
-          }
-          if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
-            tileType = TileType.TopLeftJoint;
-          }
-          if (p.Row == n.Row && p.Col == n.Col && c.Col > p.Col && c.Row == p.Row) { //cdsl
-            tileType = TileType.CulDeSacLeft;
-          }
-          if (p.Row == n.Row && p.Col == n.Col && c.Col < p.Col && c.Row == p.Row) { //cdsr
-            tileType = TileType.CulDeSacRight;
-          }
-          if (p.Row == n.Row && p.Col == n.Col && c.Row < p.Row && c.Col == p.Col) { //cdst
-            tileType = TileType.CulDeSacTop;
-          }
-          if (p.Row == n.Row && p.Col == n.Col && c.Row > p.Row && c.Col == p.Col) { //cdsb
-            tileType = TileType.CulDeSacBottom;
-          }
-          action(c.Row, c.Col, tileType);
-        }
+        var chain = contour.ContourLines.ToList();
+        TraverseChain(chain, action);
       });
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public bool IsChain() {
+      GridCoord prev = null;
+      foreach (var tile in Tiles) {
+        if (prev != null) {
+          if (!tile.IsAdjacentTo(prev)){
+            return false;
+          }
+        }
+        prev = tile;
+      }
+      return true;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="chain"></param>
+    /// <param name="action"></param>
+    public void TraverseChain(List<GridCoord> chain, Action<int, int, TileType> action)
+    {
+      for(var index = 0; index < chain.Count;index++) {
+        var tileType = TileType.Unknown;
+        //get the prev and next tiles. 
+        var c = chain[index];
+        var p = index == 0 ? null : chain[index - 1];
+        var n = index == chain.Count - 1 ? null : chain[index + 1];
+
+        //prev and next nodes do not exists. Assume a RightSide type of tile
+        if (p == null && n == null) {
+          action(c.Row, c.Col, TileType.RightSide);
+          return;
+        }
+
+        //there's no previous tile. If the last tile in the chaine is adjacent to
+        //it, set it as prev. Otherwise, create a dummy tile so we can have a direction
+        //for the first tile
+        if (p == null) {
+          var last = chain[chain.Count - 1];
+          if (c.IsAdjacentTo(last)) {
+            p = last;
+          } else {
+            p = new GridCoord(c.Row - (n.Row-c.Row), c.Col - (n.Col-c.Col));
+          }
+        }
+        //there is no next tile. If the current tile is ajacent to the first one,
+        //choose the first as "next". Otherwise create dummy tile to give a direction
+        if (n == null) {
+          var first = chain[0];
+          if (c.IsAdjacentTo(first)) {
+            n = first;
+          } else {
+            n = new GridCoord(c.Row + (c.Row-p.Row), c.Col + (c.Col-p.Col));
+          }
+        }
+        tileType = DetermineTileType(tileType, c, p, n);
+        action(c.Row, c.Col, tileType);
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tileType"></param>
+    /// <param name="c"></param>
+    /// <param name="p"></param>
+    /// <param name="n"></param>
+    /// <returns></returns>
+    private static TileType DetermineTileType(TileType tileType, GridCoord c, GridCoord p, GridCoord n)
+    {
+      if (p.Col == c.Col && c.Col == n.Col && p.Row < c.Row && c.Row < n.Row) { //l
+        tileType = TileType.LeftSide;
+      }
+      if (p.Col == c.Col && p.Row > c.Row && n.Col == c.Col && n.Row < c.Row) { //r
+        tileType = TileType.RightSide;
+      }
+      if (p.Row == c.Row && p.Col < c.Col && n.Row == c.Row && n.Col > c.Col) { //t
+        tileType = TileType.TopSide;
+      }
+      if (p.Row == c.Row && p.Col > c.Col && n.Row == c.Row && n.Col < c.Col) { //b
+        tileType = TileType.BottomSide;
+      }
+      if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col > c.Col) { //tlc
+        tileType = TileType.TopLeftCorner;
+      }
+      if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row < c.Row) { //trc
+        tileType = TileType.TopRightCorner;
+      }
+      if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row > c.Row) { //blc *
+        tileType = TileType.BottomLeftCorner;
+      }
+      if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col < c.Col) { //brc
+        tileType = TileType.BottomRightCorner;
+      }
+      if (p.Col == c.Col && p.Row < c.Row && n.Row == c.Row && n.Col < c.Col) { //blj
+        tileType = TileType.BottomLeftJoint;
+      }
+      if (p.Row == c.Row && p.Col > c.Col && n.Col == c.Col && n.Row < c.Row) { //brj
+        tileType = TileType.BottomRightJoint;
+      }
+      if (p.Col == c.Col && p.Row > c.Row && n.Row == c.Row && n.Col > c.Col) { //trj
+        tileType = TileType.TopRightJoint;
+      }
+      if (p.Row == c.Row && p.Col < c.Col && n.Col == c.Col && n.Row > c.Row) { //tlj
+        tileType = TileType.TopLeftJoint;
+      }
+      if (p.Row == n.Row && p.Col == n.Col && c.Col > p.Col && c.Row == p.Row) { //cdsl
+        tileType = TileType.CulDeSacLeft;
+      }
+      if (p.Row == n.Row && p.Col == n.Col && c.Col < p.Col && c.Row == p.Row) { //cdsr
+        tileType = TileType.CulDeSacRight;
+      }
+      if (p.Row == n.Row && p.Col == n.Col && c.Row < p.Row && c.Col == p.Col) { //cdst
+        tileType = TileType.CulDeSacTop;
+      }
+      if (p.Row == n.Row && p.Col == n.Col && c.Row > p.Row && c.Col == p.Col) { //cdsb
+        tileType = TileType.CulDeSacBottom;
+      }
+      return tileType;
     }
   }
 }

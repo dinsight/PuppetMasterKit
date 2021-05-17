@@ -12,6 +12,9 @@ using static PuppetMasterKit.AI.Entity;
 using static PuppetMasterKit.AI.Components.Agent;
 using PuppetMasterKit.Template.Game.Controls;
 using PuppetMasterKit.Graphics.Sprites;
+using System.Linq;
+using PuppetMasterKit.Utility;
+using Pair = System.Tuple<int, int>;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -41,8 +44,12 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap), RangeWeaponAtlas, RangeWeaponName,
                 new Size(30, 30), 700, 10, 500),
               new HealthComponent(100, 20, 3),
-              new PhysicsComponent(5, 3, 1, 3, 1),
-              new CommandComponent(BeaverHandlers.OnTouched, BeaverHandlers.OnMoveToPoint),
+              new PhysicsComponent(5, 8, 1, 3, 1),
+              new CommandComponent() {
+                  OnEntityTouched = BeaverHandlers.OnTouched,
+                  OnLocationTouched = BeaverHandlers.OnMoveToPoint,
+                  OnAttackPoint = BeaverHandlers.OnAttackPoint
+              },
               new CollisionComponent(GetCollisions(flightMap), BeaverHandlers.HandleCollision, 80),
               AgentBuilder.Builder()
                 .With(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(x, p => p.Name == CharacterName), 150), 0.001f)
@@ -73,8 +80,9 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       Polygon boundaries, TileMap tileMap, SKScene scene, Hud hud, ICoordinateMapper mapper, Entity entity)
     {
       var plotter = PlotControl.CreateFromFile(scene, tileMap, "Hud", "plotter");
+      plotter.SelectionValidator += MultiSelectionValidator;
       hud.OnShowMenu += (sender, gesture) => {
-        plotter.Open();
+        plotter.Open(entity);
       };
 
       plotter.OnOk = (control, actionName) => {
@@ -82,8 +90,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         if (selection.Count == 0)
           return;
 
-        var row = selection[0].Item1;
-        var col = selection[0].Item2;
+        var row = selection[0].Row;
+        var col = selection[0].Col;
         var y = tileMap.TileSize * row + tileMap.TileSize / 2;
         var x = tileMap.TileSize * col + tileMap.TileSize / 2;
         var coord2d = mapper.ToScene(new Point(x, y));
@@ -99,11 +107,26 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           if (actionName == "build_tower") {
             BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
           }
+
+          if (actionName == "build_fence") {
+            BeaverHandlers.OnBuildFence(entity, control.GetSelectedTiles(), Point.Zero, tileMap, componentSystem, boundaries);
+          }
           control.ClearSelection();
         });
       };
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="control"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public static bool MultiSelectionValidator(PlotControl control, GridCoord pos) {
+      var selected = ((PlotControl)control).GetSelectedTiles();
+      var canBuild = selected.Count==0 || selected.Any(x => x.IsAdjacentTo(pos));
+      return canBuild;
+    }
 
 
     /// <summary>

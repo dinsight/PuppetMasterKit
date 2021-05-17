@@ -14,7 +14,7 @@ namespace PuppetMasterKit.Terrain.Map
 			OUTSIDE,
 			INSIDE
 		}
-    public int Count => contourLines.Count;
+    public int ContoursCount => contourLines.Count;
     public ContourType Type { get; private set; }
     public IReadOnlyCollection<GridCoord> ContourLines => new ReadOnlyCollection<GridCoord>(contourLines);
     public GridCoord this[int i] => contourLines[i];

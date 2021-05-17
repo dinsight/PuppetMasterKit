@@ -72,5 +72,22 @@ namespace PuppetMasterKit.Utility
     {
       return !(lhs == rhs);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public bool IsAdjacentTo(GridCoord other) {
+      var isRowAdj = this.Row + 1 == other.Row
+        || this.Row - 1 == other.Row;
+      var isColAdj = this.Col + 1 == other.Col
+        || this.Col - 1 == other.Col;
+      var distRow = Math.Abs(other.Row - this.Row);
+      var distCol = Math.Abs(other.Col - this.Col);
+      return (isRowAdj || isColAdj)
+        && (distRow==1 || distCol==1)
+        && (distCol+distRow<2);
+    }
   }
 }

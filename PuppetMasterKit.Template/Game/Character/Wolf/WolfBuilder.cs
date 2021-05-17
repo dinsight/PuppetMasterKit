@@ -29,7 +29,10 @@ namespace PuppetMasterKit.Template.Game.Character.Wolf
               new UpdateableSpriteComponent(CharacterName, new Size(120, 140), new Point(0.5f, 0.2f)),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 7, 1, 80),
-              new CommandComponent(WolfHandlers.OnTouched, WolfHandlers.OnMoveToPoint),
+              new CommandComponent() {
+                OnEntityTouched = WolfHandlers.OnTouched,
+                OnLocationTouched = WolfHandlers.OnMoveToPoint
+              },
               new CollisionComponent((e) => flightMap.GetAdjacentEntities(e, p => p.Name == "beaver"), WolfHandlers.WolfMeetsPrey, 80),
               AgentBuilder.Builder()
                 .With(new GoalToCohereWith(x => flightMap.GetAdjacentEntities(x, p => p.Name == CharacterName), 150), 0.0003f)

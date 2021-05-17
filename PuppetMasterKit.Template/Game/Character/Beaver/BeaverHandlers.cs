@@ -13,9 +13,10 @@ using PuppetMasterKit.Template.Game.Components;
 using System.Collections.Generic;
 using PuppetMasterKit.Graphics.Sprites;
 using SpriteKit;
-using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Template.Game.Character.Tower;
+using PuppetMasterKit.Terrain.Map;
+using PuppetMasterKit.Utility;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -80,27 +81,73 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// 
     /// </summary>
     /// <param name="entity"></param>
-    /// <param name="zero"></param>
+    /// <param name="placementTiles"></param>
+    /// <param name="location"></param>
     /// <param name="tileMap"></param>
     /// <param name="componentSystem"></param>
     /// <param name="boundaries"></param>
-    /// <param name="tuples"></param>
-    internal static void OnBuildFence(Entity entity,
-      Point zero,
+    public static void OnBuildFence(Entity entity,
+      List<GridCoord> placementTiles,
+      Point location,
       TileMap tileMap,
       ComponentSystem componentSystem,
-      Polygon boundaries,
-      List<Tuple<int,int>> tuples)
+      Polygon boundaries)
     {
-      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
+      Debug.WriteLine("Building fence...");
+
+      var layer = tileMap.GetLayer(1);
+      var region = new Region(0);
+      placementTiles.ForEach(x =>
+        region.AddTile(x.Col, x.Row)
+      );
+
       var obstacles = new List<Obstacle>();
-      tuples.ForEach(x=> {
-        //x.Item1
-        var rowc = x.Item1 * tileMap.TileSize + tileMap.TileSize / 2;
-        var colc = x.Item2 * tileMap.TileSize + tileMap.TileSize / 2;
-        var rad = tileMap.TileSize;
-        obstacles.Add(new CircularObstacle(new Point(colc, rowc), rad));
+      var rad = tileMap.TileSize;
+
+      if (!region.IsChain()) {
+        var hud = Container.GetContainer().GetInstance<Hud>();
+        hud.SetMessage("The fence is not right");
+        return;
+      }
+
+      region.TraverseChain(region.Tiles.ToList(), (r, c, type) => {
+        SKTexture fence = null;
+        if (type == TileType.LeftSide ||
+            type==TileType.RightSide ||
+            type==TileType.CulDeSacTop ||
+            type == TileType.CulDeSacBottom) {
+          fence = SKTexture.FromImageNamed("Fence_0");
+        }
+        if (type == TileType.TopSide ||
+            type == TileType.BottomSide ||
+            type == TileType.CulDeSacLeft ||
+            type == TileType.CulDeSacRight) {
+          fence = SKTexture.FromImageNamed("Fence_1");
+        }
+        if (type == TileType.BottomLeftCorner || type == TileType.TopRightJoint) {
+          fence = SKTexture.FromImageNamed("Corner_0");
+        }
+        if (type == TileType.BottomRightCorner || type == TileType.BottomRightJoint || type == TileType.TopLeftJoint) {
+          fence = SKTexture.FromImageNamed("Corner_3");
+        }
+        if (type == TileType.TopRightCorner || type == TileType.BottomLeftJoint) {
+          fence = SKTexture.FromImageNamed("Corner_2");
+        }
+        if (type == TileType.TopLeftCorner || type == TileType.BottomRightJoint) {
+          fence = SKTexture.FromImageNamed("Corner_1");
+        }
+        if (fence != null) {
+          layer.SetTile(fence, r, c);
+        } else {
+          var weird = fence;
+        }
+
+        var rowc = r * tileMap.TileSize + tileMap.TileSize / 2;
+        var colc = c * tileMap.TileSize + tileMap.TileSize / 2;
+        obstacles.Add(new CircularObstacle(new Point(rowc, colc), rad));
       });
+
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       ((GameFlightMap)flightMap).Obstacles.AddRange(obstacles);
     }
 
@@ -125,11 +172,6 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// <param name="location">Location.</param>
     public static void OnMoveToPoint(Entity entity, Point location)
     {
-      var hud = Container.GetContainer().GetInstance<Hud>();
-      if (hud.IsControlPressed) {
-        OnAttackPoint(entity, location);
-        return;
-      }
       GoToLocation(entity, location, (x, p) => {
         var state = entity.GetComponent<StateComponent<BeaverStates>>();
         state.CurrentState = BeaverStates.idle;

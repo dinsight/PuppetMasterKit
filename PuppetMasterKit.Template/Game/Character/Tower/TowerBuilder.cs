@@ -75,7 +75,9 @@ namespace PuppetMasterKit.Template.Game.Character.Tower
               new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap), RangeWeaponAtlas, RangeWeaponName,
                 new Size(30, 30), 700, 10, 500),
               new PhysicsComponent(5, 5, 1, 15),
-              new CommandComponent(TowerHandlers.OnTouched, null),
+              new CommandComponent() {
+                OnEntityTouched = TowerHandlers.OnTouched
+              },
               AgentBuilder.Builder()
                 .AtLocation(location)
               .Build())

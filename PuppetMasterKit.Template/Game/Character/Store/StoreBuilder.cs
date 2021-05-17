@@ -66,7 +66,10 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
               new SpriteComponent(CharacterName, new Size(150, 150), new Point(0.5f,0.5f), null),
               new HealthComponent(100, 20, 3),
               new PhysicsComponent(5, 5, 1, 15),
-              new CommandComponent(StoreHandlers.OnTouched, StoreHandlers.OnMoveToPoint),
+              new CommandComponent() {
+                OnEntityTouched = StoreHandlers.OnTouched,
+                OnLocationTouched = StoreHandlers.OnMoveToPoint
+              },
               AgentBuilder.Builder()
                 .AtLocation(location)
               .Build())
