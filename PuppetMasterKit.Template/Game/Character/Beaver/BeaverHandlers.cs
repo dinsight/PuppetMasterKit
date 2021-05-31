@@ -110,6 +110,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         return;
       }
 
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
       region.TraverseChain(region.Tiles.ToList(), (r, c, type) => {
         SKTexture fence = null;
         if (type == TileType.LeftSide ||
@@ -144,11 +145,17 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
         var rowc = r * tileMap.TileSize + tileMap.TileSize / 2;
         var colc = c * tileMap.TileSize + tileMap.TileSize / 2;
-        obstacles.Add(new CircularObstacle(new Point(rowc, colc), rad));
+        //obstacles.Add(new CircularObstacle(new Point(rowc, colc), rad));
+        //obstacles.Add(new PolygonalObstacle(
+        //    new Point(r, c),
+        //    new Point(r, c + tileMap.TileSize),
+        //    new Point(r + tileMap.TileSize, c + tileMap.TileSize),
+        //    new Point(r + tileMap.TileSize, c)
+        //  ));
+        flightMap.Board[r, c] = 1;
       });
 
-      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
-      ((GameFlightMap)flightMap).Obstacles.AddRange(obstacles);
+      //((GameFlightMap)flightMap).Obstacles.AddRange(obstacles);
     }
 
     /// <summary>
@@ -186,7 +193,20 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// <param name="whenArrivedHandler"></param>
     public static void GoToLocation(Entity entity,
       Point location,
-      Action<Agent,Point> whenArrivedHandler)
+      Action<Agent, Point> whenArrivedHandler)
+    {
+      GoToLocation(entity, location, whenArrivedHandler, (r, c, v) => v==0);
+    }
+      /// <summary>
+      /// 
+      /// </summary>
+      /// <param name="entity"></param>
+      /// <param name="location"></param>
+      /// <param name="whenArrivedHandler"></param>
+      public static void GoToLocation(Entity entity,
+      Point location,
+      Action<Agent,Point> whenArrivedHandler,
+      Func<int, int, int, bool> tileFilter)
     {
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
@@ -201,8 +221,9 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       agent.Remove<GoalToFollowPath>();
 
       var obstacles = flightMap.Obstacles.OfType<PolygonalObstacle>().ToList();
-      var newPath = ObstaclePath.GetPathTroughObstacles(obstacles, agent.Position, mapper.FromScene(location));
-
+      //var newPath = ObstaclePath.GetPathTroughObstacles(obstacles, agent.Position, mapper.FromScene(location));
+      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter);
+      
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival
       var goToPoint = new GoalToFollowPath(newPath.ToArray(), 10)

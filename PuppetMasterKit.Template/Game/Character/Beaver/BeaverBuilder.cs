@@ -110,6 +110,13 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
           if (actionName == "build_fence") {
             BeaverHandlers.OnBuildFence(entity, control.GetSelectedTiles(), Point.Zero, tileMap, componentSystem, boundaries);
+            var newTarget = ObstaclePath.FindClosestWalkableTile(agent.Position);
+            if (newTarget != null) {
+              agent.Position = newTarget;
+              //BeaverHandlers.GoToLocation(entity, mapper.ToScene(newTarget), (a, b) => {
+              //  state.CurrentState = BeaverStates.idle;
+              //}, (r, c, v) => true);
+            }
           }
           control.ClearSelection();
         });

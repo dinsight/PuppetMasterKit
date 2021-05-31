@@ -34,7 +34,7 @@ namespace PuppetMasterKit.Template.Game.Level
 
     int  mapRows = 100;
     int  mapCols = 100;
-    int  tileSize = 64;
+    int  tileSize = 128;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.LevelBuilder"/> class.
@@ -45,9 +45,7 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       this.componentSystem = componentSystem;
       this.scene = scene;
-      var size = new Size(2 * mapRows * tileSize, 2 * mapCols * tileSize);
-
-      this.flightMap = new GameFlightMap(size.Width, size.Height, 7, 7);
+      this.flightMap = new GameFlightMap(mapRows, mapCols, tileSize, 7, 7);
       Ios.Bindings.Registration.RegisterBindings(scene);
       Ios.Bindings.Registration.Register<FlightMap>(flightMap);
     }
@@ -122,9 +120,9 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var frame = new Polygon(
         new Point(0, 0),
-        new Point(0, (float)2 * mapRows* tileSize),
-        new Point((float)2 * mapCols*tileSize, (float)mapRows * tileSize * 2),
-        new Point((float)2 * mapCols*tileSize, 0)
+        new Point(0, (float)mapRows* tileSize),
+        new Point((float)mapCols*tileSize, (float)mapRows * tileSize),
+        new Point((float)mapCols*tileSize, 0)
       );
 
       for (int i = 0; i < 1 ; i++) {

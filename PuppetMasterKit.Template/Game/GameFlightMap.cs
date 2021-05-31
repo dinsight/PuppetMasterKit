@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using PuppetMasterKit.AI;
+using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility.Extensions;
-using PuppetMasterKit.Graphics.Geometry;
 
 namespace PuppetMasterKit.Template.Game
 {
@@ -11,22 +11,28 @@ namespace PuppetMasterKit.Template.Game
   {
     private List<Entity> heroes = new List<Entity>();
 
-    private Dictionary<String, int> heroPoints = new Dictionary<string, int>();
+    private Dictionary<String, int> heroPoints = new Dictionary<String, int>();
 
     public List<Obstacle> Obstacles { get; set; }
 
+    
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.GameFlightMap"/> class.
+    /// 
     /// </summary>
-    /// <param name="mapWidth">Map width.</param>
-    /// <param name="mapHeight">Map height.</param>
-    /// <param name="partitionsCountX">Partitions count x.</param>
-    /// <param name="partitionsCountY">Partitions count y.</param>
-    public GameFlightMap(float mapWidth, 
-                         float mapHeight,
+    /// <param name="rows"></param>
+    /// <param name="cols"></param>
+    /// <param name="tileSize"></param>
+    /// <param name="partitionsCountX"></param>
+    /// <param name="partitionsCountY"></param>
+    public GameFlightMap( int rows, int cols, int tileSize,
                          int partitionsCountX = 10,
                          int partitionsCountY = 10) 
-      : base(mapWidth, mapHeight, partitionsCountX, partitionsCountY)
+      : base(rows, cols,
+          rows * tileSize,
+          cols * tileSize,
+          partitionsCountX,
+          partitionsCountY)
     {
       Obstacles = new List<Obstacle>();
     }

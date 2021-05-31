@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.Graphics.Geometry;
 
+using PuppetMasterKit.Utility.Configuration;
+using PuppetMasterKit.Graphics.Sprites;
+using LightInject;
+using PuppetMasterKit.Terrain.Map;
+
 namespace PuppetMasterKit.Template.Game
 {
   public class ObstaclePath
@@ -142,6 +147,84 @@ namespace PuppetMasterKit.Template.Game
         FirstSegmentIndex = closestEdgeIndex,
         LastSegmentIndex = farthestEdgeIndex
       };
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
+    public static List<Point> FindPath(Point from, Point to) {
+      return FindPath(from, to, (r, c, v) => v == 0);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="board"></param>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
+    public static List<Point> FindPath(Point from, Point to, Func<int, int, int, bool> tileFilter)
+    {
+      var pathFinder = new PathFinder();
+      var flightMap  = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
+      var tileSize   = flightMap.MapWidth / flightMap.MapRows;
+      var fromRow    = (int)(from.X / tileSize);
+      var fromCol    = (int)(from.Y / tileSize);
+      var toRow      = (int)(to.X / tileSize);
+      var toCol      = (int)(to.Y / tileSize);
+      var boardIndexPath = pathFinder.Find(
+        flightMap.Board,
+        fromRow,fromCol,
+        toRow, toCol, tileFilter);
+
+      var path = new List<Point>();
+      boardIndexPath.ForEach(p => {
+        var intermediate = new Point(
+          p.Item1 * tileSize + tileSize / 2,
+          p.Item2 * tileSize + tileSize / 2);
+        path.Add(intermediate);
+      });
+
+      return path;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="from"></param>
+    /// <returns></returns>
+    public static Point FindClosestWalkableTile(Point from) {
+      var flightMap = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
+      var tileSize = flightMap.MapWidth / flightMap.MapRows;
+      var fromRow = (int)(from.X / tileSize);
+      var fromCol = (int)(from.Y / tileSize);
+      
+      var minDist = float.MaxValue;
+      var minRow = -1;
+      var minCol = -1;
+      for (int r = 0; r < flightMap.MapRows; r++) {
+        for (int c = 0; c < flightMap.MapCols; c++) {
+          if (flightMap.Board[r, c]==0) {
+            var dist = Point.Distance(fromRow,fromCol,r,c);
+            if (dist < minDist) {
+              minDist = dist;
+              minRow = r;
+              minCol = c;
+            }
+          }
+        }
+      }
+
+      if (minDist != float.MaxValue) {
+        return
+          new Point(
+          minRow * tileSize + tileSize / 2,
+          minCol * tileSize + tileSize / 2);
+      }
+      return null;
     }
   }
 }

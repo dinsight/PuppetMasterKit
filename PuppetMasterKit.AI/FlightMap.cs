@@ -21,6 +21,12 @@ namespace PuppetMasterKit.AI
 
     public float MapHeight { get => mapHeight; }
 
+    public int MapRows { get; private set; }
+
+    public int MapCols { get; private set; }
+
+    public int[,] Board { get; set; }
+
     private float mapWidth;
 
     private float mapHeight;
@@ -34,16 +40,23 @@ namespace PuppetMasterKit.AI
     private int partitionsCountY;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:PuppetMasterKit.AI.FlightMap"/> class.
+    /// 
     /// </summary>
-    /// <param name="mapWidth">Map width.</param>
-    /// <param name="mapHeight">Map height.</param>
-    /// <param name="partitionsCountX">Partitions count x.</param>
-    /// <param name="partitionsCountY">Partitions count y.</param>
-    public FlightMap(float mapWidth, float mapHeight, 
+    /// <param name="rows"></param>
+    /// <param name="cols"></param>
+    /// <param name="mapWidth"></param>
+    /// <param name="mapHeight"></param>
+    /// <param name="partitionsCountX"></param>
+    /// <param name="partitionsCountY"></param>
+    public FlightMap(int rows,
+                     int cols,
+                     float mapWidth,
+                     float mapHeight,
                      int partitionsCountX = 10 , 
                      int partitionsCountY = 10)
     {
+      this.MapRows = rows;
+      this.MapCols = cols;
       this.mapWidth = mapWidth;
       this.mapHeight = mapHeight;
       this.partitionWidth = mapWidth / partitionsCountX;
@@ -52,6 +65,7 @@ namespace PuppetMasterKit.AI
       this.partitionsCountY = partitionsCountY;
       Entities = new Dictionary<String, Entity>();
       Buckets = new EntityBucket[partitionsCountX,partitionsCountY];
+      Board = new int[rows, cols];
       //initialize the partitions
       for (int i = 0; i < partitionsCountX; i++) {
         for (int j = 0; j < partitionsCountY; j++) {

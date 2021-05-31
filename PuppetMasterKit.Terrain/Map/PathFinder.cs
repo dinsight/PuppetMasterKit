@@ -10,7 +10,9 @@ namespace PuppetMasterKit.Terrain.Map
   public class PathFinder : IPathFinder
   {
     private static int idealMaxPathTurns = 3;
+
     private Node[,] walkable;
+
     /// <summary>
     /// Node.
     /// </summary>
@@ -69,19 +71,26 @@ namespace PuppetMasterKit.Terrain.Map
       }
     }
 
+    public List<Pair> Find(int[,] map, int rowFrom, int colFrom, int rowTo, int colTo)
+    {
+      return Find(map, rowFrom, colFrom, rowTo, colTo, (r,c,v)=>true );
+    }
+
+
     /// <summary>
     /// Find the specified map, rowFrom, colFrom, rowTo and colTo.
     /// </summary>
-    /// <returns>The find.</returns>
-    /// <param name="map">Map.</param>
-    /// <param name="rowFrom">Row from.</param>
-    /// <param name="colFrom">Col from.</param>
-    /// <param name="rowTo">Row to.</param>
-    /// <param name="colTo">Col to.</param>
-    public List<Pair> Find(int[,] map, int rowFrom, int colFrom, int rowTo, int colTo)
+    /// <param name="map"></param>
+    /// <param name="rowFrom"></param>
+    /// <param name="colFrom"></param>
+    /// <param name="rowTo"></param>
+    /// <param name="colTo"></param>
+    /// <param name="filter"></param>
+    /// <returns></returns>
+    public List<Pair> Find(int[,] map, int rowFrom, int colFrom, int rowTo, int colTo, Func<int, int, int, bool> filter)
     {
       if (walkable == null) {
-        walkable = GetWalkableTiles(map);
+        walkable = GetWalkableTiles(map, filter);
       } else {
         ResetNodes(walkable);
       }
@@ -186,13 +195,14 @@ namespace PuppetMasterKit.Terrain.Map
       var cols = nodes.GetLength(1);
       for (int i = node.Row - 1; i <= node.Row + 1; i++) {
         for (int j = node.Col - 1; j <= node.Col + 1; j++) {
-          if (i == node.Row - 1 && j == node.Col - 1 ||
-              i == node.Row - 1 && j == node.Col + 1 ||
-              i == node.Row + 1 && j == node.Col + 1 ||
-              i == node.Row + 1 && j == node.Col - 1)
-            continue;
+          //if (i == node.Row - 1 && j == node.Col - 1 ||
+          //    i == node.Row - 1 && j == node.Col + 1 ||
+          //    i == node.Row + 1 && j == node.Col + 1 ||
+          //    i == node.Row + 1 && j == node.Col - 1)
+          //  continue;
 
-          if (i >= 0 && i < rows && j >= 0 && j < cols && !(node.Row == i && node.Code == j)) {
+          if (i >= 0 && i < rows && j >= 0 && j < cols
+            && !(node.Row == i && node.Col == j) && nodes[i, j]!=null) {
             yield return nodes[i, j];
           }
         }
@@ -204,14 +214,16 @@ namespace PuppetMasterKit.Terrain.Map
     /// </summary>
     /// <returns>The walkable tiles.</returns>
     /// <param name="map">Map.</param>
-    private Node[,] GetWalkableTiles(int[,] map)
+    private Node[,] GetWalkableTiles(int[,] map, Func<int,int,int, bool> filter)
     {
       var nodes = new Node[map.GetLength(0), map.GetLength(1)];
       var rows = map.GetLength(0);
       var cols = map.GetLength(1);
       for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
-          nodes[r, c] = new Node() { Row = r, Col = c, Code = map[r, c] };
+          if (filter(r, c, map[r, c])) {
+            nodes[r, c] = new Node() { Row = r, Col = c, Code = map[r, c] };
+          }
         }
       }
       return nodes;
