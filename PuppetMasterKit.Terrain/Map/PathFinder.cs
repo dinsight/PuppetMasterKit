@@ -9,7 +9,7 @@ namespace PuppetMasterKit.Terrain.Map
 {
   public class PathFinder : IPathFinder
   {
-    private static int idealMaxPathTurns = 3;
+    private int idealMaxPathTurns = 3;
 
     private Node[,] walkable;
 
@@ -71,6 +71,20 @@ namespace PuppetMasterKit.Terrain.Map
       }
     }
 
+    public PathFinder(int idealMaxPathTurns=3)
+    {
+      this.idealMaxPathTurns = idealMaxPathTurns;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="rowFrom"></param>
+    /// <param name="colFrom"></param>
+    /// <param name="rowTo"></param>
+    /// <param name="colTo"></param>
+    /// <returns></returns>
     public List<Pair> Find(int[,] map, int rowFrom, int colFrom, int rowTo, int colTo)
     {
       return Find(map, rowFrom, colFrom, rowTo, colTo, (r,c,v)=>true );

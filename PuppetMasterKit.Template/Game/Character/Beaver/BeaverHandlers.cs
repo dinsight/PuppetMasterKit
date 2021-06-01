@@ -195,7 +195,8 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       Point location,
       Action<Agent, Point> whenArrivedHandler)
     {
-      GoToLocation(entity, location, whenArrivedHandler, (r, c, v) => v==0);
+      const int EMPTY_TILE = 0;
+      GoToLocation(entity, location, whenArrivedHandler, (r, c, v) => v==EMPTY_TILE);
     }
       /// <summary>
       /// 
@@ -222,7 +223,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       var obstacles = flightMap.Obstacles.OfType<PolygonalObstacle>().ToList();
       //var newPath = ObstaclePath.GetPathTroughObstacles(obstacles, agent.Position, mapper.FromScene(location));
-      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter);
+      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter, 10);
       
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival

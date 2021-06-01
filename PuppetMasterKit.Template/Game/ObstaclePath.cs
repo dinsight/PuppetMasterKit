@@ -166,9 +166,9 @@ namespace PuppetMasterKit.Template.Game
     /// <param name="from"></param>
     /// <param name="to"></param>
     /// <returns></returns>
-    public static List<Point> FindPath(Point from, Point to, Func<int, int, int, bool> tileFilter)
+    public static List<Point> FindPath(Point from, Point to, Func<int, int, int, bool> tileFilter, int maxPathTurns=3)
     {
-      var pathFinder = new PathFinder();
+      var pathFinder = new PathFinder(maxPathTurns);
       var flightMap  = Container.GetContainer().GetInstance<FlightMap>() as GameFlightMap;
       var tileSize   = flightMap.MapWidth / flightMap.MapRows;
       var fromRow    = (int)(from.X / tileSize);
