@@ -123,5 +123,15 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
         }, false);
       });
     }
+
+    public static void ApplyEffects(Region region, TileMapLayer layer) {
+      region.TraverseRegion((row, col, type) => {
+        if(type == TileType.Plain) {
+          var tile = layer.GetTile(row, col) as SKSpriteNode;
+          if (tile != null)
+            tile.Shader = SKShader.FromFile("Shaders/Wind.fsh");
+        }
+      });
+    }
   }
 }

@@ -47,7 +47,7 @@ namespace PuppetMasterKit.AI.Goals
     /// <param name="agent">Agent.</param>
     public override Vector Force(Agent agent)
     {
-      if (path.Length == 0 || agent.Position == null)
+      if (path.Length <= 1 || agent.Position == null)
         return Vector.Zero;
       
       if (currentPointIndex >= path.Length) {

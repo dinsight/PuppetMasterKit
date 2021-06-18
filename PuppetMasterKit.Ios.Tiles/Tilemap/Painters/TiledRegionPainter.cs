@@ -9,6 +9,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
 {
   public class TiledRegionPainter : IRegionPainter
   {
+    private int? defaultWangTileIndex;
     protected Dictionary<int, string> tileMapping;
     protected SKTileSet tileSet;
     protected readonly Random randomTexture;
@@ -35,17 +36,17 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     private const string CUL_DE_SAC_RIGHT = "Cul De Sac Right";
     private const string WANG_PREFIX = "WANG_";
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Ios.Isometric.Tilemap.TiledRegionPainter"/> class.
     /// </summary>
     /// <param name="tileMapping">Tile mapping.</param>
     /// <param name="tileSet">Tile set.</param>
     /// <param name="randomSeed">Tile set.</param>
-    public TiledRegionPainter(Dictionary<int, string> tileMapping, SKTileSet tileSet, int randomSeed)
+    public TiledRegionPainter(Dictionary<int, string> tileMapping, SKTileSet tileSet, int randomSeed, int? defaultWangTileIndex = null)
     {
       this.tileMapping = tileMapping;
       this.tileSet = tileSet;
+      this.defaultWangTileIndex = defaultWangTileIndex;
       this.randomTexture = new Random(randomSeed);
     }
 
@@ -95,43 +96,46 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
     {
       var masks = tileSet.TileGroups.First(x => x.Name == MASKS);
       var corners = GetCorners(tileGroup, masks);
-      int?[,] values = new int?[region.Rows,region.Cols];
+      int?[,] values = new int?[region.Rows+2,region.Cols+2];
+      for (int i = 0; i < values.GetLength(0); i++) {
+        for (int j = 0; j < values.GetLength(1); j++) {
+          values[i,j] =0;
+        }
+      }
 
       region.TraverseRegion((row, col, type) => {
-        var r = row - region.MinRow;
-        var c = col - region.MinCol;
-        if (type == TileType.Plain) {
-          values[r, c] = null;
-        } else {
-          values[r, c] = 0;
-        }
+        var r = row - region.MinRow+1;
+        var c = col - region.MinCol+1;
+          values[r, c] = defaultWangTileIndex;
       }, false);
 
       var wangTextures = tileGroup.GetTextures(CENTER);
       region.TraverseRegion((row, col, type) => {
+        var r = row - region.MinRow +1;
+        var c = col - region.MinCol +1;
+        if (r-1 < 0 || c-1 < 0 || r+1 >= values.GetLength(0) || c+1>= values.GetLength(1))
+            return;
 
-        if (type == TileType.Plain) {
-          var r = row - region.MinRow;
-          var c = col - region.MinCol;
+        int? north = values[r - 1, c] ?? random.Next(0, 2) << 2;
+        int? west  = values[r, c - 1] ?? random.Next(0, 2) << 1;
+        int? east  = values[r, c + 1] ?? random.Next(0, 2) << 3;
+        int? south = values[r + 1, c] ?? random.Next(0, 2) << 0;
 
-          int? north = values[r - 1, c] ?? random.Next(0, 2) << 2;
-          int? west  = values[r, c - 1] ?? random.Next(0, 2) << 1;
-          int? east  = values[r, c + 1] ?? random.Next(0, 2) << 3;
-          int? south = values[r + 1, c] ?? random.Next(0, 2) << 0;
+        var tileIndex = ((north & 0b0100) >> 2)
+          | ((west  & 0b0010) << 2)
+          | ((east  & 0b1000) >> 2)
+          | ((south & 0b0001) << 2);
 
-          var tileIndex = ((north & 0b0100) >> 2)
-            | ((west  & 0b0010) << 2)
-            | ((east  & 0b1000) >> 2)
-            | ((south & 0b0001) << 2);
-
-          layer.SetTile(wangTextures[tileIndex ?? 0], row, col);
-          values[r, c] = tileIndex;
-
-        } else if (type != TileType.Unknown) {
-          var index = random.Next(0, corners[type].Count);
-          layer.SetTile(corners[type][index], row, col, null);
+        var texture = wangTextures[tileIndex ?? 0];
+        if (tileIndex == 15 && wangTextures.Count > 16) {
+          var range = wangTextures.Count - 16;
+          texture = wangTextures[random.Next(15, 15 + 1 + range)];
         }
+
+        layer.SetTile(texture, row, col, null);
+        values[r, c] = tileIndex;
       }, false);
+      
     }
 
     /// <summary>
@@ -148,13 +152,14 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
       region.TraverseRegion((row, col, type) => {
         if (type == TileType.Plain || (region.RegionFill != 1 && region.RegionFill != 2) ||
             row == 0 || col == 0 || row == layer.GetMap().Rows - 1 || col == layer.GetMap().Cols - 1) {
-          layer.SetTile(tileGroup.GetRandomTexture(CENTER, randomTexture), row, col);
+          var tile = layer.SetTile(tileGroup.GetRandomTexture(CENTER, randomTexture), row, col, null) as SKSpriteNode;
         } else if (type != TileType.Unknown) {
           var index = random.Next(0, corners[type].Count);
           layer.SetTile(corners[type][index], row, col, null);
         }
       }, false);
     }
+
 
     /// <summary>
     /// Gets the corners.

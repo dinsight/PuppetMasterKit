@@ -17,6 +17,7 @@ using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Template.Game.Character.Tower;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility;
+using CoreGraphics;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -81,6 +82,29 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// 
     /// </summary>
     /// <param name="entity"></param>
+    /// <param name="location"></param>
+    /// <param name="tileMap"></param>
+    /// <param name="componentSystem"></param>
+    /// <param name="boundaries"></param>
+    public static void OnBuildBurrow(Entity entity, Point location,
+      TileMap tileMap,
+      ComponentSystem componentSystem,
+      Polygon boundaries)
+    {
+      Debug.WriteLine("Building burrow...");
+      var agent = entity.GetComponent<Agent>();
+      var state = entity.GetComponent<StateComponent<BeaverStates>>();
+      agent.Remove<GoalToFollowPath>();
+      state.CurrentState = BeaverStates.build;
+      BurrowBuilder.Builder(componentSystem, BurrowStates.building)
+          .AtLocation(location.X, location.Y)
+          .Build();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
     /// <param name="placementTiles"></param>
     /// <param name="location"></param>
     /// <param name="tileMap"></param>
@@ -117,13 +141,13 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
             type==TileType.RightSide ||
             type==TileType.CulDeSacTop ||
             type == TileType.CulDeSacBottom) {
-          fence = SKTexture.FromImageNamed("Fence_0");
+          fence = SKTexture.FromImageNamed("Deck_0");
         }
         if (type == TileType.TopSide ||
             type == TileType.BottomSide ||
             type == TileType.CulDeSacLeft ||
             type == TileType.CulDeSacRight) {
-          fence = SKTexture.FromImageNamed("Fence_1");
+          fence = SKTexture.FromImageNamed("Deck_1");
         }
         if (type == TileType.BottomLeftCorner || type == TileType.TopRightJoint) {
           fence = SKTexture.FromImageNamed("Corner_0");
@@ -138,7 +162,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
           fence = SKTexture.FromImageNamed("Corner_1");
         }
         if (fence != null) {
-          layer.SetTile(fence, r, c);
+          layer.SetTile(fence, r, c, null, new CGPoint(0.5, 0.40));
         } else {
           var weird = fence;
         }
@@ -152,7 +176,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         //    new Point(r + tileMap.TileSize, c + tileMap.TileSize),
         //    new Point(r + tileMap.TileSize, c)
         //  ));
-        flightMap.Board[r, c] = 1;
+        flightMap.Board[r, c] = (int)Level.TerrainDefinition.TerrainType.DECK;
       });
 
       //((GameFlightMap)flightMap).Obstacles.AddRange(obstacles);
@@ -195,19 +219,21 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       Point location,
       Action<Agent, Point> whenArrivedHandler)
     {
-      const int EMPTY_TILE = 0;
-      GoToLocation(entity, location, whenArrivedHandler, (r, c, v) => v==EMPTY_TILE);
+      GoToLocation(entity, location, whenArrivedHandler,
+        (r, c, v) => v == (int)Level.TerrainDefinition.TerrainType.ISLES ||
+                     v == (int)Level.TerrainDefinition.TerrainType.DECK);
     }
-      /// <summary>
-      /// 
-      /// </summary>
-      /// <param name="entity"></param>
-      /// <param name="location"></param>
-      /// <param name="whenArrivedHandler"></param>
-      public static void GoToLocation(Entity entity,
-      Point location,
-      Action<Agent,Point> whenArrivedHandler,
-      Func<int, int, int, bool> tileFilter)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="location"></param>
+    /// <param name="whenArrivedHandler"></param>
+    public static void GoToLocation(Entity entity,
+    Point location,
+    Action<Agent,Point> whenArrivedHandler,
+    Func<int, int, int, bool> tileFilter)
     {
       var agent = entity.GetComponent<Agent>();
       if (agent == null)
@@ -223,7 +249,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       var obstacles = flightMap.Obstacles.OfType<PolygonalObstacle>().ToList();
       //var newPath = ObstaclePath.GetPathTroughObstacles(obstacles, agent.Position, mapper.FromScene(location));
-      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter, 10);
+      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter, 7);
       
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival
@@ -257,11 +283,21 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       if (entity.Name == "tower") {
         var towerState = entity.GetComponent<StateComponent<TowerStates>>();
         var beaverState = beaver.GetComponent<StateComponent<BeaverStates>>();
-        if (state.Status == CollisionStatus.IN_PROGRESS && state.StopWatchValue > 20) {
+        if (state.Status == CollisionStatus.IN_PROGRESS && state.StopWatchValue > 10) {
           towerState.CurrentState = TowerStates.ready;
           beaverState.CurrentState = BeaverStates.idle;
           var towerSprite = entity.GetComponent<SpriteComponent>();
           towerSprite.OnSetEntity();
+        }
+      }
+      if (entity.Name == "burrow") {
+        var burrowState = entity.GetComponent<StateComponent<BurrowStates>>();
+        var beaverState = beaver.GetComponent<StateComponent<BeaverStates>>();
+        if (state.Status == CollisionStatus.IN_PROGRESS && state.StopWatchValue > 10) {
+          burrowState.CurrentState = BurrowStates.ready;
+          beaverState.CurrentState = BeaverStates.idle;
+          var burowSprite = entity.GetComponent<SpriteComponent>();
+          burowSprite.OnSetEntity();
         }
       }
       if (entity.Name == "store") {

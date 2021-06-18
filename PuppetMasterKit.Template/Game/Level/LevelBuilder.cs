@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreGraphics;
 using LightInject;
 using PuppetMasterKit.AI;
 using PuppetMasterKit.AI.Components;
@@ -16,7 +15,8 @@ using PuppetMasterKit.Ios.Tiles.Tilemap.Painters;
 using PuppetMasterKit.Ios.Tiles.Tilemap;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility.Subscript;
-using UIKit;
+using PuppetMasterKit.Utility.Extensions;
+using static PuppetMasterKit.Template.Game.Level.TerrainDefinition;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -36,6 +36,7 @@ namespace PuppetMasterKit.Template.Game.Level
     int  mapCols = 100;
     int  tileSize = 128;
 
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:PuppetMasterKit.Template.Game.LevelBuilder"/> class.
     /// </summary>
@@ -45,9 +46,7 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       this.componentSystem = componentSystem;
       this.scene = scene;
-      this.flightMap = new GameFlightMap(mapRows, mapCols, tileSize, 7, 7);
       Ios.Bindings.Registration.RegisterBindings(scene);
-      Ios.Bindings.Registration.Register<FlightMap>(flightMap);
     }
 
     /// <summary>
@@ -129,13 +128,14 @@ namespace PuppetMasterKit.Template.Game.Level
         var beaver = BeaverBuilder.Build(componentSystem, frame, tileMap, this.scene);
         var agent = beaver.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
-        //var x = random.Next(10, 300);
-        //var y = random.Next(100, 600);
-        var x = mapCols * tileSize/2;
-        var y = mapRows * tileSize/2;
+
+        var initialPos = flightMap.Board.GetEnumerable().Where((element)=>element.Value== (int)Level.TerrainDefinition.TerrainType.ISLES).First();
+
+        var x = initialPos.Row * tileSize + tileSize/2;
+        var y = initialPos.Col * tileSize + tileSize/2;
         agent.Position = new Point(x, y);
         flightMap.AddHero(beaver);
-      }
+      } 
 
       for (int i = 0; i < 2 ; i++) {
         var wolf = WolfBuilder.Build(componentSystem, frame, tileMap);
@@ -197,10 +197,10 @@ namespace PuppetMasterKit.Template.Game.Level
     {
       var camera = AddCamera();
       AddHud(camera);
-      var data = LoadSceneData();
       //scene.DrawObstacles(flightMap.Obstacles);
       //scene.DrawEnclosure();
       var tileMap = GenerateMap();
+      var data = LoadSceneData();
 
       AddEntities(tileMap);
       var player = flightMap
@@ -219,30 +219,25 @@ namespace PuppetMasterKit.Template.Game.Level
     /// </summary>
     private TileMap GenerateMap()
     {
+      var tileSize = 128;
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
 
       var builder = Container.GetContainer().GetInstance<IMapGenerator>();
       var regions = builder.Create(mapRows, mapCols);
+      this.flightMap = new GameFlightMap(builder.GetUnderlyingGameMap(), tileSize, 7, 7);
+      Ios.Bindings.Registration.Register<FlightMap>(flightMap);
 
-      var mapping = new Dictionary<int, string> {
-        //{ 1, "Marsh"},
-        { 3, "Upland1"},
-        { 1, "Wang_Swamp"},
-        { 0, "Wang_Dirt"},
-        { 2, "Water" }
-      };
-
-      var tileSize = 128;
-      var s = new int[] { 0x0, 0x0, 0xff, 0xff };
-      var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
-
+      var mapping = TerrainDefinition.GetMapping();
       var tileSet = SKTileSet.FromName("MainTileSet1");
 
+      //var s = new int[] { 0x0, 0x0, 0xff, 0xff };
+      //var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
       //var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       //var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       //{ "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet, randomSeed: 0);
-      var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed: 1);
+      var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed: 1, defaultWangTileIndex: 15);
+      
       var tileMap = new TileMap(defaultPainter, mapRows, mapCols, tileSize);
       //tileMap.AddPainter(3, layeredPainter);
 
@@ -251,9 +246,24 @@ namespace PuppetMasterKit.Template.Game.Level
         tileMap.Build(LAYER_COUNT, regions, 0,  1, 2, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
         RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(1), new Random(0));
+        
       });
 
-      
+      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      var initialPos = flightMap.Board.GetEnumerable().Where((element) => element.Value == (int)Level.TerrainDefinition.TerrainType.ISLES).First();
+
+      //var xp = (initialPos.Row+5) * tileSize + tileSize / 2;
+      //var yp = (initialPos.Col+5) * tileSize + tileSize / 2;
+      //var effect = SKEmitterNode.FromFile< SKEmitterNode>("Effects/SnowParticleEffect");
+      //var scrPos = mapper.ToScene(new Point(xp,yp));
+      //effect.Position = new CoreGraphics.CGPoint( scrPos.X, scrPos.Y);
+      //var layer1 = tileMap.GetLayer(1);
+      //layer1.AddChild(effect);
+
+      //regions.Where(x => x.RegionFill == (int)TerrainType.ISLES).ForEach(region =>
+      //  RegionFill.ApplyEffects(region, tileMap.GetLayer(0))
+      //);
+
       //var txt = SKTexture.FromImageNamed("M1");
       //tileMap.GetLayer(1).SetTile(txt, 55, 50);
 
@@ -265,7 +275,7 @@ namespace PuppetMasterKit.Template.Game.Level
       //var node = (SKSpriteNode)tileMap.GetLayer(0).SetTile(granary, 5, 10);
       //var shader = SKShader.FromFile("Wind.fsh");
       //node.Shader = shader;
-      
+
 
       //var hut = SKTexture.FromImageNamed("Hut");
       //tileMap.GetLayer(1).SetTile(hut, 55, 30);

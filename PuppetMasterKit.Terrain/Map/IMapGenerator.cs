@@ -9,5 +9,7 @@ namespace PuppetMasterKit.Terrain.Map
     List<Region> Create(int rows, int cols);
     
     void UpdateFrom(Region region);
+
+    int[,] GetUnderlyingGameMap();
   }
 }

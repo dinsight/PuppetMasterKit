@@ -42,6 +42,7 @@
     <Compile Include="Attributes\StringValueAttribute.cs" />
     <Compile Include="GridCoord.cs" />
     <Compile Include="Configuration\Container.cs" />
+    <Compile Include="Extensions\Matrix.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />

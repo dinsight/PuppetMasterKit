@@ -48,7 +48,8 @@ namespace PuppetMasterKit.AI
     /// <param name="mapHeight"></param>
     /// <param name="partitionsCountX"></param>
     /// <param name="partitionsCountY"></param>
-    public FlightMap(int rows,
+    public FlightMap(int [,] map,
+                     int rows,
                      int cols,
                      float mapWidth,
                      float mapHeight,
@@ -65,7 +66,7 @@ namespace PuppetMasterKit.AI
       this.partitionsCountY = partitionsCountY;
       Entities = new Dictionary<String, Entity>();
       Buckets = new EntityBucket[partitionsCountX,partitionsCountY];
-      Board = new int[rows, cols];
+      Board = map;
       //initialize the partitions
       for (int i = 0; i < partitionsCountX; i++) {
         for (int j = 0; j < partitionsCountY; j++) {

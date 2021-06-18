@@ -70,7 +70,7 @@ namespace PuppetMasterKit.Template.Game.Character.Tower
         .With(componentSystem,
               new RuleSystemComponent<FlightMap, TowerHandlers>(TowerRulesBuilder.Build(flightMap), new TowerHandlers(), TimeSpan.FromSeconds(3)),
               new StateComponent<TowerStates>(initialState),
-              new SpriteComponent(CharacterName, new Size(110, 110), new Point(0.5f, 0.5f), null),
+              new SpriteComponent(CharacterName, new Size(110, 110), new Point(0.5f, 0.25f), null),
               new HealthComponent(100, 20, 3),
               new RangeWeaponComponent(GetRangeWeaponCollisions(flightMap), RangeWeaponAtlas, RangeWeaponName,
                 new Size(30, 30), 700, 10, 500),

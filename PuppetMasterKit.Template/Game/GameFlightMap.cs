@@ -15,22 +15,21 @@ namespace PuppetMasterKit.Template.Game
 
     public List<Obstacle> Obstacles { get; set; }
 
-    
-
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="rows"></param>
-    /// <param name="cols"></param>
+    /// <param name="map"></param>
     /// <param name="tileSize"></param>
     /// <param name="partitionsCountX"></param>
     /// <param name="partitionsCountY"></param>
-    public GameFlightMap( int rows, int cols, int tileSize,
+    public GameFlightMap(int[,] map, int tileSize,
                          int partitionsCountX = 10,
-                         int partitionsCountY = 10) 
-      : base(rows, cols,
-          rows * tileSize,
-          cols * tileSize,
+                         int partitionsCountY = 10)
+      : base(map,
+          map.GetLength(0),
+          map.GetLength(1),
+          map.GetLength(0) * tileSize,
+          map.GetLength(1) * tileSize,
           partitionsCountX,
           partitionsCountY)
     {

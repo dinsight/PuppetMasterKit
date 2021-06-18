@@ -108,17 +108,22 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
             BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
           }
 
+          if (actionName == "build_burrow") {
+            BeaverHandlers.OnBuildBurrow(entity, new Point(x, y), tileMap, componentSystem, boundaries);
+          }
+
           if (actionName == "build_fence") {
             BeaverHandlers.OnBuildFence(entity, control.GetSelectedTiles(), Point.Zero, tileMap, componentSystem, boundaries);
-            var newTarget = ObstaclePath.FindClosestWalkableTile(agent.Position);
-            if (newTarget != null) {
-              agent.Position = newTarget;
+            //var newTarget = ObstaclePath.FindClosestWalkableTile(agent.Position);
+            //if (newTarget != null) {
+              agent.Position = location;
               //BeaverHandlers.GoToLocation(entity, mapper.ToScene(newTarget), (a, b) => {
               //  state.CurrentState = BeaverStates.idle;
               //}, (r, c, v) => true);
-            }
+            //}
           }
           control.ClearSelection();
+          agent.Remove<GoalToFollowPath>();
         });
       };
     }
@@ -143,7 +148,9 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// <returns></returns>
     static Func<Entity, IEnumerable<Entity>> GetCollisions(FlightMap flightMap)
     {
-      return (e) =>flightMap.GetAdjacentEntities(e, p => p.Name == "store" || p.Name == "tower");
+      return (e) =>flightMap.GetAdjacentEntities(e, p => p.Name == "store"
+        || p.Name == "tower"
+        || p.Name == "burrow");
     }
 
     /// <summary>

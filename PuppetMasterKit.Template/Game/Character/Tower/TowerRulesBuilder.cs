@@ -49,8 +49,11 @@ namespace PuppetMasterKit.Template.Game.Character.Tower
         .GetEntities(t => t.Name == "wolf")
         .FirstOrDefault(x => {
           var agent = x.GetComponent<Agent>();
-          var dist = Point.Distance(agent.Position, thisAgent.Position);
-          return dist <= maxAttackRange;
+          if (agent != null) {
+            var dist = Point.Distance(agent.Position, thisAgent.Position);
+            return dist <= maxAttackRange;
+          }
+          return false;
         });
       return target;
     }

@@ -78,6 +78,10 @@ namespace PuppetMasterKit.Terrain.Map.CellularAutomata
         this.map = new int[0, 0];
       }
 
+      public int[,] GetUnderlyingGameMap() {
+        return map;
+      }
+
       public List<Region> Create(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;

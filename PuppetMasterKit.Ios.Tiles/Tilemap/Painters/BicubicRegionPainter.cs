@@ -76,12 +76,12 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Painters
 
         if (type == TileType.Plain) {
           //set the tile's texture
-          layer.SetTile(painter.ToTexture(), row, col);
+          layer.SetTile(painter.ToTexture(), row, col, null);
         } else {
           if (marginTextures.ContainsKey(type)) {
             layer.SetTile(painter.ToTexture()
                             .BlendWithAlpha(marginTextures[type]),
-                            row, col);
+                            row, col, null);
           }
         }
       });

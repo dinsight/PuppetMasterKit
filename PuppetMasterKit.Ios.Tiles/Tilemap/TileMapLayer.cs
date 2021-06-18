@@ -10,14 +10,17 @@ using PuppetMasterKit.Graphics.Sprites;
 using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 using SpriteKit;
 using UIKit;
+using PuppetMasterKit.Utility;
+using System.Collections.Generic;
 
 namespace PuppetMasterKit.Ios.Tiles.Tilemap
 {
   public class TileMapLayer : SKNode
   {
     private const int maxSliceSize = 4000;
-    private WeakReference<TileMap> map;
     private int index;
+    private WeakReference<TileMap> map;
+    private Dictionary<GridCoord, SKSpriteNode> dictionary;
     static ICoordinateMapper mapper;
 
     /// <summary>
@@ -29,6 +32,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
       this.index = index;
       this.map = new WeakReference<TileMap>(map);
       mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
+      dictionary = new Dictionary<GridCoord, SKSpriteNode>();
     }
 
     /// <summary>
@@ -37,23 +41,60 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
     /// <param name="texture">Texture.</param>
     /// <param name="row">Row.</param>
     /// <param name="col">Col.</param>
-    public SKNode SetTile(SKTexture texture, int row, int col, float? zPos =null )
+    public SKNode SetTile(SKTexture texture, int row, int col, float? zPos, CGPoint? anchorPoint=null)
     {
       if (!Validate(row, col) || texture==null)
         return null;
-      var x = (row + 1) * GetMap().TileSize;
-      var y = (col + 1) * GetMap().TileSize;
+      var tileSize = GetMap().TileSize;
+      var x = (row + 0) * tileSize + tileSize / 2;
+      var y = (col + 0) * tileSize + tileSize / 2;
       var pos = new Point(x, y);
       var scenePos = mapper.ToScene(pos);
       if(texture!=null){
+        var coord = new GridCoord(row, col);
+        if (dictionary.ContainsKey(coord)) {
+          dictionary[coord].RemoveFromParent();
+          dictionary.Remove(coord);
+        }
+
         var node = SKSpriteNode.FromTexture(texture);
-        node.AnchorPoint = new CoreGraphics.CGPoint(0.5, 0);
+        node.AnchorPoint = anchorPoint ?? new CGPoint(0.5,0.5);
         node.Position = new CoreGraphics.CGPoint(scenePos.X, scenePos.Y);
         node.ZPosition = zPos ?? ZPosition;
         this.AddChild(node);
+        dictionary.TryAdd(new GridCoord(row,col), node);
         return node;
       }
       return null;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="col"></param>
+    /// <returns></returns>
+    public SKNode GetTile(int row, int col) {
+      var coord = new GridCoord(row, col);
+      if (!Validate(row, col) || !dictionary.ContainsKey(coord))
+        return null;
+      return dictionary[coord];
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="col"></param>
+    public void ClearTile(int row, int col)
+    {
+      var coord = new GridCoord(row, col);
+      if (!Validate(row, col) || !dictionary.ContainsKey(coord))
+        return;
+      if (dictionary.ContainsKey(coord)) {
+        dictionary[coord].RemoveFromParent();
+        dictionary.Remove(coord);
+      }
     }
 
     /// <summary>

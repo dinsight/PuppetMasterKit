@@ -58,6 +58,10 @@ namespace PuppetMasterKit.Terrain.Map.SimplePlacement
       }
     }
 
+    public int[,] GetUnderlyingGameMap() {
+      return map;
+    }
+
     /// <summary>
     /// Cans the add.
     /// </summary>
