@@ -82,7 +82,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
                            int regionFillCode, 
                            SKTileGroup group, 
                            float densityFactor, 
-                           SKNode layer, Random random)
+                           SKNode layer, Random random, SKShader[] shaders = null)
     {
       
 
@@ -104,6 +104,7 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
       var D = (float)Math.Sqrt(mx * mx + my * my);
 
       var randOcc = random;
+      var count = 0;
       regionsToFill.ForEach(reg=> {
         reg.TraverseRegion((row, col, type) => {
         if (type == TileType.Plain) {
@@ -116,21 +117,15 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap
                 var x = row * tileSize + tileSize / 2f + tileSize * r;
                 var y = col * tileSize + tileSize / 2f + tileSize * r;
                 var d = (float)Math.Sqrt(x * x + y * y);
-                texture.SetTexture(layer, x, y, (float)layer.ZPosition + d/D);
+                var node = texture.SetTexture(layer, x, y, (float)layer.ZPosition + d/D);
+                if (shaders != null) {
+                  node.Shader = shaders[count % shaders.Length];
+                  count++;
+                }
               }
             }
           }
         }, false);
-      });
-    }
-
-    public static void ApplyEffects(Region region, TileMapLayer layer) {
-      region.TraverseRegion((row, col, type) => {
-        if(type == TileType.Plain) {
-          var tile = layer.GetTile(row, col) as SKSpriteNode;
-          if (tile != null)
-            tile.Shader = SKShader.FromFile("Shaders/Wind.fsh");
-        }
       });
     }
   }

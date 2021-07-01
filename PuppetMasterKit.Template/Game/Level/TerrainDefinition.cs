@@ -20,6 +20,7 @@ namespace PuppetMasterKit.Template.Game.Level
       //other terrain features
       OBSTACLE = 50,
       DECK = 51,
+      FISHING_SPOT = 52,
     }
 
     public static Dictionary<int,String> GetMapping()

@@ -134,9 +134,8 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
     /// <param name="texture">Texture.</param>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
-    public static void SetTexture(this SKTexture texture, SKNode dest, float x, float y, float? zPos = null)
+    public static SKSpriteNode SetTexture(this SKTexture texture, SKNode dest, float x, float y, float? zPos = null)
     {
-
       if (texture != null) {
         var node = SKSpriteNode.FromTexture(texture);
         //BUG : anchor point is not working properly
@@ -148,7 +147,9 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
         //node.Position = new CoreGraphics.CGPoint(scenePos.X - (float)node.Size.Width / 2 + 128/2, scenePos.Y);
         node.ZPosition = zPos ?? dest.ZPosition;
         dest.AddChild(node);
+        return node;
       }
+      return null;
     }
   }
 }

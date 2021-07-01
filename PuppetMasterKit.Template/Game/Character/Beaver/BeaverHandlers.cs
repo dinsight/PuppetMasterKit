@@ -18,6 +18,7 @@ using PuppetMasterKit.Template.Game.Character.Tower;
 using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility;
 using CoreGraphics;
+using PuppetMasterKit.Template.Game.Character.Fishery;
 
 namespace PuppetMasterKit.Template.Game.Character.Rabbit
 {
@@ -105,6 +106,29 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
     /// 
     /// </summary>
     /// <param name="entity"></param>
+    /// <param name="location"></param>
+    /// <param name="tileMap"></param>
+    /// <param name="componentSystem"></param>
+    /// <param name="boundaries"></param>
+    public static void OnBuildFishery(Entity entity, Point location,
+      TileMap tileMap,
+      ComponentSystem componentSystem,
+      Polygon boundaries)
+    {
+      Debug.WriteLine("Building fishery...");
+      var agent = entity.GetComponent<Agent>();
+      var state = entity.GetComponent<StateComponent<BeaverStates>>();
+      agent.Remove<GoalToFollowPath>();
+      state.CurrentState = BeaverStates.build;
+      FisheryBuilder.Builder(componentSystem, FisheryStates.ready)
+          .AtLocation(location.X, location.Y)
+          .Build();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
     /// <param name="placementTiles"></param>
     /// <param name="location"></param>
     /// <param name="tileMap"></param>
@@ -117,69 +141,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       ComponentSystem componentSystem,
       Polygon boundaries)
     {
-      Debug.WriteLine("Building fence...");
-
-      var layer = tileMap.GetLayer(1);
-      var region = new Region(0);
-      placementTiles.ForEach(x =>
-        region.AddTile(x.Col, x.Row)
-      );
-
-      var obstacles = new List<Obstacle>();
-      var rad = tileMap.TileSize;
-
-      if (!region.IsChain()) {
-        var hud = Container.GetContainer().GetInstance<Hud>();
-        hud.SetMessage("The fence is not right");
-        return;
-      }
-
-      var flightMap = Container.GetContainer().GetInstance<FlightMap>();
-      region.TraverseChain(region.Tiles.ToList(), (r, c, type) => {
-        SKTexture fence = null;
-        if (type == TileType.LeftSide ||
-            type==TileType.RightSide ||
-            type==TileType.CulDeSacTop ||
-            type == TileType.CulDeSacBottom) {
-          fence = SKTexture.FromImageNamed("Deck_0");
-        }
-        if (type == TileType.TopSide ||
-            type == TileType.BottomSide ||
-            type == TileType.CulDeSacLeft ||
-            type == TileType.CulDeSacRight) {
-          fence = SKTexture.FromImageNamed("Deck_1");
-        }
-        if (type == TileType.BottomLeftCorner || type == TileType.TopRightJoint) {
-          fence = SKTexture.FromImageNamed("Corner_0");
-        }
-        if (type == TileType.BottomRightCorner || type == TileType.BottomRightJoint || type == TileType.TopLeftJoint) {
-          fence = SKTexture.FromImageNamed("Corner_3");
-        }
-        if (type == TileType.TopRightCorner || type == TileType.BottomLeftJoint) {
-          fence = SKTexture.FromImageNamed("Corner_2");
-        }
-        if (type == TileType.TopLeftCorner || type == TileType.BottomRightJoint) {
-          fence = SKTexture.FromImageNamed("Corner_1");
-        }
-        if (fence != null) {
-          layer.SetTile(fence, r, c, null, new CGPoint(0.5, 0.40));
-        } else {
-          var weird = fence;
-        }
-
-        var rowc = r * tileMap.TileSize + tileMap.TileSize / 2;
-        var colc = c * tileMap.TileSize + tileMap.TileSize / 2;
-        //obstacles.Add(new CircularObstacle(new Point(rowc, colc), rad));
-        //obstacles.Add(new PolygonalObstacle(
-        //    new Point(r, c),
-        //    new Point(r, c + tileMap.TileSize),
-        //    new Point(r + tileMap.TileSize, c + tileMap.TileSize),
-        //    new Point(r + tileMap.TileSize, c)
-        //  ));
-        flightMap.Board[r, c] = (int)Level.TerrainDefinition.TerrainType.DECK;
-      });
-
-      //((GameFlightMap)flightMap).Obstacles.AddRange(obstacles);
+      BridgeBuilder.Build(placementTiles, tileMap);
     }
 
     /// <summary>
@@ -249,7 +211,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
 
       var obstacles = flightMap.Obstacles.OfType<PolygonalObstacle>().ToList();
       //var newPath = ObstaclePath.GetPathTroughObstacles(obstacles, agent.Position, mapper.FromScene(location));
-      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter, 7);
+      var newPath = ObstaclePath.FindPath(agent.Position, mapper.FromScene(location), tileFilter, 2);
       
       //Container.GetContainer().GetInstance<SKScene>().DrawPath(newPath);
       //create new goal. Makes sure the goal is deleted upon arrival

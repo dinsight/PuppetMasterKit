@@ -30,7 +30,8 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
 
     const byte bitsPerComponent = 8;
     const byte bytesPerPixel = 4;
-    const uint mask = (uint)CGImageAlphaInfo.PremultipliedFirst | (uint)CGBitmapFlags.ByteOrder32Little;
+    //const uint mask = (uint)CGImageAlphaInfo.PremultipliedFirst | (uint)CGBitmapFlags.ByteOrder32Little;
+    const uint mask = (uint)CGImageAlphaInfo.PremultipliedLast | (uint)CGBitmapFlags.ByteOrderDefault;
 
     public static byte BytesPerPixel => bytesPerPixel;
 
@@ -173,6 +174,8 @@ namespace PuppetMasterKit.Ios.Tiles.Tilemap.Helpers
                                          height + item.Position.Y,
                                          item.Size.Width,
                                          item.Size.Height), item.Texture.CGImage);
+
+            
           });
           image = context.ToImage();
         }

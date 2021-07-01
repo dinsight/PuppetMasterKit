@@ -17,6 +17,9 @@ using PuppetMasterKit.Terrain.Map;
 using PuppetMasterKit.Utility.Subscript;
 using PuppetMasterKit.Utility.Extensions;
 using static PuppetMasterKit.Template.Game.Level.TerrainDefinition;
+using CoreGraphics;
+using UIKit;
+using PuppetMasterKit.Ios.Tiles.Tilemap.Helpers;
 
 namespace PuppetMasterKit.Template.Game.Level
 {
@@ -102,6 +105,33 @@ namespace PuppetMasterKit.Template.Game.Level
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i2"></param>
+    private static void PrintMap(I2DSubscript<int?> i2)
+    {
+      for (int i = 0; i < i2.Rows; i++) {
+        for (int j = 0; j < i2.Cols; j++) {
+          var x = i2[i, j];
+          if (!x.HasValue) {
+            Console.Write(" ");
+          } else if (x == 0) {
+            Console.Write("∙");
+          } else if (x == 1) {
+            Console.Write("#");
+          } else if (x == 2) {
+            Console.Write("^");
+          } else if (x == 3) {
+            Console.Write("~");
+          } else {
+            Console.Write((char)x);
+          }
+        }
+        Console.WriteLine();
+      }
+    }
+
+    /// <summary>
     /// Loads the scene data.
     /// </summary>
     private LevelData LoadSceneData()
@@ -129,12 +159,13 @@ namespace PuppetMasterKit.Template.Game.Level
         var agent = beaver.GetComponent<Agent>();
         var random = new Random(Guid.NewGuid().GetHashCode());
 
-        var initialPos = flightMap.Board.GetEnumerable().Where((element)=>element.Value== (int)Level.TerrainDefinition.TerrainType.ISLES).First();
+        var initialPos = flightMap.Board.GetEnumerable()
+          .Where((element)=>element.Value == (int)TerrainType.ISLES).First();
 
         var x = initialPos.Row * tileSize + tileSize/2;
         var y = initialPos.Col * tileSize + tileSize/2;
         agent.Position = new Point(x, y);
-        flightMap.AddHero(beaver);
+        flightMap.AddHero(beaver);        
       } 
 
       for (int i = 0; i < 2 ; i++) {
@@ -222,35 +253,45 @@ namespace PuppetMasterKit.Template.Game.Level
       var tileSize = 128;
       var existing = scene.Children.OfType<SKTileMapNode>();
       scene.RemoveChildren(existing.ToArray());
-
+      var mapping = GetMapping();
       var builder = Container.GetContainer().GetInstance<IMapGenerator>();
       var regions = builder.Create(mapRows, mapCols);
-      this.flightMap = new GameFlightMap(builder.GetUnderlyingGameMap(), tileSize, 7, 7);
-      Ios.Bindings.Registration.Register<FlightMap>(flightMap);
-
-      var mapping = TerrainDefinition.GetMapping();
       var tileSet = SKTileSet.FromName("MainTileSet1");
-
+      flightMap   = new GameFlightMap(builder.GetUnderlyingGameMap(), tileSize, 7, 7);
+      Ios.Bindings.Registration.Register<FlightMap>(flightMap);
+      
       //var s = new int[] { 0x0, 0x0, 0xff, 0xff };
       //var e = new int[] { 0xAF, 0xFF, 0xFF, 0xee };
       //var bicubicPainter = new BicubicRegionPainter(tileSize, s, e);
       //var layeredPainter = new LayeredRegionPainter(1, new List<string>()
       //{ "Sand", "Water_L2", "Water", "Water_L1", "Water_L1",  }, tileSet, randomSeed: 0);
       var defaultPainter = new TiledRegionPainter(mapping, tileSet, randomSeed: 1, defaultWangTileIndex: 15);
-      
       var tileMap = new TileMap(defaultPainter, mapRows, mapCols, tileSize);
       //tileMap.AddPainter(3, layeredPainter);
 
+      SKShader[] shaders = 
+      new SKShader[] {
+        //SKShader.FromFile("Shaders/Wind.fsh"),
+        //SKShader.FromFile("Shaders/Wind.fsh"),
+        //SKShader.FromFile("Shaders/Wind.fsh")
+      };
+
+      //shaders[0].Uniforms = new SKUniform[] {
+      //  SKUniform.Create("u_wind_speed", 0.2f),
+      //  SKUniform.Create("u_phase", 0.1f)
+      //};
+
       Measure.Timed("Map building", () => {
         //tileMap.Build(regions, 0, '+', MapCodes.PATH, 'W', 1 );
-        tileMap.Build(LAYER_COUNT, regions, 0,  1, 2, 3);
+        tileMap.Build(LAYER_COUNT, regions, 0, 1, 2, 3);
         var woods = tileSet.TileGroups.First(x => x.Name == "Marsh_Trees");
-        RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(1), new Random(0));
-        
+        RegionFill.Fill(regions, tileSize, 1, woods, 0.1f, tileMap.GetLayer(1),
+          new Random(0), null);
       });
 
-      var mapper = Container.GetContainer().GetInstance<ICoordinateMapper>();
-      var initialPos = flightMap.Board.GetEnumerable().Where((element) => element.Value == (int)Level.TerrainDefinition.TerrainType.ISLES).First();
+      new StoryBuilder(flightMap, tileMap)
+        .WithFishingSpots(7);
+
 
       //var xp = (initialPos.Row+5) * tileSize + tileSize / 2;
       //var yp = (initialPos.Col+5) * tileSize + tileSize / 2;
@@ -260,7 +301,7 @@ namespace PuppetMasterKit.Template.Game.Level
       //var layer1 = tileMap.GetLayer(1);
       //layer1.AddChild(effect);
 
-      //regions.Where(x => x.RegionFill == (int)TerrainType.ISLES).ForEach(region =>
+      //regions.Where(x => x.RegionFill == (int)TerrainType.WATER).ForEach(region =>
       //  RegionFill.ApplyEffects(region, tileMap.GetLayer(0))
       //);
 
@@ -276,10 +317,10 @@ namespace PuppetMasterKit.Template.Game.Level
       //var shader = SKShader.FromFile("Wind.fsh");
       //node.Shader = shader;
 
-
       //var hut = SKTexture.FromImageNamed("Hut");
       //tileMap.GetLayer(1).SetTile(hut, 55, 30);
       //tileMap.GetLayer(1).SetTile(hut, 5, 23);
+
 
       Measure.Timed("Dump image", () => {
         scene.AddChild(tileMap);
@@ -289,29 +330,6 @@ namespace PuppetMasterKit.Template.Game.Level
       PrintMap(builder);
 
       return tileMap;
-    }
-
-    private static void PrintMap(I2DSubscript<int?> i2)
-    {
-      for (int i = 0; i < i2.Rows; i++) {
-        for (int j = 0; j < i2.Cols; j++) {
-          var x = i2[i, j];
-          if (!x.HasValue) {
-            Console.Write(" ");
-          } else if (x == 0) {
-            Console.Write("∙");
-          } else if (x == 1) {
-            Console.Write("#");
-          } else if (x == 2) {
-            Console.Write("^");
-          } else if (x == 3) {
-            Console.Write("~");
-          } else {
-            Console.Write((char)x);
-          }
-        }
-        Console.WriteLine();
-      }
     }
   }
 }

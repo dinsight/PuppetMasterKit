@@ -80,7 +80,7 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
       Polygon boundaries, TileMap tileMap, SKScene scene, Hud hud, ICoordinateMapper mapper, Entity entity)
     {
       var plotter = PlotControl.CreateFromFile(scene, tileMap, "Hud", "plotter");
-      plotter.SelectionValidator += MultiSelectionValidator;
+      plotter.SelectionValidator += BridgeBuilder.MultiSelectionValidator;
       hud.OnShowMenu += (sender, gesture) => {
         plotter.Open(entity);
       };
@@ -96,6 +96,21 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
         var x = tileMap.TileSize * col + tileMap.TileSize / 2;
         var coord2d = mapper.ToScene(new Point(x, y));
 
+        if (actionName == "build_fence") {
+          BeaverHandlers.OnBuildFence(entity, control.GetSelectedTiles(), Point.Zero, tileMap, componentSystem, boundaries);
+          control.ClearSelection();
+        }
+
+        if (actionName == "build_burrow") {
+          BeaverHandlers.OnBuildBurrow(entity, new Point(x, y), tileMap, componentSystem, boundaries);
+          control.ClearSelection();
+        }
+
+        if (actionName == "build_fishery") {
+          BeaverHandlers.OnBuildFishery(entity, new Point(x, y), tileMap, componentSystem, boundaries);
+          control.ClearSelection();
+        }
+
         BeaverHandlers.GoToLocation(entity, coord2d, (agent, location) => {
           var state = entity.GetComponent<StateComponent<BeaverStates>>();
           state.CurrentState = BeaverStates.idle;
@@ -108,38 +123,21 @@ namespace PuppetMasterKit.Template.Game.Character.Rabbit
             BeaverHandlers.OnBuildTower(entity, Point.Zero, tileMap, componentSystem, boundaries);
           }
 
-          if (actionName == "build_burrow") {
-            BeaverHandlers.OnBuildBurrow(entity, new Point(x, y), tileMap, componentSystem, boundaries);
-          }
-
-          if (actionName == "build_fence") {
-            BeaverHandlers.OnBuildFence(entity, control.GetSelectedTiles(), Point.Zero, tileMap, componentSystem, boundaries);
-            //var newTarget = ObstaclePath.FindClosestWalkableTile(agent.Position);
-            //if (newTarget != null) {
-              agent.Position = location;
-              //BeaverHandlers.GoToLocation(entity, mapper.ToScene(newTarget), (a, b) => {
-              //  state.CurrentState = BeaverStates.idle;
-              //}, (r, c, v) => true);
-            //}
-          }
+          //if (actionName == "build_fence") {
+          //  BeaverHandlers.OnBuildFence(entity, control.GetSelectedTiles(), Point.Zero, tileMap, componentSystem, boundaries);
+          //  //var newTarget = ObstaclePath.FindClosestWalkableTile(agent.Position);
+          //  //if (newTarget != null) {
+          //    agent.Position = location;
+          //    //BeaverHandlers.GoToLocation(entity, mapper.ToScene(newTarget), (a, b) => {
+          //    //  state.CurrentState = BeaverStates.idle;
+          //    //}, (r, c, v) => true);
+          //  //}
+          //}
           control.ClearSelection();
           agent.Remove<GoalToFollowPath>();
         });
       };
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="control"></param>
-    /// <param name="pos"></param>
-    /// <returns></returns>
-    public static bool MultiSelectionValidator(PlotControl control, GridCoord pos) {
-      var selected = ((PlotControl)control).GetSelectedTiles();
-      var canBuild = selected.Count==0 || selected.Any(x => x.IsAdjacentTo(pos));
-      return canBuild;
-    }
-
 
     /// <summary>
     /// 

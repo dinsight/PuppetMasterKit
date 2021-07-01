@@ -23,7 +23,7 @@ namespace PuppetMasterKit.Template.Game.Controls
 {
   public class PlotControl : SKSpriteNode
   {
-    public event Func<PlotControl, GridCoord, bool> SelectionValidator;
+    public event Func<PlotControl, GridCoord, GridCoord, bool> SelectionValidator;
     public event Func<String, bool> OnItemButtonClick;
     public Action<PlotControl,String> OnOk { get; set; }
 
@@ -36,7 +36,10 @@ namespace PuppetMasterKit.Template.Game.Controls
     private CustomButton menuNode = null;
     private SKSpriteNode floatMenu = null;
     private ToggleButton helpNode = null;
-    private Dictionary<GridCoord, SKShapeNode> selected = new Dictionary<GridCoord, SKShapeNode>();
+
+    //private Dictionary<GridCoord, SKShapeNode> selected = new Dictionary<GridCoord, SKShapeNode>();
+    private List<GridCoord> selected = new List<GridCoord>();
+    private List<SKShapeNode> placeholders = new List<SKShapeNode>();
 
     #region Gesture Recognizers
     private UILongPressGestureRecognizer longPress;
@@ -316,9 +319,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// 
     /// </summary>
     public void ClearSelection() {
-      selected.ForEach(sel => {
-        sel.Value.RemoveFromParent();
-      });
+      placeholders.ForEach(sel=>sel.RemoveFromParent());
       selected.Clear();
     }
 
@@ -440,7 +441,7 @@ namespace PuppetMasterKit.Template.Game.Controls
     /// </summary>
     /// <returns></returns>
     public List<GridCoord> GetSelectedTiles() {
-      return selected.Keys.ToList();
+      return selected.ToList();
     }
 
     /// <summary>
@@ -482,19 +483,24 @@ namespace PuppetMasterKit.Template.Game.Controls
           ClearSelection();
         }
 
-        var key = selected.Keys.Where(x => x.Row == row && x.Col == col).FirstOrDefault();
+        var key = selected.Where(x => x.Row == row && x.Col == col).FirstOrDefault();
         if (key != null) {
-          var val = selected.Where(x => x.Key == key).First();
-          selected.Remove(key);
-          val.Value.RemoveFromParent();
+          var val = selected.Where(x => x == key).First();
+          var pos = selected.IndexOf(val);
+          var placeholder = placeholders[pos];
+          placeholders.Remove(placeholder);
+          placeholder.RemoveFromParent();
         } else {
-          if (SelectionValidator != null && !SelectionValidator(this, new GridCoord(row, col))) {
+          if (SelectionValidator != null && !SelectionValidator(this,
+              selected.LastOrDefault(),
+              new GridCoord(row, col))) {
             hud.SetMessage("Cannot build there");
             return;
           }
           var square = HighlightTile(row, col, true);
           tileMap.GetLayer(tileMap.LayerCount - 1).AddChild(square);
-          selected.Add(new GridCoord(row, col), square);
+          placeholders.Add(square);
+          selected.Add(new GridCoord(row, col));
         }
       }
     }
@@ -514,8 +520,6 @@ namespace PuppetMasterKit.Template.Game.Controls
         new CGPoint(w/2,h/2),
         new CGPoint(0,h),
       });
-      var dict = new NSMutableDictionary();
-
       square.FillColor = UIColor.Red;
       square.Alpha = 0.3f;
       square.ZPosition = 10;
@@ -524,7 +528,6 @@ namespace PuppetMasterKit.Template.Game.Controls
       var y = (row + 1) * tileMap.TileSize;
       var scenePos = mapper.ToScene(new Point(x, y));
       square.Position = new CGPoint(scenePos.X, scenePos.Y);
-      
       return square;
     }
   }

@@ -404,7 +404,10 @@
     <Folder Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_OutsideLeft.imageset\" />
     <Folder Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_OutsideRight.imageset\" />
     <Folder Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_OutsideTop.imageset\" />
-    <Folder Include="Effects\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\Fishery.imageset\" />
+    <Folder Include="Resources\fishery\" />
+    <Folder Include="Game\Character\Fishery\" />
+    <Folder Include="Resources\Media.xcassets\Artifacts.spriteatlas\Fish.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Hud.sks" />
@@ -418,12 +421,8 @@
     <BundleResource Include="Shaders\Selected.fsh" />
     <BundleResource Include="Shaders\Glass.fsh" />
     <BundleResource Include="Shaders\Neutral.fsh" />
-    <BundleResource Include="Effects\FireParticleEffect.sks" />
-    <BundleResource Include="Effects\spark.png" />
-    <BundleResource Include="Effects\RainParticleEffect.sks" />
-    <BundleResource Include="Effects\SmokeParticleEffect.sks" />
-    <BundleResource Include="Effects\SparkParticleEffect.sks" />
-    <BundleResource Include="Effects\SnowParticleEffect.sks" />
+    <BundleResource Include="FishJumpEffect.sks" />
+    <BundleResource Include="Shaders\Fish.fsh" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -493,6 +492,12 @@
     <Compile Include="Game\Character\Burrow\BurrowStates.cs" />
     <Compile Include="Game\Character\Burrow\BurrowHandlers.cs" />
     <Compile Include="Game\Character\Burrow\BurrowRulesBuilder.cs" />
+    <Compile Include="Game\BridgeBuilder.cs" />
+    <Compile Include="Game\Character\Fishery\FisheryBuilder.cs" />
+    <Compile Include="Game\Character\Fishery\FisheryHandlers.cs" />
+    <Compile Include="Game\Character\Fishery\FisheryRulesBuilder.cs" />
+    <Compile Include="Game\Character\Fishery\FisheryStates.cs" />
+    <Compile Include="Game\Level\StoryBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PuppetMasterKit.AI\PuppetMasterKit.AI.csproj">
@@ -1105,12 +1110,6 @@
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Variant_15_3.imageset\wang_15_1.png.png" />
     <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Deck_0.imageset\fence-8_0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Deck_1.imageset\fence-2_0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Deck_0.imageset\fence-2_0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Deck_1.imageset\fence-8_0001-1.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_0.imageset\fence-8_0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_1.imageset\fence-8_0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_3.imageset\fence-8_0001.png" />
-    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_2.imageset\fence-8_0001.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_OutsideTop.imageset\OutsideTop.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_InsetBottomLeft.imageset\InsetBottomLeft.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_InsideRight.imageset\InsideRight.png" />
@@ -1173,6 +1172,16 @@
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_OutsideRight.imageset\wang_15.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_InsideBottom.imageset\wang_15.png" />
     <ImageAsset Include="Resources\Media.xcassets\Wang_Isles.spriteatlas\Wang_Isles_InsideLeft.imageset\wang_15.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_0.imageset\deck_ends-2_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_1.imageset\deck_ends-4_0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_2.imageset\deck_ends-6_0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Corner_3.imageset\deck_ends-8_0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Deck_1.imageset\deck-8_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Deck.spriteatlas\Deck_0.imageset\deck-2_0001-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Fishery.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Fishery.imageset\0001.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Fish.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Media.xcassets\Artifacts.spriteatlas\Fish.imageset\Fish.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\GameScene.bak.json" />
@@ -2078,6 +2087,8 @@
     <AtlasTexture Include="Resources\beaver\beaver-idle-w.atlas\frame_7_0002.png" />
     <AtlasTexture Include="Resources\burrow\burrow-building.atlas\0001.png" />
     <AtlasTexture Include="Resources\burrow\burrow-ready.atlas\0001.png" />
+    <AtlasTexture Include="Resources\fishery\fishery-building.atlas\0001.png" />
+    <AtlasTexture Include="Resources\fishery\fishery-ready.atlas\0001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
